@@ -58,6 +58,12 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/manifest.json",
+  themeColor: "#F9ECE1",
   openGraph: {
     type: "website",
     locale: "de_DE",
@@ -135,13 +141,6 @@ export default async function RootLayout({
 
   return (
     <>
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#F9ECE1" />
-      </head>
-
       <OrganizationSchema />
       <AuthInitializer />
       <Suspense fallback={null}>
