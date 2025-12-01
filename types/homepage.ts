@@ -1,0 +1,21 @@
+export type HomepageContent = {
+  _id?: string;
+  heroTitle?: string;
+  heroDescription?: string;
+  heroButtonText?: string;
+  contentHeading?: string;
+  contentSubheading?: string;
+  whyBreedTitle?: string;
+  whyBreedDescription?: string;
+  feature1?: string;
+  feature2?: string;
+  feature3?: string;
+  feature4?: string;
+  feature5?: string;
+  feature6?: string;
+  darkSectionTitle?: string;
+  darkSectionDescription?: string;
+  newsHeading?: string;
+  newsSeeAllText?: string;
+  newsSeeAllSubtext?: string;
+};

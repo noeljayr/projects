@@ -1,0 +1,1 @@
+export const TOKEN_NAME = 'vom-sauterhof-auth'

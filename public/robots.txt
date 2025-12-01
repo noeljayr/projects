@@ -1,0 +1,14 @@
+# *
+User-agent: *
+Allow: /
+
+# Disallow admin and content management pages
+Disallow: /content/
+Disallow: /auth/
+Disallow: /api/
+
+# Host
+Host: https://vom-sauterhof.de
+
+# Sitemaps
+Sitemap: https://vom-sauterhof.de/sitemap.xml
