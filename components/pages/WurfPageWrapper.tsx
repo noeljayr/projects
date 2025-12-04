@@ -66,11 +66,15 @@ const WurfPageWrapper = ({
 
   const handleCategoryChange = (category: string) => {
     const params = new URLSearchParams();
-    params.set("category", category);
     if (isEditMode) {
       params.set("mode", "edit");
     }
-    router.push(`/vomsauterhof/wurf?${params.toString()}`);
+    const queryString = params.toString();
+    router.push(
+      `/vomsauterhof/wurf/${encodeURIComponent(category)}${
+        queryString ? `?${queryString}` : ""
+      }`
+    );
   };
 
   const docs = [
