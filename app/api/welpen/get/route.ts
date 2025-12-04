@@ -37,6 +37,9 @@ export async function GET(request: NextRequest) {
         success: true,
         welpen: {
           information: "",
+          date: "",
+          title: "",
+          dogs: [],
         },
       });
     }
