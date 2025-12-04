@@ -32,7 +32,15 @@ type TimelineEntry = {
   date: string;
   title: string;
   dogs: TimelineDog[];
+  category: string;
 };
+
+type WelpenData = {
+  information: string;
+  date: string;
+  title: string;
+  dogs: TimelineDog[];
+} | null;
 
 type Props = {
   bannerContent: BannerContent;
@@ -40,6 +48,7 @@ type Props = {
   activeCategory: string;
   wurf: WurfData;
   timeline: TimelineEntry[];
+  welpen: WelpenData;
 };
 
 const WurfPageWrapper = ({
@@ -48,6 +57,7 @@ const WurfPageWrapper = ({
   activeCategory,
   wurf,
   timeline,
+  welpen,
 }: Props) => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -144,13 +154,15 @@ const WurfPageWrapper = ({
               <div className="flex items-center">
                 <h3>{wurf.name}</h3>
 
-                <Link
-                  href={`/vomsauterhof/wurf/${wurf.id}`}
-                  className="ml-6 flex items-center text-white bg-[#58483B] px-2 py-1 rounded-[0.5rem]"
-                >
-                  Welpen
-                  <IconArrowUpRight className="h-4 w-4 ml-2" color="white" />
-                </Link>
+                {wurf.category === "wurf a" && (
+                  <Link
+                    href={`/vomsauterhof/wurf/${wurf.id}`}
+                    className="ml-6 flex items-center text-white bg-[#58483B] px-2 py-1 rounded-[0.5rem]"
+                  >
+                    Welpen
+                    <IconArrowUpRight className="h-4 w-4 ml-2" color="white" />
+                  </Link>
+                )}
               </div>
 
               <div className="flex ml-auto max-[900px]:ml-0 max-[900px]:mt-4 gap-4">
@@ -181,7 +193,28 @@ const WurfPageWrapper = ({
             />
           </div>
 
-          <TimelineClient timeline={timeline} />
+          {wurf.category === "wurf a" ? (
+            <>
+              {welpen && welpen.information && (
+                <div className="section-container mx-auto">
+                  <div className="flex items-center mb-8">
+                    <h3 className="font-bold">Welpen</h3>
+                  </div>
+                  <div
+                    className="font-p2 wurf-content"
+                    dangerouslySetInnerHTML={{ __html: welpen.information }}
+                  />
+                </div>
+              )}
+              <TimelineClient timeline={timeline} showFilters={false} />
+            </>
+          ) : (
+            <TimelineClient
+              timeline={timeline}
+              welpen={welpen}
+              showFilters={true}
+            />
+          )}
         </>
       ) : (
         <div className="section-container mx-auto text-center py-16">

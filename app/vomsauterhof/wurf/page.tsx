@@ -74,7 +74,26 @@ async function Page({
     date: entry.date,
     title: entry.title || "",
     dogs: entry.dogs || [],
+    category: "nachzucht",
   }));
+
+  // Fetch welpen data for the active wurf
+  const welpenCollection = db.collection("welpen");
+  const welpenData =
+    wurf && wurfData
+      ? await welpenCollection.findOne({
+          wurfId: wurfData._id,
+        })
+      : null;
+
+  const welpen = welpenData
+    ? {
+        information: welpenData.information || "",
+        date: welpenData.date || "",
+        title: welpenData.title || "",
+        dogs: welpenData.dogs || [],
+      }
+    : null;
 
   return (
     <WurfPageWrapper
@@ -83,6 +102,7 @@ async function Page({
       activeCategory={activeCategory}
       wurf={wurf}
       timeline={timeline}
+      welpen={welpen}
     />
   );
 }
