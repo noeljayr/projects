@@ -156,7 +156,7 @@ const WurfPageWrapper = ({
 
                 {wurf.category === "wurf a" && (
                   <Link
-                    href={`/vomsauterhof/wurf/${wurf.id}`}
+                    href={`/vomsauterhof/welpen/${wurf.id}`}
                     className="ml-6 flex items-center text-white bg-[#58483B] px-2 py-1 rounded-[0.5rem]"
                   >
                     Welpen
