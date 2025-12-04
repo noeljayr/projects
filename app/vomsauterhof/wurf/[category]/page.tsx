@@ -2,9 +2,10 @@ import clientPromise from "@/lib/mongodb";
 import { BannerContent } from "@/types/banner";
 import WurfPageWrapper from "@/components/pages/WurfPageWrapper";
 import { notFound } from "next/navigation";
+import { slugToCategory } from "@/lib/categorySlug";
 
 async function Page({ params }: { params: Promise<{ category: string }> }) {
-  const { category } = await params;
+  const { category: slug } = await params;
   const client = await clientPromise;
   const db = client.db("vom_sauterhof");
 
@@ -29,11 +30,11 @@ async function Page({ params }: { params: Promise<{ category: string }> }) {
     .map((w) => w.category)
     .filter((c) => c && c.trim() !== "");
 
-  // Decode the category from URL
-  const activeCategory = decodeURIComponent(category);
+  // Convert slug back to category name
+  const activeCategory = slugToCategory(slug, categories);
 
   // Check if category exists
-  if (!categories.includes(activeCategory)) {
+  if (!activeCategory) {
     notFound();
   }
 

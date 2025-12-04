@@ -1,5 +1,6 @@
 import clientPromise from "@/lib/mongodb";
 import { redirect } from "next/navigation";
+import { categoryToSlug } from "@/lib/categorySlug";
 
 async function Page() {
   const client = await clientPromise;
@@ -18,7 +19,7 @@ async function Page() {
 
   // Redirect to the first category
   if (categories.length > 0) {
-    redirect(`/vomsauterhof/wurf/${encodeURIComponent(categories[0])}`);
+    redirect(`/vomsauterhof/wurf/${categoryToSlug(categories[0])}`);
   }
 
   // If no categories, redirect to home or show error

@@ -7,6 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import TimelineClient from "@/components/wurf/TimelineClient";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { useEffect } from "react";
+import { categoryToSlug } from "@/lib/categorySlug";
 
 type WurfData = {
   id: string;
@@ -71,7 +72,7 @@ const WurfPageWrapper = ({
     }
     const queryString = params.toString();
     router.push(
-      `/vomsauterhof/wurf/${encodeURIComponent(category)}${
+      `/vomsauterhof/wurf/${categoryToSlug(category)}${
         queryString ? `?${queryString}` : ""
       }`
     );
@@ -121,21 +122,20 @@ const WurfPageWrapper = ({
         <div className="flex w-full flex-wrap max-sm:flex-grow section-container mx-auto gap-4">
           {categories.map((c) => {
             return (
-              <button
+              <span
                 key={c}
-                type="button"
                 style={{
                   transition: "ease 0.5s",
                 }}
                 onClick={() => handleCategoryChange(c)}
-                className={`px-4 py-2 border cursor-pointer hover:brightness-95 rounded-[0.5rem] ${
+                className={`px-4 capitalize py-2 border cursor-pointer hover:brightness-95 rounded-[0.5rem] ${
                   activeCategory === c
                     ? "bg-[#58483B] border-[#58483B] text-white"
                     : "bg-[#FBF2EA] border border-black/10 "
                 }`}
               >
                 {c}
-              </button>
+              </span>
             );
           })}
         </div>
