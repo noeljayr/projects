@@ -195,17 +195,7 @@ const WurfPageWrapper = ({
 
           {wurf.category === "wurf a" ? (
             <>
-              {welpen && welpen.information && (
-                <div className="section-container mx-auto">
-                  <div className="flex items-center mb-8">
-                    <h3 className="font-bold">Welpen</h3>
-                  </div>
-                  <div
-                    className="font-p2 wurf-content"
-                    dangerouslySetInnerHTML={{ __html: welpen.information }}
-                  />
-                </div>
-              )}
+              {welpen && welpen.information && <></>}
               <TimelineClient timeline={timeline} showFilters={false} />
             </>
           ) : (
