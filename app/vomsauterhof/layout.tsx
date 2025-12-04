@@ -62,8 +62,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  manifest: "/manifest.json",
-  themeColor: "#F9ECE1",
+  manifest: "/vomsauterhof/manifest.json",
   openGraph: {
     type: "website",
     locale: "de_DE",

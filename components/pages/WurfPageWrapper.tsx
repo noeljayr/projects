@@ -117,7 +117,7 @@ const WurfPageWrapper = ({
                 className={`px-4 py-2 border cursor-pointer hover:brightness-95 rounded-[0.5rem] ${
                   activeCategory === c
                     ? "bg-[#58483B] border-[#58483B] text-white"
-                    : "bg-white border border-black/10 "
+                    : "bg-[#FBF2EA] border border-black/10 "
                 }`}
               >
                 {c}
@@ -134,7 +134,7 @@ const WurfPageWrapper = ({
               <img
                 src={wurf.image}
                 alt={wurf.name}
-                className="w-full object-cover rounded-[1rem] max-sm:rounded-[0.75rem]"
+                className="w-[35%] mx-auto object-cover rounded-[0.65rem] max-sm:rounded-[0.75rem]"
               />
             </div>
           )}
