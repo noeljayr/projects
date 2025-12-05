@@ -14,7 +14,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { wurfId, information } = body;
+    const { wurfId, information, date, title, dogs } = body;
 
     if (!wurfId) {
       return NextResponse.json(
@@ -23,9 +23,10 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    if (!information) {
+    // Validate that either information or dogs is provided
+    if (!information && (!dogs || dogs.length === 0)) {
       return NextResponse.json(
-        { success: false, message: "Information is required" },
+        { success: false, message: "Information or dogs data is required" },
         { status: 400 }
       );
     }
@@ -39,15 +40,33 @@ export async function PUT(request: NextRequest) {
       wurfId: new ObjectId(wurfId),
     });
 
+    // Prepare update data based on what's provided
+    const updateData: any = {
+      updatedAt: new Date(),
+    };
+
+    if (information !== undefined) {
+      updateData.information = information;
+      // Clear timeline fields if switching to free-form
+      updateData.date = "";
+      updateData.title = "";
+      updateData.dogs = [];
+    }
+
+    if (dogs !== undefined) {
+      updateData.dogs = dogs;
+      updateData.date = date || "";
+      updateData.title = title || "";
+      // Clear information if switching to timeline-style
+      updateData.information = "";
+    }
+
     if (existingWelpen) {
       // Update existing welpen document
-      const result = await welpenCollection.updateOne(
+      await welpenCollection.updateOne(
         { wurfId: new ObjectId(wurfId) },
         {
-          $set: {
-            information,
-            updatedAt: new Date(),
-          },
+          $set: updateData,
         }
       );
 
@@ -59,7 +78,10 @@ export async function PUT(request: NextRequest) {
       // Create new welpen document
       const welpenDocument = {
         wurfId: new ObjectId(wurfId),
-        information,
+        information: information || "",
+        date: date || "",
+        title: title || "",
+        dogs: dogs || [],
         createdAt: new Date(),
         updatedAt: new Date(),
       };

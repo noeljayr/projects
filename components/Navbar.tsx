@@ -234,7 +234,7 @@ export function Navbar({ content }: Props) {
       >
         <header
           ref={headerRef}
-          className="py-6 flex items-center justify-between"
+          className="py-2 flex items-center justify-between"
         >
           <div className="section-container mx-auto grid grid-cols-[auto_auto] items-center justify-between">
             <Link
@@ -244,7 +244,7 @@ export function Navbar({ content }: Props) {
               <Image
                 src={logo}
                 alt="Logo"
-                className="w-[5rem] max-sm:w-[4rem]"
+                className="w-[4.5rem] max-sm:w-[4rem]"
               />
             </Link>
 

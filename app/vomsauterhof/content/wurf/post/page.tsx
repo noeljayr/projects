@@ -221,13 +221,16 @@ function Page() {
 
         <div className="flex flex-col gap-2 py-4 border-b border-b-black/10">
           <label className="font-medium text-sm opacity-75">Kategorie</label>
-          <input
-            type="text"
-            placeholder="Kategorie eingeben"
+          <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-3 py-2 border border-[var(--c-border)] rounded-[0.35rem] outline-none"
-          />
+            className="px-3 py-2 border border-[var(--c-border)] rounded-[0.35rem] outline-none bg-white"
+          >
+            <option value="">Kategorie auswählen</option>
+            <option value="wurf a">Wurf A</option>
+            <option value="wurf b">Wurf B</option>
+            <option value="wurf c">Wurf C</option>
+          </select>
         </div>
 
         <div className="flex flex-col gap-3 py-4 border-b border-b-black/10">

@@ -66,7 +66,7 @@ export function FooterClient({ content }: Props) {
       <Parteners />
       <footer
         ref={footerRef}
-        className="px-4 py-10 flex flex-col mt-12 md:py-12 bg-[#BFA999D9]"
+        className="px-4 py-10 flex flex-col mt-12 md:py-12 bg-[#BEA99A]"
       >
         <div className="section-container pb-10 border-b border-b-[var(--c-border)] mx-auto flex flex-col md:flex-row justify-between gap-10 md:gap-8 min-h-[200px]">
           <div className="space-y-6 md:space-y-5 text-[#141414]">

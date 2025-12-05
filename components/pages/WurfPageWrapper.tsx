@@ -7,6 +7,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import TimelineClient from "@/components/wurf/TimelineClient";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { useEffect } from "react";
+import { categoryToSlug } from "@/lib/categorySlug";
+import paw2 from "@/public/paw-2.png";
+import Image from "next/image";
 
 type WurfData = {
   id: string;
@@ -32,7 +35,15 @@ type TimelineEntry = {
   date: string;
   title: string;
   dogs: TimelineDog[];
+  category: string;
 };
+
+type WelpenData = {
+  information: string;
+  date: string;
+  title: string;
+  dogs: TimelineDog[];
+} | null;
 
 type Props = {
   bannerContent: BannerContent;
@@ -40,6 +51,7 @@ type Props = {
   activeCategory: string;
   wurf: WurfData;
   timeline: TimelineEntry[];
+  welpen: WelpenData;
 };
 
 const WurfPageWrapper = ({
@@ -48,6 +60,7 @@ const WurfPageWrapper = ({
   activeCategory,
   wurf,
   timeline,
+  welpen,
 }: Props) => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -56,11 +69,15 @@ const WurfPageWrapper = ({
 
   const handleCategoryChange = (category: string) => {
     const params = new URLSearchParams();
-    params.set("category", category);
     if (isEditMode) {
       params.set("mode", "edit");
     }
-    router.push(`/vomsauterhof/wurf?${params.toString()}`);
+    const queryString = params.toString();
+    router.push(
+      `/vomsauterhof/wurf/${categoryToSlug(category)}${
+        queryString ? `?${queryString}` : ""
+      }`
+    );
   };
 
   const docs = [
@@ -107,21 +124,20 @@ const WurfPageWrapper = ({
         <div className="flex w-full flex-wrap max-sm:flex-grow section-container mx-auto gap-4">
           {categories.map((c) => {
             return (
-              <button
+              <span
                 key={c}
-                type="button"
                 style={{
                   transition: "ease 0.5s",
                 }}
                 onClick={() => handleCategoryChange(c)}
-                className={`px-4 py-2 border cursor-pointer hover:brightness-95 rounded-[0.5rem] ${
+                className={`px-4 capitalize py-2 border cursor-pointer hover:brightness-95 rounded-[0.5rem] ${
                   activeCategory === c
                     ? "bg-[#58483B] border-[#58483B] text-white"
-                    : "bg-white border border-black/10 "
+                    : "bg-[#FBF2EA] border border-black/10 "
                 }`}
               >
                 {c}
-              </button>
+              </span>
             );
           })}
         </div>
@@ -130,11 +146,24 @@ const WurfPageWrapper = ({
       {wurf ? (
         <>
           {wurf.image && (
-            <div className="flex w-full py-[4rem] px-[10%] max-sm:px-[5%] bg-[#58483B]">
+            <div className="relative flex w-full py-[4rem] px-[10%] max-sm:px-[5%] bg-[#58483B]">
+              <div className="w-full h-full section-container flex absolute z-0">
+                <Image
+                  src={paw2}
+                  alt=""
+                  className="absolute w-20 -top-35 left-0  z-0"
+                />
+
+                <Image
+                  src={paw2}
+                  alt=""
+                  className="absolute w-20 -top-45 -left-38  z-0"
+                />
+              </div>
               <img
                 src={wurf.image}
                 alt={wurf.name}
-                className="w-full object-cover rounded-[1rem] max-sm:rounded-[0.75rem]"
+                className="w-[35%] max-sm:w-[90%] mx-auto relative z-1 object-cover rounded-[0.65rem] max-sm:rounded-[0.75rem]"
               />
             </div>
           )}
@@ -144,13 +173,15 @@ const WurfPageWrapper = ({
               <div className="flex items-center">
                 <h3>{wurf.name}</h3>
 
-                <Link
-                  href={`/vomsauterhof/wurf/${wurf.id}`}
-                  className="ml-6 flex items-center text-white bg-[#58483B] px-2 py-1 rounded-[0.5rem]"
-                >
-                  Welpen
-                  <IconArrowUpRight className="h-4 w-4 ml-2" color="white" />
-                </Link>
+                {wurf.category === "wurf a" && (
+                  <Link
+                    href={`/vomsauterhof/welpen/${wurf.id}`}
+                    className="ml-6 flex items-center text-white bg-[#58483B] px-2 py-1 rounded-[0.5rem]"
+                  >
+                    Welpen
+                    <IconArrowUpRight className="h-4 w-4 ml-2" color="white" />
+                  </Link>
+                )}
               </div>
 
               <div className="flex ml-auto max-[900px]:ml-0 max-[900px]:mt-4 gap-4">
@@ -181,7 +212,18 @@ const WurfPageWrapper = ({
             />
           </div>
 
-          <TimelineClient timeline={timeline} />
+          {wurf.category === "wurf a" ? (
+            <>
+              {welpen && welpen.information && <></>}
+              <TimelineClient timeline={timeline} showFilters={false} />
+            </>
+          ) : (
+            <TimelineClient
+              timeline={timeline}
+              welpen={welpen}
+              showFilters={true}
+            />
+          )}
         </>
       ) : (
         <div className="section-container mx-auto text-center py-16">

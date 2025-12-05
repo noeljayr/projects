@@ -34,6 +34,22 @@ export async function PUT(request: NextRequest) {
     const db = client.db("vom_sauterhof");
     const wurfCollection = db.collection("wurf");
 
+    // Validate category is one of the allowed values
+    const allowedCategories = ["wurf a", "wurf b", "wurf c"];
+    if (
+      category &&
+      category.trim() &&
+      !allowedCategories.includes(category.trim().toLowerCase())
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Ungültige Kategorie. Bitte wählen Sie Wurf A, B oder C.",
+        },
+        { status: 400 }
+      );
+    }
+
     // Check if category already exists for a different wurf (if category is provided)
     if (category && category.trim()) {
       const existingCategory = await wurfCollection.findOne({

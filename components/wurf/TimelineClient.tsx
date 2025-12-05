@@ -15,16 +15,24 @@ type TimelineEntry = {
   date: string;
   title: string;
   dogs: TimelineDog[];
+  category: string;
 };
+
+type WelpenData = {
+  information: string;
+  date: string;
+  title: string;
+  dogs: TimelineDog[];
+} | null;
 
 type Props = {
   timeline: TimelineEntry[];
+  welpen?: WelpenData;
+  showFilters?: boolean;
 };
 
-// const filterOptions = ["Alle", "Welpen", "Nachzucht"];
-
-function TimelineClient({ timeline }: Props) {
-  // const [activeFilter, setActiveFilter] = useState("Alle");
+function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
+  const [activeFilter, setActiveFilter] = useState("Alle");
   const [activeIndex, setActiveIndex] = useState(0);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
   const dateRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -113,19 +121,47 @@ function TimelineClient({ timeline }: Props) {
     });
   };
 
-  if (timeline.length === 0) {
+  // Combine timeline and welpen data
+  const allEntries: TimelineEntry[] = [...timeline];
+
+  // Add welpen as a timeline entry if it exists and has data
+  if (welpen && welpen.date && welpen.title && welpen.dogs.length > 0) {
+    allEntries.push({
+      id: "welpen",
+      wurfId: "",
+      date: welpen.date,
+      title: welpen.title,
+      dogs: welpen.dogs,
+      category: "welpen",
+    });
+  }
+
+  // Sort by date
+  allEntries.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  // Filter based on active filter
+  const filteredEntries = allEntries.filter((entry) => {
+    if (activeFilter === "Alle") return true;
+    if (activeFilter === "Welpen") return entry.category === "welpen";
+    if (activeFilter === "Nachzucht") return entry.category === "nachzucht";
+    return true;
+  });
+
+  if (filteredEntries.length === 0 && !showFilters) {
     return null;
   }
 
   // Transform timeline entries for display
-  const timelineGroups = timeline.map((entry) => ({
+  const timelineGroups = filteredEntries.map((entry) => ({
     date: new Date(entry.date).toLocaleDateString("de-DE", {
       day: "numeric",
       month: "long",
       year: "numeric",
     }),
     title: entry.title,
-    // category: "Nachzucht",
+    category: entry.category,
     dogs: entry.dogs.map((dog) => ({
       name: dog.name,
       image: dog.image || "/wurf/placeholder.jpg",
@@ -134,21 +170,26 @@ function TimelineClient({ timeline }: Props) {
 
   return (
     <div className="section-container mx-auto">
-      <div className="flex items-center mb-8">
+      <div className="flex items-center mb-8 max-[900px]:flex-col max-[900px]:items-start max-[900px]:gap-4">
         <h3 className="font-bold">Zeitleiste</h3>
-        {/* <div className="flex p-1 items-center cursor-pointer border border-black/15 rounded-full">
-          {filterOptions.map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`px-6 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                filter === activeFilter ? "bg-[#58483B] text-white" : ""
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
-        </div> */}
+        {showFilters && (
+          <div className="flex ml-auto max-[900px]:ml-0 p-1 bg-white/10 items-center cursor-pointer border border-black/10 rounded-full">
+            {["Alle", "Welpen", "Nachzucht"].map((filter) => (
+              <span
+                key={filter}
+                onClick={() => {
+                  setActiveFilter(filter);
+                  setActiveIndex(0);
+                }}
+                className={`px-6 py-1.5 cursor-pointer capitalize rounded-full text-sm font-medium transition-colors ${
+                  filter === activeFilter ? "bg-[#58483B] text-white" : ""
+                }`}
+              >
+                {filter}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Timeline Content */}
@@ -222,13 +263,21 @@ function TimelineClient({ timeline }: Props) {
               ref={(el) => {
                 contentRefs.current[index] = el;
               }}
-              className="bg-[#F7E4D4] border border-[#F1D1B6] rounded-2xl p-6 relative max-[900px]:p-3"
+              className="bg-[#F7E4D4] border border-[#F1D1B6] rounded-2xl p-6 pt-4 relative max-[900px]:p-3"
             >
               <div className="flex items-center mb-6">
                 <h3 className="text-xl font-semibold mr-auto">{entry.title}</h3>
-                {/* <span className="right-4 h-[1.8rem] flex items-center bg-[#58483B] text-white text-xs px-3 py-1 rounded-full">
-                  {entry.category}
-                </span> */}
+                {showFilters && (
+                  <span
+                    className={`right-4 h-[1.8rem] flex items-center text-white text-xs px-3 py-1 rounded-full ${
+                      entry.category === "welpen"
+                        ? "bg-[#58483B]"
+                        : "bg-[#58483B]"
+                    }`}
+                  >
+                    {entry.category === "welpen" ? "Welpen" : "Nachzucht"}
+                  </span>
+                )}
               </div>
 
               {/* Dog Images Grid */}
