@@ -8,6 +8,8 @@ import TimelineClient from "@/components/wurf/TimelineClient";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { useEffect } from "react";
 import { categoryToSlug } from "@/lib/categorySlug";
+import paw2 from "@/public/paw-2.png";
+import Image from "next/image";
 
 type WurfData = {
   id: string;
@@ -144,11 +146,24 @@ const WurfPageWrapper = ({
       {wurf ? (
         <>
           {wurf.image && (
-            <div className="flex w-full py-[4rem] px-[10%] max-sm:px-[5%] bg-[#58483B]">
+            <div className="relative flex w-full py-[4rem] px-[10%] max-sm:px-[5%] bg-[#58483B]">
+              <div className="w-full h-full section-container flex absolute z-0">
+                <Image
+                  src={paw2}
+                  alt=""
+                  className="absolute w-20 -top-35 left-0  z-0"
+                />
+
+                <Image
+                  src={paw2}
+                  alt=""
+                  className="absolute w-20 -top-45 -left-38  z-0"
+                />
+              </div>
               <img
                 src={wurf.image}
                 alt={wurf.name}
-                className="w-[35%] mx-auto object-cover rounded-[0.65rem] max-sm:rounded-[0.75rem]"
+                className="w-[35%] max-sm:w-[90%] mx-auto relative z-1 object-cover rounded-[0.65rem] max-sm:rounded-[0.75rem]"
               />
             </div>
           )}
