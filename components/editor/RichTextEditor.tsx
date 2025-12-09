@@ -807,9 +807,69 @@ export default function RichTextEditor({
       }
     });
 
-    // Ensure existing image wrappers have captions
+    // Ensure existing image wrappers have captions and event listeners
     const wrappers = editorRef.current.querySelectorAll(".image-wrapper");
     wrappers.forEach((wrapper) => {
+      const htmlWrapper = wrapper as HTMLElement;
+
+      // Re-attach click listener for selection
+      const existingClickListener = (htmlWrapper as any)._clickListener;
+      if (!existingClickListener) {
+        const clickHandler = (e: Event) => {
+          e.stopPropagation();
+          selectImageWrapper(htmlWrapper);
+        };
+        htmlWrapper.addEventListener("click", clickHandler);
+        (htmlWrapper as any)._clickListener = clickHandler;
+      }
+
+      // Re-attach drag listeners
+      const existingDragStartListener = (htmlWrapper as any)._dragStartListener;
+      if (!existingDragStartListener) {
+        htmlWrapper.draggable = true;
+        const dragStartHandler = (e: DragEvent) =>
+          startImageDrag(e, htmlWrapper);
+        const dragEndHandler = (e: DragEvent) => endImageDrag(e, htmlWrapper);
+        htmlWrapper.addEventListener("dragstart", dragStartHandler);
+        htmlWrapper.addEventListener("dragend", dragEndHandler);
+        (htmlWrapper as any)._dragStartListener = dragStartHandler;
+        (htmlWrapper as any)._dragEndListener = dragEndHandler;
+      }
+
+      // Re-attach resize handle listeners
+      const handles = htmlWrapper.querySelectorAll(".resize-handle");
+      handles.forEach((handle) => {
+        const htmlHandle = handle as HTMLElement;
+        const existingMouseDownListener = (htmlHandle as any)
+          ._mouseDownListener;
+        if (!existingMouseDownListener) {
+          const direction = htmlHandle.dataset.direction || "";
+          const mouseDownHandler = (e: MouseEvent) =>
+            startImageResize(e, htmlWrapper, direction);
+          htmlHandle.addEventListener("mousedown", mouseDownHandler);
+          (htmlHandle as any)._mouseDownListener = mouseDownHandler;
+        }
+      });
+
+      // Re-attach remove button listener
+      const removeBtn = htmlWrapper.querySelector(
+        ".image-remove-btn"
+      ) as HTMLElement;
+      if (removeBtn) {
+        const existingRemoveListener = (removeBtn as any)._clickListener;
+        if (!existingRemoveListener) {
+          const removeHandler = (e: Event) => {
+            e.stopPropagation();
+            htmlWrapper.remove();
+            if (editorRef.current) {
+              setInternalHtml(editorRef.current.innerHTML);
+            }
+          };
+          removeBtn.addEventListener("click", removeHandler);
+          (removeBtn as any)._clickListener = removeHandler;
+        }
+      }
+
       const existingCaption = wrapper.querySelector(
         ".image-caption"
       ) as HTMLInputElement;
@@ -848,12 +908,95 @@ export default function RichTextEditor({
         if (savedValue) {
           existingCaption.value = savedValue;
         }
+
+        // Re-attach caption event listeners
+        const existingInputListener = (existingCaption as any)._inputListener;
+        if (!existingInputListener) {
+          const inputHandler = (e: Event) => {
+            e.stopPropagation();
+            const target = e.target as HTMLInputElement;
+            target.setAttribute("value", target.value);
+            if (editorRef.current) {
+              setInternalHtml(editorRef.current.innerHTML);
+            }
+          };
+          const clickHandler = (e: Event) => {
+            e.stopPropagation();
+          };
+          const mouseDownHandler = (e: Event) => {
+            e.stopPropagation();
+          };
+          existingCaption.addEventListener("input", inputHandler);
+          existingCaption.addEventListener("click", clickHandler);
+          existingCaption.addEventListener("mousedown", mouseDownHandler);
+          (existingCaption as any)._inputListener = inputHandler;
+        }
       }
     });
 
-    // Ensure existing video wrappers have captions
+    // Ensure existing video wrappers have captions and event listeners
     const videoWrappers = editorRef.current.querySelectorAll(".video-wrapper");
     videoWrappers.forEach((wrapper) => {
+      const htmlWrapper = wrapper as HTMLElement;
+
+      // Re-attach click listener for selection
+      const existingClickListener = (htmlWrapper as any)._clickListener;
+      if (!existingClickListener) {
+        const clickHandler = (e: Event) => {
+          e.stopPropagation();
+          selectVideoWrapper(htmlWrapper);
+        };
+        htmlWrapper.addEventListener("click", clickHandler);
+        (htmlWrapper as any)._clickListener = clickHandler;
+      }
+
+      // Re-attach drag listeners
+      const existingDragStartListener = (htmlWrapper as any)._dragStartListener;
+      if (!existingDragStartListener) {
+        htmlWrapper.draggable = true;
+        const dragStartHandler = (e: DragEvent) =>
+          startVideoDrag(e, htmlWrapper);
+        const dragEndHandler = (e: DragEvent) => endVideoDrag(e, htmlWrapper);
+        htmlWrapper.addEventListener("dragstart", dragStartHandler);
+        htmlWrapper.addEventListener("dragend", dragEndHandler);
+        (htmlWrapper as any)._dragStartListener = dragStartHandler;
+        (htmlWrapper as any)._dragEndListener = dragEndHandler;
+      }
+
+      // Re-attach resize handle listeners
+      const handles = htmlWrapper.querySelectorAll(".resize-handle");
+      handles.forEach((handle) => {
+        const htmlHandle = handle as HTMLElement;
+        const existingMouseDownListener = (htmlHandle as any)
+          ._mouseDownListener;
+        if (!existingMouseDownListener) {
+          const direction = htmlHandle.dataset.direction || "";
+          const mouseDownHandler = (e: MouseEvent) =>
+            startVideoResize(e, htmlWrapper, direction);
+          htmlHandle.addEventListener("mousedown", mouseDownHandler);
+          (htmlHandle as any)._mouseDownListener = mouseDownHandler;
+        }
+      });
+
+      // Re-attach remove button listener
+      const removeBtn = htmlWrapper.querySelector(
+        ".video-remove-btn"
+      ) as HTMLElement;
+      if (removeBtn) {
+        const existingRemoveListener = (removeBtn as any)._clickListener;
+        if (!existingRemoveListener) {
+          const removeHandler = (e: Event) => {
+            e.stopPropagation();
+            htmlWrapper.remove();
+            if (editorRef.current) {
+              setInternalHtml(editorRef.current.innerHTML);
+            }
+          };
+          removeBtn.addEventListener("click", removeHandler);
+          (removeBtn as any)._clickListener = removeHandler;
+        }
+      }
+
       const existingCaption = wrapper.querySelector(
         ".video-caption"
       ) as HTMLInputElement;
@@ -891,6 +1034,29 @@ export default function RichTextEditor({
         const savedValue = existingCaption.getAttribute("value");
         if (savedValue) {
           existingCaption.value = savedValue;
+        }
+
+        // Re-attach caption event listeners
+        const existingInputListener = (existingCaption as any)._inputListener;
+        if (!existingInputListener) {
+          const inputHandler = (e: Event) => {
+            e.stopPropagation();
+            const target = e.target as HTMLInputElement;
+            target.setAttribute("value", target.value);
+            if (editorRef.current) {
+              setInternalHtml(editorRef.current.innerHTML);
+            }
+          };
+          const clickHandler = (e: Event) => {
+            e.stopPropagation();
+          };
+          const mouseDownHandler = (e: Event) => {
+            e.stopPropagation();
+          };
+          existingCaption.addEventListener("input", inputHandler);
+          existingCaption.addEventListener("click", clickHandler);
+          existingCaption.addEventListener("mousedown", mouseDownHandler);
+          (existingCaption as any)._inputListener = inputHandler;
         }
       }
     });
