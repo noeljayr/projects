@@ -6,7 +6,7 @@ import { Area } from "react-easy-crop";
 
 interface ImageCropModalProps {
   imageSrc: string;
-  onCropComplete: (croppedImage: string) => void;
+  onCropComplete: (croppedImage: string) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -18,6 +18,7 @@ export default function ImageCropModal({
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const onCropChange = (location: { x: number; y: number }) => {
     setCrop(location);
@@ -38,10 +39,12 @@ export default function ImageCropModal({
     if (!croppedAreaPixels) return;
 
     try {
+      setIsUploading(true);
       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-      onCropComplete(croppedImage);
+      await onCropComplete(croppedImage);
     } catch (e) {
       console.error("Error cropping image:", e);
+      setIsUploading(false);
     }
   };
 
@@ -60,7 +63,7 @@ export default function ImageCropModal({
         </div>
         <div className="modal-body" style={{ padding: 0 }}>
           <div
-          className="cropper-container"
+            className="cropper-container"
             style={{
               position: "relative",
               width: "100%",
@@ -77,30 +80,31 @@ export default function ImageCropModal({
               onCropComplete={onCropAreaChange}
             />
           </div>
-          
         </div>
         <div className="modal-footer">
           <button
             onClick={onCancel}
             type="button"
+            disabled={isUploading}
             style={{
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
             }}
-            className="py-1 flex items-center px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
+            className="py-1 flex items-center px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Stornieren
           </button>
           <button
             onClick={createCroppedImage}
             type="button"
+            disabled={isUploading}
             style={{
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
             }}
-            className="py-1 px-2 bg-[#F38D3B] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer text-white ml-3"
+            className="py-1 px-2 bg-[#F38D3B] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer text-white ml-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Zuschneiden
+            {isUploading ? "Hochladen..." : "Zuschneiden"}
           </button>
         </div>
       </div>

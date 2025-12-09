@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { verifyAuth } from "@/lib/auth";
+import { ObjectId } from "mongodb";
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!dogs || !Array.isArray(dogs) || dogs.length === 0) {
+    if (!dogs || dogs.length === 0) {
       return NextResponse.json(
         { success: false, message: "At least one dog is required" },
         { status: 400 }
@@ -31,32 +32,29 @@ export async function POST(request: NextRequest) {
 
     const client = await clientPromise;
     const db = client.db("vom_sauterhof");
-    const timelineCollection = db.collection("timeline");
+    const welpenEntriesCollection = db.collection("welpen_entries");
 
-    const timelineEntry = {
-      wurfId,
+    const welpenEntry = {
+      wurfId: new ObjectId(wurfId),
       date,
       title,
       description: description || "",
-      dogs: dogs.map((dog) => ({
-        name: dog.name || "",
-        image: dog.image || "",
-      })),
+      dogs,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
-    const result = await timelineCollection.insertOne(timelineEntry);
+    const result = await welpenEntriesCollection.insertOne(welpenEntry);
 
     return NextResponse.json({
       success: true,
-      message: "Timeline entry created successfully",
-      timelineId: result.insertedId,
+      message: "Welpen entry created successfully",
+      id: result.insertedId.toString(),
     });
   } catch (error) {
-    console.error("Error creating timeline entry:", error);
+    console.error("Error creating welpen entry:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to create timeline entry" },
+      { success: false, message: "Failed to create welpen entry" },
       { status: 500 }
     );
   }

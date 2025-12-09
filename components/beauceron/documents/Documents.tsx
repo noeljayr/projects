@@ -70,7 +70,7 @@ function Documents() {
           <div className="flex fixed z-10 w-screen h-screen top-0 left-0 bg-black opacity-20"></div>
 
           <div
-            className="top-8 py-2 gap-4 bg-white w-[40rem] max-sm:w-[93%] self-center rounded-[0.5rem] border border-black/10 fixed z-10"
+            className="top-8 py-2 gap-4 bg-[#FBF2EA] w-[40rem] max-sm:w-[93%] self-center rounded-[0.5rem] border border-black/10 fixed z-10"
             style={{
               opacity: deleteModalState?.isOpen ? 0 : 1,
               transition: "opacity 0.3s ease",
@@ -86,7 +86,7 @@ function Documents() {
               <span
                 onClick={close}
                 style={{ transition: "ease 0.5s" }}
-                className="p-1 bg-white cursor-pointer ml-auto rounded-[0.35rem] hover:brightness-95"
+                className="p-1 bg-[#FBF2EA] cursor-pointer ml-auto rounded-[0.35rem] hover:brightness-95"
               >
                 <IconX className="h-4 w-4" />
               </span>
@@ -107,7 +107,7 @@ function Documents() {
                   className={`py-1 px-4 font-medium capitalize border border-[var(--c-border)]  hover:brightness-95 rounded-[0.35rem] cursor-pointer ${
                     activeTab.toLowerCase() === t
                       ? "bg-[rgba(0,0,0,0.07)]"
-                      : "bg-white"
+                      : "bg-[#FBF2EA]"
                   } `}
                 >
                   {t}

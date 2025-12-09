@@ -267,7 +267,7 @@ function DocumentUpload({ close, type, setDeleteModalState }: Props) {
             transition: "ease 0.5s",
             fontSize: "calc(var(--p4) * 0.9)",
           }}
-          className={`py-1 px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer ml-auto`}
+          className={`py-1 px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer ml-auto`}
         >
           Stornieren
         </button>

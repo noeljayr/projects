@@ -1,5 +1,6 @@
 "use client";
 
+import RichTextEditor from "@/components/editor/RichTextEditor";
 import {
   IconArrowLeft,
   IconCheck,
@@ -28,6 +29,7 @@ type TimelineEntry = {
   wurfId: string;
   date: string;
   title: string;
+  description?: string;
   dogs: TimelineDog[];
 };
 
@@ -45,6 +47,7 @@ function Page() {
   // Form states
   const [formDate, setFormDate] = useState("");
   const [formTitle, setFormTitle] = useState("");
+  const [formDescription, setFormDescription] = useState("");
   const [formDogs, setFormDogs] = useState<TimelineDog[]>([
     { name: "", image: "" },
   ]);
@@ -144,6 +147,7 @@ function Page() {
   const resetForm = () => {
     setFormDate("");
     setFormTitle("");
+    setFormDescription("");
     setFormDogs([{ name: "", image: "" }]);
     setEditingId(null);
     setShowAddForm(false);
@@ -167,8 +171,20 @@ function Page() {
         ? "/api/wurf/timeline/update"
         : "/api/wurf/timeline/create";
       const body = editingId
-        ? { id: editingId, date: formDate, title: formTitle, dogs: validDogs }
-        : { wurfId, date: formDate, title: formTitle, dogs: validDogs };
+        ? {
+            id: editingId,
+            date: formDate,
+            title: formTitle,
+            description: formDescription,
+            dogs: validDogs,
+          }
+        : {
+            wurfId,
+            date: formDate,
+            title: formTitle,
+            description: formDescription,
+            dogs: validDogs,
+          };
 
       const response = await fetch(url, {
         method: editingId ? "PUT" : "POST",
@@ -193,6 +209,7 @@ function Page() {
     setEditingId(entry.id);
     setFormDate(entry.date);
     setFormTitle(entry.title);
+    setFormDescription(entry.description || "");
     setFormDogs(entry.dogs.length > 0 ? entry.dogs : [{ name: "", image: "" }]);
     setShowAddForm(true);
     setActiveActionId(null);
@@ -262,7 +279,7 @@ function Page() {
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
             }}
-            className="py-1 flex items-center px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
+            className="py-1 flex items-center px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
           >
             <IconArrowLeft className="h-4 w-4 mr-2" />
             Zurück
@@ -329,6 +346,18 @@ function Page() {
                     </div>
                   </div>
 
+                  <div className="flex-1">
+                    <label className="text-sm opacity-75 mb-1 block">
+                      Beschreibung (optional)
+                    </label>
+                    <RichTextEditor
+                      value={formDescription}
+                      onChange={setFormDescription}
+                      placeholder="Zusätzliche Informationen..."
+                      hideToolbar={true}
+                    />
+                  </div>
+
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <label className="text-sm opacity-75">Hunde</label>
@@ -338,7 +367,7 @@ function Page() {
                           transition: "ease 0.5s",
                           fontSize: "calc(var(--p4) * 0.85)",
                         }}
-                        className="py-1 px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer flex items-center gap-1"
+                        className="py-1 px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer flex items-center gap-1"
                       >
                         <IconPlus className="h-3 w-3" />
                         Hund hinzufügen
@@ -348,7 +377,7 @@ function Page() {
                     {formDogs.map((dog, index) => (
                       <div
                         key={index}
-                        className="bg-white/45 border border-[var(--c-border)] rounded-[0.35rem] p-3 flex flex-col gap-2"
+                        className="bg-[#FBF2EA]/45 border border-[var(--c-border)] rounded-[0.35rem] p-3 flex flex-col gap-2"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-sm font-medium opacity-75">
@@ -400,7 +429,7 @@ function Page() {
                                   newDogs[index].image = "";
                                   setFormDogs(newDogs);
                                 }}
-                                className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-full shadow-md transition-all"
+                                className="absolute top-2 right-2 p-1.5 bg-[#FBF2EA]/90 hover:bg-[#FBF2EA] rounded-full shadow-md transition-all"
                               >
                                 <IconX className="h-4 w-4" />
                               </button>
@@ -429,12 +458,24 @@ function Page() {
 
                   <div className="flex gap-2 justify-end">
                     <button
+                      onClick={addDog}
+                      style={{
+                        transition: "ease 0.5s",
+                        fontSize: "calc(var(--p4) * 0.85)",
+                      }}
+                      className="py-1 px-2 mr-auto bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer flex items-center gap-1"
+                    >
+                      <IconPlus className="h-3 w-3" />
+                      Welpe hinzufügen
+                    </button>
+
+                    <button
                       onClick={resetForm}
                       style={{
                         transition: "ease 0.5s",
                         fontSize: "calc(var(--p4) * 0.9)",
                       }}
-                      className="py-1 px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
+                      className="py-1 px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
                     >
                       Abbrechen
                     </button>
@@ -456,7 +497,7 @@ function Page() {
               <motion.div
                 key="table-header"
                 layout="position"
-                className="grid grid-cols-[2rem_1fr_1fr_4rem_2rem] font-p3 max-[500px]:gap-2 gap-4 w-full items-center"
+                className="grid grid-cols-[2rem_9rem_1fr_4rem_2rem] font-p3 max-[500px]:gap-2 gap-4 w-full items-center"
               >
                 <span className="font-medium">
                   <span
@@ -535,7 +576,7 @@ function Page() {
                           : isActionActive
                           ? "bg-[#F5DFCC] z-[5]"
                           : "bg-[#F9ECE1] hover:brightness-95 z-[0]"
-                      } grid grid-cols-[2rem_1fr_1fr_4rem_2rem] pb-2 border-b border-b-black/5 gap-4 max-[500px]:gap-2 w-full items-center font-p3`}
+                      } grid grid-cols-[2rem_9rem_1fr_4rem_2rem] pb-2 border-b border-b-black/5 gap-4 max-[500px]:gap-2 w-full items-center font-p3`}
                     >
                       <span
                         onClick={() => toggleSelectRow(entry.id)}
@@ -567,7 +608,7 @@ function Page() {
                       </span>
                       <div
                         onClick={() => handleEdit(entry)}
-                        className="flex flex-col gap-1 py-2 cursor-pointer"
+                        className="flex flex-col truncate gap-1 py-2 cursor-pointer"
                       >
                         <span className="truncate">{entry.title}</span>
                       </div>
@@ -597,7 +638,7 @@ function Page() {
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.95 }}
                               transition={motionTransition()}
-                              className="p-1 flex absolute right-0 top-8 z-15 flex-col space-y-1 bg-white border border-black/10 rounded-[0.5rem] shadow-lg min-w-[150px]"
+                              className="p-1 flex absolute right-0 top-8 z-15 flex-col space-y-1 bg-[#FBF2EA] border border-black/10 rounded-[0.5rem] shadow-lg min-w-[150px]"
                             >
                               <button
                                 onClick={() => handleEdit(entry)}
@@ -605,7 +646,7 @@ function Page() {
                                   transition: "ease 0.5s",
                                   fontSize: "calc(var(--p4) * 0.9)",
                                 }}
-                                className="py-1 px-1.5 cursor-pointer rounded-[0.25rem] bg-white hover:brightness-95 flex items-center space-x-2 text-left"
+                                className="py-1 px-1.5 cursor-pointer rounded-[0.25rem] bg-[#FBF2EA] hover:brightness-95 flex items-center space-x-2 text-left"
                               >
                                 <IconEdit className="h-4 w-4" color="#0C8CE9" />
                                 <span>Bearbeiten</span>
@@ -616,7 +657,7 @@ function Page() {
                                   transition: "ease 0.5s",
                                   fontSize: "calc(var(--p4) * 0.9)",
                                 }}
-                                className="py-1 px-1.5 cursor-pointer rounded-[0.25rem] bg-white hover:brightness-95 flex items-center space-x-2 text-left"
+                                className="py-1 px-1.5 cursor-pointer rounded-[0.25rem] bg-[#FBF2EA] hover:brightness-95 flex items-center space-x-2 text-left"
                               >
                                 <IconTrash
                                   className="h-4 w-4"

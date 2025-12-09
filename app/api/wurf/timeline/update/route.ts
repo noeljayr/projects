@@ -14,7 +14,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, date, title, dogs } = body;
+    const { id, date, title, description, dogs } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -44,6 +44,7 @@ export async function PUT(request: NextRequest) {
     const updateData = {
       date,
       title,
+      description: description || "",
       dogs: dogs.map((dog) => ({
         name: dog.name || "",
         image: dog.image || "",

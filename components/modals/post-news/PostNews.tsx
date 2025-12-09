@@ -23,13 +23,13 @@ function PostNews() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed grid grid-rows-[auto_auto_auto_1fr_auto] self-center w-[32rem] h-[41em] top-2 py-2 gap-4 bg-white border border-black/10 rounded-[0.5rem]"
+              className="fixed grid grid-rows-[auto_auto_auto_1fr_auto] self-center w-[32rem] h-[41em] top-2 py-2 gap-4 bg-[#FBF2EA] border border-black/10 rounded-[0.5rem]"
             >
               <div className="flex items-center pb-2 border-b border-b-black/10 px-4">
                 <span className="font-medium">Post news</span>
                 <span
                   style={{ transition: "ease 0.5s" }}
-                  className="p-1 bg-white cursor-pointer ml-auto rounded-[0.35rem] hover:brightness-95"
+                  className="p-1 bg-[#FBF2EA] cursor-pointer ml-auto rounded-[0.35rem] hover:brightness-95"
                 >
                   <IconX className="h-4 w-4" />
                 </span>
@@ -74,7 +74,7 @@ function PostNews() {
                     transition: "ease 0.5s",
                     fontSize: "calc(var(--p4) * 0.9)",
                   }}
-                  className={`py-1 px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer`}
+                  className={`py-1 px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer`}
                 >
                   Cancel
                 </button>

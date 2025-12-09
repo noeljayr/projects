@@ -76,7 +76,7 @@ export default function EditableTextBanner({
             <textarea
               value={tempValue}
               onChange={(e) => setTempValue(e.target.value)}
-              className={`w-full ${className} border-2 border-[#58483B] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#58483B] bg-white text-black`}
+              className={`w-full ${className} border-2 border-[#58483B] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#58483B] bg-[#FBF2EA] text-black`}
               rows={3}
               autoFocus
             />
@@ -85,7 +85,7 @@ export default function EditableTextBanner({
               type="text"
               value={tempValue}
               onChange={(e) => setTempValue(e.target.value)}
-              className={`w-full ${className} border-2 border-[#58483B] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#58483B] bg-white text-black`}
+              className={`w-full ${className} border-2 border-[#58483B] rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#58483B] bg-[#FBF2EA] text-black`}
               autoFocus
             />
           )}

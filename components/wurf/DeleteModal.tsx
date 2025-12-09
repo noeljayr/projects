@@ -56,7 +56,7 @@ function DeleteModal({ ids, setShowDelete, setSelectedId, fetchWurf }: Props) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={motionTransition()}
-        className="top-8 py-2 gap-4 bg-white w-[30rem] max-sm:w-[93%] self-center rounded-[0.5rem] border border-black/10 fixed z-10"
+        className="top-8 py-2 gap-4 bg-[#FBF2EA] w-[30rem] max-sm:w-[93%] self-center rounded-[0.5rem] border border-black/10 fixed z-10"
       >
         <div
           key={"title"}
@@ -66,7 +66,7 @@ function DeleteModal({ ids, setShowDelete, setSelectedId, fetchWurf }: Props) {
           <span
             onClick={() => setShowDelete(false)}
             style={{ transition: "ease 0.5s" }}
-            className="p-1 bg-white cursor-pointer ml-auto rounded-[0.35rem] hover:brightness-95"
+            className="p-1 bg-[#FBF2EA] cursor-pointer ml-auto rounded-[0.35rem] hover:brightness-95"
           >
             <IconX className="h-4 w-4" />
           </span>
@@ -90,7 +90,7 @@ function DeleteModal({ ids, setShowDelete, setSelectedId, fetchWurf }: Props) {
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
             }}
-            className="py-1 px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
+            className="py-1 px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
           >
             Abbrechen
           </button>

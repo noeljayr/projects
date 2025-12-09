@@ -9,7 +9,7 @@ function ContentHeader() {
   return (
     <div className="flex items-center">
       <Link
-        href={"/"}
+        href={"/vomsauterhof"}
          style={{
             transition: "ease 0.5s",
             fontSize: 'calc(var(--p3) * 0.9)'

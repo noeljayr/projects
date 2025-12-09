@@ -8,6 +8,7 @@ export type TimelineEntry = {
   wurfId: string;
   date: string;
   title: string;
+  description?: string;
   dogs: TimelineDog[];
   createdAt?: Date;
   updatedAt?: Date;

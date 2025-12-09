@@ -133,7 +133,7 @@ export default function EditableImage({
             <div className="absolute inset-0 z-[2] flex items-center justify-center bg-black/30 rounded-lg">
               <label
                 htmlFor={`file-${fieldName}`}
-                className="flex flex-col items-center gap-2 cursor-pointer bg-white/90 px-4 py-3 rounded-lg hover:bg-white transition-colors"
+                className="flex flex-col items-center gap-2 cursor-pointer bg-[#FBF2EA]/90 px-4 py-3 rounded-lg hover:bg-[#FBF2EA] transition-colors"
               >
                 <IconUpload className="h-6 w-6 text-[#58483B]" />
                 <span className="text-sm font-medium text-[#58483B]">

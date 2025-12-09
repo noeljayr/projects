@@ -281,7 +281,7 @@ export function Navbar({ content }: Props) {
             <div className="flex flex-row-reverse items-center gap-3">
               <button
                 onClick={openMobileMenu}
-                className="lg:hidden p-2 text-black hover:bg-white/20 rounded-md transition-colors duration-150"
+                className="lg:hidden p-2 text-black hover:bg-[#FBF2EA]/20 rounded-md transition-colors duration-150"
                 aria-label="Open menu"
               >
                 <Menu size={24} />
@@ -320,7 +320,7 @@ export function Navbar({ content }: Props) {
                 />
                 <button
                   onClick={closeMobileMenu}
-                  className="p-2 text-black bg-[#EEE5DD] hover:bg-white/50 rounded-md transition-colors duration-150"
+                  className="p-2 text-black bg-[#EEE5DD] hover:bg-[#FBF2EA]/50 rounded-md transition-colors duration-150"
                   aria-label="Close menu"
                 >
                   <X size={24} />
@@ -333,7 +333,7 @@ export function Navbar({ content }: Props) {
                     href={addEditModeParam("/vomsauterhof/")}
                     className={`mobile-menu-item block text-black font-medium font-p4 py-2 px-4 rounded-lg ${
                       activeLink("/vomsauterhof/") ? "bg-[#EEE5DD]" : ""
-                    }  hover:bg-white/50 transition-colors duration-150`}
+                    }  hover:bg-[#FBF2EA]/50 transition-colors duration-150`}
                   >
                     {content.linkStart || "Start"}
                   </Link>
@@ -341,7 +341,7 @@ export function Navbar({ content }: Props) {
                     href={addEditModeParam("/vomsauterhof/uber-uns")}
                     className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
                       activeLink("/vomsauterhof/uber-uns") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-white/30 transition-colors duration-150`}
+                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
                   >
                     {content.linkAbout || "Über uns"}
                   </Link>
@@ -349,7 +349,7 @@ export function Navbar({ content }: Props) {
                     href={addEditModeParam("/vomsauterhof/news")}
                     className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
                       activeLink("/vomsauterhof/news") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-white/30 transition-colors duration-150`}
+                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
                   >
                     {content.linkNews || "News"}
                   </Link>
@@ -359,7 +359,7 @@ export function Navbar({ content }: Props) {
                       activeLink("/vomsauterhof/unsere-beauceron")
                         ? "bg-[#EEE5DD]"
                         : ""
-                    } hover:bg-white/30 transition-colors duration-150`}
+                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
                   >
                     {content.linkBreed || "Unsere beauceron"}
                   </Link>
@@ -367,7 +367,7 @@ export function Navbar({ content }: Props) {
                     href="/vomsauterhof/wurf"
                     className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
                       activeLink("/vomsauterhof/wurf") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-white/30 transition-colors duration-150`}
+                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
                   >
                     {content.linkWurf || "Wuif"}
                   </a>
@@ -393,7 +393,7 @@ export function Navbar({ content }: Props) {
       </div>
 
       {isLoggedIn && (
-        <div className="flex flex-col w-[9.5rem] items-center bg-white p-1.5 rounded-[0.75rem] shadow-lg gap-1.5 fixed bottom-8 right-8 z-[9999] ">
+        <div className="flex flex-col w-[9.5rem] items-center bg-[#FBF2EA] p-1.5 rounded-[0.75rem] shadow-lg gap-1.5 fixed bottom-8 right-8 z-[9999] ">
           <div
             onClick={toggleEditMode}
             className="flex gap-2 w-full cursor-pointer items-center px-3 h-[2.5rem] border border-[var(--c-border)] font-p4 rounded-[0.5rem]"

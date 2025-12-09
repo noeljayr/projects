@@ -46,7 +46,7 @@ function BeauceronCard({ beauceron }: Props) {
           >
             {beauceron.name}
           </span>
-          <span className="h-6 w-6 bg-white rounded-full flex items-center justify-center ml-auto">
+          <span className="h-6 w-6 bg-[#FBF2EA] rounded-full flex items-center justify-center ml-auto">
             <IconArrowUpRight color="black" className="h-4 w-4" />
           </span>
         </div>
@@ -65,7 +65,9 @@ function BeauceronCard({ beauceron }: Props) {
             >
               Geburtsdatum
             </span>
-            <span className="text-white font-p4">{formatDate(beauceron.dob)}</span>
+            <span className="text-white font-p4">
+              {formatDate(beauceron.dob)}
+            </span>
           </div>
           <span className="w-[1px] h-[50%] bg-[#675545] mx-4"></span>
           <div className="flex flex-col gap-1">

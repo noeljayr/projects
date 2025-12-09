@@ -24,6 +24,7 @@ import clientPromise from "@/lib/mongodb";
 import { NavbarContent } from "@/types/navbar";
 import { FooterContent } from "@/types/footer";
 import { OrganizationSchema } from "@/components/StructuredData";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://vom-sauterhof.de"),
@@ -145,6 +146,7 @@ export default async function RootLayout({
       <Suspense fallback={null}>
         <Mode />
       </Suspense>
+      <NextTopLoader color="#58483B" showSpinner={false} />
       <Navbar content={navbarContent} />
       {children}
       <Suspense fallback={null}>

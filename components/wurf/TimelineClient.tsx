@@ -14,6 +14,7 @@ type TimelineEntry = {
   wurfId: string;
   date: string;
   title: string;
+  description?: string;
   dogs: TimelineDog[];
   category: string;
 };
@@ -161,6 +162,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
       year: "numeric",
     }),
     title: entry.title,
+    description: entry.description,
     category: entry.category,
     dogs: entry.dogs.map((dog) => ({
       name: dog.name,
@@ -173,7 +175,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
       <div className="flex items-center mb-8 max-[900px]:flex-col max-[900px]:items-start max-[900px]:gap-4">
         <h3 className="font-bold">Zeitleiste</h3>
         {showFilters && (
-          <div className="flex ml-auto max-[900px]:ml-0 p-1 bg-white/10 items-center cursor-pointer border border-black/10 rounded-full">
+          <div className="flex ml-auto max-[900px]:ml-0 p-1 bg-[#FBF2EA]/10 items-center cursor-pointer border border-black/10 rounded-full">
             {["Alle", "Welpen", "Nachzucht"].map((filter) => (
               <span
                 key={filter}
@@ -265,7 +267,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
               }}
               className="bg-[#F7E4D4] border border-[#F1D1B6] rounded-2xl p-6 pt-4 relative max-[900px]:p-3"
             >
-              <div className="flex items-center mb-6">
+              <div className="flex items-center mb-4">
                 <h3 className="text-xl font-semibold mr-auto">{entry.title}</h3>
                 {showFilters && (
                   <span
@@ -279,6 +281,12 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
                   </span>
                 )}
               </div>
+
+              {entry.description && (
+                <p className="text-sm text-gray-700 mb-6 whitespace-pre-wrap">
+                  {entry.description}
+                </p>
+              )}
 
               {/* Dog Images Grid */}
               <div className="grid grid-cols-3 max-[900px]:grid-cols-2 max-sm:grid-cols-1 gap-y-8 gap-4">
