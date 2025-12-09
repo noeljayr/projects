@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
       wurfId: entry.wurfId,
       date: entry.date,
       title: entry.title || "",
+      description: entry.description || "",
       dogs: entry.dogs || [],
       createdAt: entry.createdAt,
     }));

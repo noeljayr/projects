@@ -28,6 +28,7 @@ type TimelineEntry = {
   wurfId: string;
   date: string;
   title: string;
+  description?: string;
   dogs: TimelineDog[];
 };
 
@@ -45,6 +46,7 @@ function Page() {
   // Form states
   const [formDate, setFormDate] = useState("");
   const [formTitle, setFormTitle] = useState("");
+  const [formDescription, setFormDescription] = useState("");
   const [formDogs, setFormDogs] = useState<TimelineDog[]>([
     { name: "", image: "" },
   ]);
@@ -144,6 +146,7 @@ function Page() {
   const resetForm = () => {
     setFormDate("");
     setFormTitle("");
+    setFormDescription("");
     setFormDogs([{ name: "", image: "" }]);
     setEditingId(null);
     setShowAddForm(false);
@@ -167,8 +170,20 @@ function Page() {
         ? "/api/wurf/timeline/update"
         : "/api/wurf/timeline/create";
       const body = editingId
-        ? { id: editingId, date: formDate, title: formTitle, dogs: validDogs }
-        : { wurfId, date: formDate, title: formTitle, dogs: validDogs };
+        ? {
+            id: editingId,
+            date: formDate,
+            title: formTitle,
+            description: formDescription,
+            dogs: validDogs,
+          }
+        : {
+            wurfId,
+            date: formDate,
+            title: formTitle,
+            description: formDescription,
+            dogs: validDogs,
+          };
 
       const response = await fetch(url, {
         method: editingId ? "PUT" : "POST",
@@ -193,6 +208,7 @@ function Page() {
     setEditingId(entry.id);
     setFormDate(entry.date);
     setFormTitle(entry.title);
+    setFormDescription(entry.description || "");
     setFormDogs(entry.dogs.length > 0 ? entry.dogs : [{ name: "", image: "" }]);
     setShowAddForm(true);
     setActiveActionId(null);
@@ -327,6 +343,19 @@ function Page() {
                         className="w-full px-3 py-2 border font-p3 border-[var(--c-border)] rounded-[0.35rem] outline-none"
                       />
                     </div>
+                  </div>
+
+                  <div className="flex-1">
+                    <label className="text-sm opacity-75 mb-1 block">
+                      Beschreibung (optional)
+                    </label>
+                    <textarea
+                      placeholder="Zusätzliche Informationen..."
+                      value={formDescription}
+                      onChange={(e) => setFormDescription(e.target.value)}
+                      rows={3}
+                      className="w-full px-3 py-2 border font-p3 border-[var(--c-border)] rounded-[0.35rem] outline-none resize-none"
+                    />
                   </div>
 
                   <div className="flex flex-col gap-3">

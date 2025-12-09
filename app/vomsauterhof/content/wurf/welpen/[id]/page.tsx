@@ -24,6 +24,7 @@ function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [date, setDate] = useState("");
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [dogs, setDogs] = useState<WelpenDog[]>([{ name: "", image: "" }]);
   const [isDragging, setIsDragging] = useState<number | null>(null);
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -65,6 +66,7 @@ function Page() {
           // Timeline-style data
           setDate(welpenInfo.date || "");
           setTitle(welpenInfo.title || "");
+          setDescription(welpenInfo.description || "");
           setDogs(
             welpenInfo.dogs && welpenInfo.dogs.length > 0
               ? welpenInfo.dogs
@@ -162,6 +164,7 @@ function Page() {
             wurfId,
             date,
             title,
+            description,
             dogs: dogs.filter((dog) => dog.image.trim() !== ""),
           }
         : {
@@ -254,6 +257,19 @@ function Page() {
               </div>
             </div>
 
+            <div className="flex-1">
+              <label className="text-sm opacity-75 mb-1 block">
+                Beschreibung (optional)
+              </label>
+              <textarea
+                placeholder="Zusätzliche Informationen..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 border font-p3 border-[var(--c-border)] rounded-[0.35rem] outline-none resize-none"
+              />
+            </div>
+
             <div className="flex items-center justify-between">
               <label className="text-sm opacity-75 font-medium">Welpen</label>
               <button
@@ -272,7 +288,7 @@ function Page() {
             {dogs.map((dog, index) => (
               <div
                 key={index}
-                className="bg-[#F9ECE1] border border-[var(--c-border)] rounded-[0.5rem] p-3 flex flex-col gap-2"
+                className="bg-white/45 border border-[var(--c-border)] rounded-[0.35rem] p-3 flex flex-col gap-2"
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium opacity-75">

@@ -313,8 +313,29 @@ export default function RichTextEditor({
     e.target.value = "";
   };
 
-  const handleCropComplete = (croppedImage: string) => {
-    insertImageAtCursor(croppedImage);
+  const handleCropComplete = async (croppedImage: string) => {
+    // Upload the cropped image
+    try {
+      const blob = await fetch(croppedImage).then((r) => r.blob());
+      const formData = new FormData();
+      formData.append("file", blob, "cropped-image.jpg");
+
+      const response = await fetch("/api/images/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const { url } = await response.json();
+      insertImageAtCursor(url);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Failed to upload image. Please try again.");
+    }
+
     if (editorRef.current) {
       setInternalHtml(editorRef.current.innerHTML);
     }

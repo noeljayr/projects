@@ -73,6 +73,7 @@ async function Page({ params }: { params: Promise<{ category: string }> }) {
     wurfId: entry.wurfId,
     date: entry.date,
     title: entry.title || "",
+    description: entry.description || "",
     dogs: entry.dogs || [],
     category: "nachzucht",
   }));

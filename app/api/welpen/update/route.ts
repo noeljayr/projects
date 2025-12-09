@@ -14,7 +14,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { wurfId, information, date, title, dogs } = body;
+    const { wurfId, information, date, title, description, dogs } = body;
 
     if (!wurfId) {
       return NextResponse.json(
@@ -57,6 +57,7 @@ export async function PUT(request: NextRequest) {
       updateData.dogs = dogs;
       updateData.date = date || "";
       updateData.title = title || "";
+      updateData.description = description || "";
       // Clear information if switching to timeline-style
       updateData.information = "";
     }
@@ -81,6 +82,7 @@ export async function PUT(request: NextRequest) {
         information: information || "",
         date: date || "",
         title: title || "",
+        description: description || "",
         dogs: dogs || [],
         createdAt: new Date(),
         updatedAt: new Date(),

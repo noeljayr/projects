@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { wurfId, date, title, dogs } = body;
+    const { wurfId, date, title, description, dogs } = body;
 
     if (!wurfId || !date || !title) {
       return NextResponse.json(
@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
       wurfId,
       date,
       title,
+      description: description || "",
       dogs: dogs.map((dog) => ({
         name: dog.name || "",
         image: dog.image || "",
