@@ -165,7 +165,7 @@ function Page() {
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
             }}
-            className={`py-2 flex items-center px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer`}
+            className={`py-2 flex items-center px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer`}
           >
             <IconArrowLeft className="h-4 w-4" />
             Zurück
@@ -219,7 +219,7 @@ function Page() {
                     e.stopPropagation();
                     handleRemoveImage();
                   }}
-                  className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-full shadow-md transition-all z-10"
+                  className="absolute top-2 right-2 p-1.5 bg-[#FBF2EA]/90 hover:bg-[#FBF2EA] rounded-full shadow-md transition-all z-10"
                 >
                   <IconX className="h-4 w-4" />
                 </button>
@@ -269,7 +269,7 @@ function Page() {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-3 py-2 border border-[var(--c-border)] rounded-[0.35rem] outline-none bg-white"
+            className="px-3 py-2 border border-[var(--c-border)] rounded-[0.35rem] outline-none bg-[#FBF2EA]"
           >
             <option value="">Kategorie auswählen</option>
             <option value="wurf a">Wurf A</option>

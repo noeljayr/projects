@@ -279,7 +279,7 @@ function Page() {
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
             }}
-            className="py-1 flex items-center px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
+            className="py-1 flex items-center px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
           >
             <IconArrowLeft className="h-4 w-4 mr-2" />
             Zurück
@@ -367,7 +367,7 @@ function Page() {
                           transition: "ease 0.5s",
                           fontSize: "calc(var(--p4) * 0.85)",
                         }}
-                        className="py-1 px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer flex items-center gap-1"
+                        className="py-1 px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer flex items-center gap-1"
                       >
                         <IconPlus className="h-3 w-3" />
                         Hund hinzufügen
@@ -377,7 +377,7 @@ function Page() {
                     {formDogs.map((dog, index) => (
                       <div
                         key={index}
-                        className="bg-white/45 border border-[var(--c-border)] rounded-[0.35rem] p-3 flex flex-col gap-2"
+                        className="bg-[#FBF2EA]/45 border border-[var(--c-border)] rounded-[0.35rem] p-3 flex flex-col gap-2"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-sm font-medium opacity-75">
@@ -429,7 +429,7 @@ function Page() {
                                   newDogs[index].image = "";
                                   setFormDogs(newDogs);
                                 }}
-                                className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-full shadow-md transition-all"
+                                className="absolute top-2 right-2 p-1.5 bg-[#FBF2EA]/90 hover:bg-[#FBF2EA] rounded-full shadow-md transition-all"
                               >
                                 <IconX className="h-4 w-4" />
                               </button>
@@ -463,7 +463,7 @@ function Page() {
                         transition: "ease 0.5s",
                         fontSize: "calc(var(--p4) * 0.85)",
                       }}
-                      className="py-1 px-2 mr-auto bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer flex items-center gap-1"
+                      className="py-1 px-2 mr-auto bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer flex items-center gap-1"
                     >
                       <IconPlus className="h-3 w-3" />
                       Welpe hinzufügen
@@ -475,7 +475,7 @@ function Page() {
                         transition: "ease 0.5s",
                         fontSize: "calc(var(--p4) * 0.9)",
                       }}
-                      className="py-1 px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
+                      className="py-1 px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer"
                     >
                       Abbrechen
                     </button>
@@ -638,7 +638,7 @@ function Page() {
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.95 }}
                               transition={motionTransition()}
-                              className="p-1 flex absolute right-0 top-8 z-15 flex-col space-y-1 bg-white border border-black/10 rounded-[0.5rem] shadow-lg min-w-[150px]"
+                              className="p-1 flex absolute right-0 top-8 z-15 flex-col space-y-1 bg-[#FBF2EA] border border-black/10 rounded-[0.5rem] shadow-lg min-w-[150px]"
                             >
                               <button
                                 onClick={() => handleEdit(entry)}
@@ -646,7 +646,7 @@ function Page() {
                                   transition: "ease 0.5s",
                                   fontSize: "calc(var(--p4) * 0.9)",
                                 }}
-                                className="py-1 px-1.5 cursor-pointer rounded-[0.25rem] bg-white hover:brightness-95 flex items-center space-x-2 text-left"
+                                className="py-1 px-1.5 cursor-pointer rounded-[0.25rem] bg-[#FBF2EA] hover:brightness-95 flex items-center space-x-2 text-left"
                               >
                                 <IconEdit className="h-4 w-4" color="#0C8CE9" />
                                 <span>Bearbeiten</span>
@@ -657,7 +657,7 @@ function Page() {
                                   transition: "ease 0.5s",
                                   fontSize: "calc(var(--p4) * 0.9)",
                                 }}
-                                className="py-1 px-1.5 cursor-pointer rounded-[0.25rem] bg-white hover:brightness-95 flex items-center space-x-2 text-left"
+                                className="py-1 px-1.5 cursor-pointer rounded-[0.25rem] bg-[#FBF2EA] hover:brightness-95 flex items-center space-x-2 text-left"
                               >
                                 <IconTrash
                                   className="h-4 w-4"

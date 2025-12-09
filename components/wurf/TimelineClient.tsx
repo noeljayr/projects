@@ -175,7 +175,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
       <div className="flex items-center mb-8 max-[900px]:flex-col max-[900px]:items-start max-[900px]:gap-4">
         <h3 className="font-bold">Zeitleiste</h3>
         {showFilters && (
-          <div className="flex ml-auto max-[900px]:ml-0 p-1 bg-white/10 items-center cursor-pointer border border-black/10 rounded-full">
+          <div className="flex ml-auto max-[900px]:ml-0 p-1 bg-[#FBF2EA]/10 items-center cursor-pointer border border-black/10 rounded-full">
             {["Alle", "Welpen", "Nachzucht"].map((filter) => (
               <span
                 key={filter}

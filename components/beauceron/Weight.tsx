@@ -42,7 +42,7 @@ function Weight({ setWeight, weight }: Props) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={motionTransition()}
-            className="absolute w-[13rem] flex flex-col bg-white rounded-[0.5rem] border border-[var(--c-border)] bottom-[110%]"
+            className="absolute w-[13rem] flex flex-col bg-[#FBF2EA] rounded-[0.5rem] border border-[var(--c-border)] bottom-[110%]"
           >
             <span
               style={{ fontSize: "calc(var(--p3) * 0.9)" }}

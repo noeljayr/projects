@@ -223,7 +223,7 @@ const WurfPageWrapper = ({
                           transition: "ease 0.5s",
                         }}
                         href={doc.link}
-                        className={`px-4 py-2 bg-white border border-black/10 text-sm font-medium rounded-[0.5rem] hover:bg-[#D3C1B3] ${
+                        className={`px-4 py-2 bg-[#FBF2EA] border border-black/10 text-sm font-medium rounded-[0.5rem] hover:bg-[#D3C1B3] ${
                           doc.link === "#" ? "hidden" : ""
                         }`}
                       >

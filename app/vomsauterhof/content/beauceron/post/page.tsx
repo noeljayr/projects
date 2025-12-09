@@ -150,7 +150,7 @@ function Page() {
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
             }}
-            className={`py-21 flex items-center px-2 bg-white hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer`}
+            className={`py-21 flex items-center px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer`}
           >
             <IconArrowLeft className="h-4 w-4" />
             Zurück
@@ -204,7 +204,7 @@ function Page() {
                     e.stopPropagation();
                     handleRemoveImage();
                   }}
-                  className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-white rounded-full shadow-md transition-all z-10"
+                  className="absolute top-2 right-2 p-1.5 bg-[#FBF2EA]/90 hover:bg-[#FBF2EA] rounded-full shadow-md transition-all z-10"
                 >
                   <IconX className="h-4 w-4" />
                 </button>
@@ -267,7 +267,7 @@ function Page() {
               <button
                 type="button"
                 onClick={() => handleRemoveAdditionalImage(index)}
-                className="absolute top-1 right-1 p-1 bg-white/90 hover:bg-white rounded-full shadow-md transition-all"
+                className="absolute top-1 right-1 p-1 bg-[#FBF2EA]/90 hover:bg-[#FBF2EA] rounded-full shadow-md transition-all"
               >
                 <IconX className="h-3 w-3" />
               </button>
