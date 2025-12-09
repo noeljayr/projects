@@ -20,7 +20,7 @@ function Page() {
       </span>
 
       <Link
-        href="/"
+        href="/vomsauterhof"
         className="bg-[#58483B] text-white font-medium px-4 py-2 h-[35px] md:h-[41px] text-sm md:text-base rounded-md hover:opacity-95 transition-opacity duration-150 flex items-center gap-1 mt-4"
       >
         <ArrowLeft className="h-4 w-4" />

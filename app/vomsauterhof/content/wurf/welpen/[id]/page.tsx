@@ -528,6 +528,17 @@ function Page() {
 
                     <div className="flex gap-2 justify-end">
                       <button
+                        onClick={addDog}
+                        style={{
+                          transition: "ease 0.5s",
+                          fontSize: "calc(var(--p4) * 0.85)",
+                        }}
+                        className="py-1 px-2 mr-auto bg-white hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer flex items-center gap-1"
+                      >
+                        <IconPlus className="h-3 w-3" />
+                        Welpe hinzufügen
+                      </button>
+                      <button
                         onClick={resetForm}
                         style={{
                           transition: "ease 0.5s",
@@ -555,7 +566,7 @@ function Page() {
                 <motion.div
                   key="table-header"
                   layout="position"
-                  className="grid grid-cols-[2rem_1fr_1fr_4rem_2rem] font-p3 max-[500px]:gap-2 gap-4 w-full items-center"
+                  className="grid grid-cols-[2rem_9rem_1fr_4rem_2rem] font-p3 max-[500px]:gap-2 gap-4 w-full items-center"
                 >
                   <span className="font-medium">
                     <span
@@ -634,7 +645,7 @@ function Page() {
                             : isActionActive
                             ? "bg-[#F5DFCC] z-[5]"
                             : "bg-[#F9ECE1] hover:brightness-95 z-[0]"
-                        } grid grid-cols-[2rem_1fr_1fr_4rem_2rem] pb-2 border-b border-b-black/5 gap-4 max-[500px]:gap-2 w-full items-center font-p3`}
+                        } grid grid-cols-[2rem_9rem_1fr_4rem_2rem] pb-2 border-b border-b-black/5 gap-4 max-[500px]:gap-2 w-full items-center font-p3`}
                       >
                         <span
                           onClick={() => toggleSelectRow(entry.id)}
@@ -666,7 +677,7 @@ function Page() {
                         </span>
                         <div
                           onClick={() => handleEdit(entry)}
-                          className="flex flex-col gap-1 py-2 cursor-pointer"
+                          className="flex w-full truncate flex-col gap-1 py-2 cursor-pointer"
                         >
                           <span className="truncate">{entry.title}</span>
                         </div>

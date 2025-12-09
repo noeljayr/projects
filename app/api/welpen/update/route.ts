@@ -14,8 +14,55 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { wurfId, information, date, title, description, dogs } = body;
+    const { id, wurfId, information, date, title, description, dogs } = body;
 
+    // If id is provided, update a timeline entry
+    if (id) {
+      if (!date || !title) {
+        return NextResponse.json(
+          { success: false, message: "Date and title are required" },
+          { status: 400 }
+        );
+      }
+
+      if (!dogs || dogs.length === 0) {
+        return NextResponse.json(
+          { success: false, message: "At least one dog is required" },
+          { status: 400 }
+        );
+      }
+
+      const client = await clientPromise;
+      const db = client.db("vom_sauterhof");
+      const welpenEntriesCollection = db.collection("welpen_entries");
+
+      const result = await welpenEntriesCollection.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: {
+            date,
+            title,
+            description: description || "",
+            dogs,
+            updatedAt: new Date(),
+          },
+        }
+      );
+
+      if (result.matchedCount === 0) {
+        return NextResponse.json(
+          { success: false, message: "Welpen entry not found" },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Welpen entry updated successfully",
+      });
+    }
+
+    // Otherwise, update the single welpen document (old style)
     if (!wurfId) {
       return NextResponse.json(
         { success: false, message: "Wurf ID is required" },
