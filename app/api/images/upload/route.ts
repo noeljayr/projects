@@ -12,10 +12,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
+    // Validate file type (images and videos)
+    const isImage = file.type.startsWith("image/");
+    const isVideo = file.type.startsWith("video/");
+
+    if (!isImage && !isVideo) {
       return NextResponse.json(
-        { error: "File must be an image" },
+        { error: "File must be an image or video" },
         { status: 400 }
       );
     }
@@ -41,7 +44,10 @@ export async function POST(request: NextRequest) {
     // Return the public URL
     const url = `/uploads/${filename}`;
 
-    return NextResponse.json({ url }, { status: 200 });
+    return NextResponse.json(
+      { url, type: isVideo ? "video" : "image" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error uploading file:", error);
     return NextResponse.json(
