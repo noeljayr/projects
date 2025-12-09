@@ -111,6 +111,22 @@ const WurfPageWrapper = ({
     });
   }, []);
 
+  useEffect(() => {
+    const videoWrappers = document.querySelectorAll(".video-wrapper");
+
+    if (!videoWrappers) return;
+
+    videoWrappers.forEach((wrapper) => {
+      const caption = wrapper.querySelector("input");
+      if (!caption) return;
+      const value = caption.value.trim();
+      const span = document.createElement("span");
+      span.textContent = value;
+      wrapper.removeChild(caption);
+      wrapper.appendChild(span);
+    });
+  }, []);
+
   return (
     <div className="gap-12 flex flex-col w-full pb-16">
       <Banner
@@ -151,13 +167,25 @@ const WurfPageWrapper = ({
                 <Image
                   src={paw2}
                   alt=""
-                  className="absolute w-20 -top-35 left-0  z-0"
+                  className="absolute w-20 top-35 left-0  z-0"
                 />
 
                 <Image
                   src={paw2}
                   alt=""
-                  className="absolute w-20 -top-45 -left-38  z-0"
+                  className="absolute w-20 top-65 left-0  z-0"
+                />
+
+                <Image
+                  src={paw2}
+                  alt=""
+                  className="absolute w-20 top-45 right-38 rotate-180   z-0"
+                />
+
+                <Image
+                  src={paw2}
+                  alt=""
+                  className="absolute w-20 top-65 rotate-180 right-38  z-0"
                 />
               </div>
               <img

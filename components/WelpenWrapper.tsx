@@ -36,7 +36,25 @@ function WelpenWrapper({ bannerContent, welpen, wurf }: Props) {
       wrapper.removeChild(caption);
       wrapper.appendChild(span);
     });
+
+    
   }, []);
+
+  useEffect(()=>{
+    const videoWrappers = document.querySelectorAll(".video-wrapper");
+
+    if (!videoWrappers) return;
+
+    videoWrappers.forEach((wrapper) => {
+      const caption = wrapper.querySelector("input");
+      if (!caption) return;
+      const value = caption.value.trim();
+      const span = document.createElement("span");
+      span.textContent = value;
+      wrapper.removeChild(caption);
+      wrapper.appendChild(span);
+    });
+  }, [])
 
   return (
     <>

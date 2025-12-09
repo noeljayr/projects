@@ -139,7 +139,7 @@ h1 {
   font-family: "Work Sans", sans-serif;
 }
 
-.hero-heading{
+.hero-heading {
   font-size: calc(var(--h1) / 0.85);
   line-height: 150%;
 }
@@ -303,12 +303,36 @@ h4 {
   object-fit: cover;
 }
 
+.wurf-content .video-wrapper {
+  display: inline-block;
+  margin: 4px;
+  vertical-align: top;
+  max-width: calc(33.333% - 8px);
+  width: calc(33.333% - 8px) !important;
+  height: 250px !important;
+}
+
+.wurf-content .video-wrapper video {
+  width: 100%;
+  max-width: 100%;
+  height: 100% !important;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
 @media (max-width: 768px) {
   .wurf-content img {
     max-width: calc(50% - 8px);
   }
 
   .wurf-content .image-wrapper {
+    max-width: calc(50% - 8px);
+    width: calc(50% - 8px) !important;
+    height: 200px !important;
+  }
+
+  .wurf-content .video-wrapper {
     max-width: calc(50% - 8px);
     width: calc(50% - 8px) !important;
     height: 200px !important;
@@ -325,10 +349,20 @@ h4 {
     width: 100% !important;
     height: 300px !important;
   }
+
+  .wurf-content .video-wrapper {
+    max-width: 100%;
+    width: 100% !important;
+    height: 300px !important;
+  }
 }
 
 .news-content .image-remove-btn,
-.wurf-content .image-remove-btn {
+.wurf-content .image-remove-btn,
+.wurf-content .video-remove-btn,
+.news-content .video-remove-btn,
+.news-content input,
+.wurf-content input {
   display: none;
 }
 
@@ -384,12 +418,36 @@ h4 {
   object-fit: cover;
 }
 
+.news-content .video-wrapper {
+  display: inline-block;
+  margin: 4px;
+  vertical-align: top;
+  max-width: calc(33.333% - 8px);
+  width: calc(33.333% - 8px) !important;
+  height: 250px !important;
+}
+
+.news-content .video-wrapper video {
+  width: 100%;
+  max-width: 100%;
+  height: 100% !important;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
 @media (max-width: 768px) {
   .news-content img {
     max-width: calc(50% - 8px);
   }
 
   .news-content .image-wrapper {
+    max-width: calc(50% - 8px);
+    width: calc(50% - 8px) !important;
+    height: 200px !important;
+  }
+
+  .news-content .video-wrapper {
     max-width: calc(50% - 8px);
     width: calc(50% - 8px) !important;
     height: 200px !important;
@@ -402,6 +460,12 @@ h4 {
   }
 
   .news-content .image-wrapper {
+    max-width: 100%;
+    width: 100% !important;
+    height: 300px !important;
+  }
+
+  .news-content .video-wrapper {
     max-width: 100%;
     width: 100% !important;
     height: 300px !important;
