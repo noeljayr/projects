@@ -1,5 +1,6 @@
 "use client";
 
+import RichTextEditor from "@/components/editor/RichTextEditor";
 import {
   IconArrowLeft,
   IconCheck,
@@ -349,12 +350,11 @@ function Page() {
                     <label className="text-sm opacity-75 mb-1 block">
                       Beschreibung (optional)
                     </label>
-                    <textarea
-                      placeholder="Zusätzliche Informationen..."
+                    <RichTextEditor
                       value={formDescription}
-                      onChange={(e) => setFormDescription(e.target.value)}
-                      rows={3}
-                      className="w-full px-3 py-2 border font-p3 border-[var(--c-border)] rounded-[0.35rem] outline-none resize-none"
+                      onChange={setFormDescription}
+                      placeholder="Zusätzliche Informationen..."
+                      hideToolbar={true}
                     />
                   </div>
 

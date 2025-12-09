@@ -11,6 +11,7 @@ interface RichTextEditorProps {
   disableImageButton?: boolean;
   disableVideoButton?: boolean;
   placeholder?: string;
+  hideToolbar?: boolean;
 }
 
 export default function RichTextEditor({
@@ -20,6 +21,7 @@ export default function RichTextEditor({
   disableImageButton,
   disableVideoButton,
   placeholder,
+  hideToolbar = false,
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -1755,227 +1757,229 @@ export default function RichTextEditor({
 
   return (
     <div className="rte">
-      <div className="toolbar flex max-[500px]:grid max-[500px]:grid-flow-col max-[500px]:overflow-x-auto">
-        <button
-          onClick={undo}
-          disabled={!canUndo}
-          title="Undo (Ctrl+Z)"
-          className="undo-btn"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ height: "1.35rem", width: "1.35rem" }}
+      {!hideToolbar && (
+        <div className="toolbar flex max-[500px]:grid max-[500px]:grid-flow-col max-[500px]:overflow-x-auto">
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            title="Undo (Ctrl+Z)"
+            className="undo-btn"
           >
-            <path d="M3 7v6h6" />
-            <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
-          </svg>
-        </button>
-        <button
-          onClick={redo}
-          disabled={!canRedo}
-          title="Redo (Ctrl+Y)"
-          className="redo-btn"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ height: "1.35rem", width: "1.35rem" }}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ height: "1.35rem", width: "1.35rem" }}
+            >
+              <path d="M3 7v6h6" />
+              <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+            </svg>
+          </button>
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            title="Redo (Ctrl+Y)"
+            className="redo-btn"
           >
-            <path d="M21 7v6h-6" />
-            <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ height: "1.35rem", width: "1.35rem" }}
+            >
+              <path d="M21 7v6h-6" />
+              <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
+            </svg>
+          </button>
 
-        <div className="divider"></div>
+          <div className="divider"></div>
 
-        <button
-          onClick={() => format("bold")}
-          className={queryState("bold") ? "active" : ""}
-          title="Bold (Ctrl+B)"
-        >
-          <strong>B</strong>
-        </button>
-        <button
-          onClick={() => format("italic")}
-          className={queryState("italic") ? "active" : ""}
-          title="Italic (Ctrl+I)"
-        >
-          <em>I</em>
-        </button>
-        <button
-          onClick={() => format("underline")}
-          className={queryState("underline") ? "active" : ""}
-          title="Underline (Ctrl+U)"
-        >
-          <u>U</u>
-        </button>
-
-        <div className="divider"></div>
-
-        <button onClick={() => formatHeading("p")} title="Paragraph">
-          P
-        </button>
-        <button onClick={() => formatHeading("h1")} title="Heading 1">
-          H1
-        </button>
-        <button onClick={() => formatHeading("h2")} title="Heading 2">
-          H2
-        </button>
-
-        <div className="divider"></div>
-
-        <button
-          onClick={() => format("insertUnorderedList")}
-          title="Bullet list"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ height: "1.35rem", width: "1.35rem" }}
+          <button
+            onClick={() => format("bold")}
+            className={queryState("bold") ? "active" : ""}
+            title="Bold (Ctrl+B)"
           >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M9 6l11 0" />
-            <path d="M9 12l11 0" />
-            <path d="M9 18l11 0" />
-            <path d="M5 6l0 .01" />
-            <path d="M5 12l0 .01" />
-            <path d="M5 18l0 .01" />
-          </svg>
-        </button>
-        <button
-          onClick={() => format("insertOrderedList")}
-          title="Numbered list"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ height: "1.35rem", width: "1.35rem" }}
+            <strong>B</strong>
+          </button>
+          <button
+            onClick={() => format("italic")}
+            className={queryState("italic") ? "active" : ""}
+            title="Italic (Ctrl+I)"
           >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M11 6h9" />
-            <path d="M11 12h9" />
-            <path d="M12 18h8" />
-            <path d="M4 16a2 2 0 1 1 4 0c0 .591 -.5 1 -1 1.5l-3 2.5h4" />
-            <path d="M6 10v-6l-2 2" />
-          </svg>
-        </button>
-
-        <div className="divider"></div>
-
-        <button onClick={createLink} title="Insert link">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ height: "1.35rem", width: "1.35rem" }}
+            <em>I</em>
+          </button>
+          <button
+            onClick={() => format("underline")}
+            className={queryState("underline") ? "active" : ""}
+            title="Underline (Ctrl+U)"
           >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M9 15l6 -6" />
-            <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464" />
-            <path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463" />
-          </svg>
-        </button>
+            <u>U</u>
+          </button>
 
-        {!disableImageButton && (
-          <>
-            <div className="divider"></div>
+          <div className="divider"></div>
 
-            <button onClick={triggerImageUpload} title="Insert image">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{ height: "1.35rem", width: "1.35rem" }}
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M15 8h.01" />
-                <path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z" />
-                <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" />
-                <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" />
-              </svg>
-            </button>
-          </>
-        )}
+          <button onClick={() => formatHeading("p")} title="Paragraph">
+            P
+          </button>
+          <button onClick={() => formatHeading("h1")} title="Heading 1">
+            H1
+          </button>
+          <button onClick={() => formatHeading("h2")} title="Heading 2">
+            H2
+          </button>
 
-        {!disableVideoButton && (
-          <>
-            <button onClick={triggerVideoUpload} title="Insert video">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{ height: "1.35rem", width: "1.35rem" }}
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z" />
-                <path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
-              </svg>
-            </button>
-          </>
-        )}
+          <div className="divider"></div>
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          style={{ display: "none" }}
-        />
-        <input
-          ref={videoInputRef}
-          type="file"
-          accept="video/*"
-          onChange={handleVideoUpload}
-          style={{ display: "none" }}
-        />
-      </div>
+          <button
+            onClick={() => format("insertUnorderedList")}
+            title="Bullet list"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ height: "1.35rem", width: "1.35rem" }}
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M9 6l11 0" />
+              <path d="M9 12l11 0" />
+              <path d="M9 18l11 0" />
+              <path d="M5 6l0 .01" />
+              <path d="M5 12l0 .01" />
+              <path d="M5 18l0 .01" />
+            </svg>
+          </button>
+          <button
+            onClick={() => format("insertOrderedList")}
+            title="Numbered list"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ height: "1.35rem", width: "1.35rem" }}
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M11 6h9" />
+              <path d="M11 12h9" />
+              <path d="M12 18h8" />
+              <path d="M4 16a2 2 0 1 1 4 0c0 .591 -.5 1 -1 1.5l-3 2.5h4" />
+              <path d="M6 10v-6l-2 2" />
+            </svg>
+          </button>
+
+          <div className="divider"></div>
+
+          <button onClick={createLink} title="Insert link">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ height: "1.35rem", width: "1.35rem" }}
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M9 15l6 -6" />
+              <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464" />
+              <path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463" />
+            </svg>
+          </button>
+
+          {!disableImageButton && (
+            <>
+              <div className="divider"></div>
+
+              <button onClick={triggerImageUpload} title="Insert image">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ height: "1.35rem", width: "1.35rem" }}
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M15 8h.01" />
+                  <path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z" />
+                  <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" />
+                  <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          {!disableVideoButton && (
+            <>
+              <button onClick={triggerVideoUpload} title="Insert video">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ height: "1.35rem", width: "1.35rem" }}
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z" />
+                  <path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            style={{ display: "none" }}
+          />
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/*"
+            onChange={handleVideoUpload}
+            style={{ display: "none" }}
+          />
+        </div>
+      )}
 
       <div style={style} className="relative">
         <div
