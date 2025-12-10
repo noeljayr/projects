@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { verifyAuth } from "@/lib/auth";
 import { ObjectId } from "mongodb";
+import { cleanupUnusedMediaFiles } from "@/lib/mediaUtils";
 
 export async function PUT(request: NextRequest) {
   try {
@@ -29,6 +30,15 @@ export async function PUT(request: NextRequest) {
     const db = client.db("vom_sauterhof");
     const newsCollection = db.collection("news");
 
+    // Get the current news item for media cleanup
+    const currentNews = await newsCollection.findOne({ _id: new ObjectId(id) });
+    if (!currentNews) {
+      return NextResponse.json(
+        { success: false, message: "News not found" },
+        { status: 404 }
+      );
+    }
+
     const updateData: any = {
       updatedAt: new Date(),
     };
@@ -47,6 +57,11 @@ export async function PUT(request: NextRequest) {
       { _id: new ObjectId(id) },
       { $set: updateData }
     );
+
+    // Clean up unused media files if content was updated
+    if (content && currentNews.content) {
+      await cleanupUnusedMediaFiles(currentNews.content, content);
+    }
 
     if (result.matchedCount === 0) {
       return NextResponse.json(
