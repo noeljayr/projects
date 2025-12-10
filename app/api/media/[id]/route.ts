@@ -3,11 +3,11 @@ import clientPromise from "@/lib/mongodb";
 import { GridFSBucket, ObjectId } from "mongodb";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: "Invalid file ID" }, { status: 400 });
@@ -32,7 +32,7 @@ export async function GET(
     // Convert stream to buffer
     const chunks: Buffer[] = [];
 
-    return new Promise((resolve, reject) => {
+    return new Promise<NextResponse>((resolve, reject) => {
       downloadStream.on("data", (chunk) => {
         chunks.push(chunk);
       });
