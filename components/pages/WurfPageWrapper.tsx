@@ -168,31 +168,31 @@ const WurfPageWrapper = ({
                 <Image
                   src={paw2}
                   alt=""
-                  className="absolute w-20 top-35 left-0  z-0"
+                  className="absolute w-20 top-[25%] left-0  z-0"
                 />
 
                 <Image
                   src={paw2}
                   alt=""
-                  className="absolute w-20 top-65 left-0  z-0"
+                  className="absolute w-20 top-[42%] left-0  z-0"
                 />
 
                 <Image
                   src={paw2}
                   alt=""
-                  className="absolute w-20 top-45 right-38 rotate-180   z-0"
+                  className="absolute w-20 top-[25%]  right-38 rotate-180   z-0"
                 />
 
                 <Image
                   src={paw2}
                   alt=""
-                  className="absolute w-20 top-65 rotate-180 right-38  z-0"
+                  className="absolute w-20 top-[42%] rotate-180 right-38  z-0"
                 />
               </div>
               <img
                 src={wurf.image}
                 alt={wurf.name}
-                className="w-[35%] max-sm:w-[90%] mx-auto relative z-1 object-cover rounded-[0.65rem] max-sm:rounded-[0.75rem]"
+                className="w-[40%] max-sm:w-[90%] mx-auto relative z-1 object-cover rounded-[0.65rem] max-sm:rounded-[0.75rem]"
               />
             </div>
           )}

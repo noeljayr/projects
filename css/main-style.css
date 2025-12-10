@@ -139,7 +139,7 @@ h1 {
   font-family: "Work Sans", sans-serif;
 }
 
-.hero-heading{
+.hero-heading {
   font-size: calc(var(--h1) / 0.85);
   line-height: 150%;
 }
@@ -292,7 +292,8 @@ h4 {
   vertical-align: top;
   max-width: calc(33.333% - 8px);
   width: calc(33.333% - 8px) !important;
-  height: 250px !important;
+  aspect-ratio: 1 / 1;
+  height: auto !important;
 }
 
 .wurf-content .image-wrapper img {
@@ -311,7 +312,8 @@ h4 {
   .wurf-content .image-wrapper {
     max-width: calc(50% - 8px);
     width: calc(50% - 8px) !important;
-    height: 200px !important;
+    aspect-ratio: 1 / 1;
+    height: auto !important;
   }
 }
 
@@ -323,7 +325,8 @@ h4 {
   .wurf-content .image-wrapper {
     max-width: 100%;
     width: 100% !important;
-    height: 300px !important;
+    aspect-ratio: 1 / 1;
+    height: auto !important;
   }
 }
 
@@ -373,7 +376,8 @@ h4 {
   vertical-align: top;
   max-width: calc(33.333% - 8px);
   width: calc(33.333% - 8px) !important;
-  height: 250px !important;
+  aspect-ratio: 1 / 1;
+  height: auto !important;
 }
 
 .news-content .image-wrapper img {
@@ -392,7 +396,8 @@ h4 {
   .news-content .image-wrapper {
     max-width: calc(50% - 8px);
     width: calc(50% - 8px) !important;
-    height: 200px !important;
+    aspect-ratio: 1 / 1;
+    height: auto !important;
   }
 }
 
@@ -404,7 +409,8 @@ h4 {
   .news-content .image-wrapper {
     max-width: 100%;
     width: 100% !important;
-    height: 300px !important;
+    aspect-ratio: 1 / 1;
+    height: auto !important;
   }
 }
 
