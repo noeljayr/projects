@@ -362,8 +362,17 @@ h4 {
 .wurf-content .video-remove-btn,
 .news-content .video-remove-btn,
 .news-content input,
-.wurf-content input {
+.wurf-content input,
+.new-content .resize-handle,
+.wurf-content .resize-handle {
   display: none;
+}
+
+.news-content .image-wrapper.selected,
+.wurf-content .image-wrapper.selected{
+  outline: 0;
+  border: 0;
+  box-shadow: unset;
 }
 
 .news-content .image-caption::placeholder,

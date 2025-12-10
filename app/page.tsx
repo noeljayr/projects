@@ -1,14 +1,5 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useRouter } from "nextjs-toploader/app";
-
-function page() {
-  const router = useRouter();
-
-  router.push("https://roxstein.ch/");
-  return (
-    <div className="w-screen h-screen flex items-center justify-center font-semibold "></div>
-  );
+export default function page() {
+  redirect("https://roxstein.ch/");
 }
-
-export default page;

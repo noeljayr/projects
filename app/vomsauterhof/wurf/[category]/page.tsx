@@ -79,7 +79,7 @@ async function Page({ params }: { params: Promise<{ category: string }> }) {
   }));
 
   // Fetch welpen data for the active wurf
-  const welpenCollection = db.collection("welpen");
+  const welpenCollection = db.collection("welpen_entries");
   const welpenData =
     wurf && wurfData
       ? await welpenCollection.findOne({
