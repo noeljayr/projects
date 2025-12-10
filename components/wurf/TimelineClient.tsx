@@ -284,9 +284,10 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
                   </div>
 
                   {entry.description && (
-                    <p className="text-sm text-gray-700 mb-6 whitespace-pre-wrap">
-                      {entry.description}
-                    </p>
+                    <div
+                      className="mt-1.5"
+                      dangerouslySetInnerHTML={{ __html: entry.description }}
+                    ></div>
                   )}
 
                   {/* Dog Images Grid */}
