@@ -24,3 +24,13 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Ensure proper layout flow and prevent footer from appearing before content */
+body[data-content-loaded="false"] footer,
+body:not([data-content-loaded]) footer {
+  visibility: hidden;
+}
+
+body[data-content-loaded="true"] footer {
+  visibility: visible;
+}

@@ -25,6 +25,7 @@ import { NavbarContent } from "@/types/navbar";
 import { FooterContent } from "@/types/footer";
 import { OrganizationSchema } from "@/components/StructuredData";
 import NextTopLoader from "nextjs-toploader";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://vom-sauterhof.de"),
@@ -148,8 +149,8 @@ export default async function RootLayout({
       </Suspense>
       <NextTopLoader color="#58483B" showSpinner={false} />
       <Navbar content={navbarContent} />
-      {children}
-      <Suspense fallback={null}>
+      <Suspense fallback={<LoadingSpinner />}>
+        {children}
         <FooterClient content={footerContent} />
       </Suspense>
     </>

@@ -1,7 +1,7 @@
 "use client";
 
 import { gsap } from "gsap";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Parteners from "./Parteners";
 import { FooterContent } from "@/types/footer";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -20,14 +20,34 @@ export function FooterClient({ content }: Props) {
   const isEditMode = searchParams.get("mode") === "edit";
   const { userName, enabled, logout } = useAuthStore();
   const isLoggedIn = enabled && userName;
+  const [shouldShow, setShouldShow] = useState(false);
 
   const addEditModeParam = (href: string) => {
     return isEditMode ? `${href}?mode=edit` : href;
   };
 
   useEffect(() => {
+    // Check if content is loaded, if not wait for it
+    const checkContentLoaded = () => {
+      const isContentLoaded =
+        document.body.getAttribute("data-content-loaded") === "true";
+      if (
+        isContentLoaded ||
+        pathname.startsWith("/vomsauterhof/content") ||
+        pathname.startsWith("/vomsauterhof/auth")
+      ) {
+        setShouldShow(true);
+      } else {
+        // Check again after a short delay
+        setTimeout(checkContentLoaded, 100);
+      }
+    };
+
+    // Initial check
+    checkContentLoaded();
+
     const ctx = gsap.context(() => {
-      if (footerRef.current) {
+      if (footerRef.current && shouldShow) {
         const firstChild = footerRef.current.children[0] as HTMLElement;
         if (
           firstChild &&
@@ -55,9 +75,13 @@ export function FooterClient({ content }: Props) {
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [shouldShow, pathname]);
 
-  if (pathname.startsWith("/vomsauterhof/content") || pathname.startsWith("/vomsauterhof/auth")) {
+  if (
+    pathname.startsWith("/vomsauterhof/content") ||
+    pathname.startsWith("/vomsauterhof/auth") ||
+    !shouldShow
+  ) {
     return <></>;
   }
 
@@ -66,7 +90,8 @@ export function FooterClient({ content }: Props) {
       <Parteners />
       <footer
         ref={footerRef}
-        className="px-4 py-10 flex flex-col mt-12 md:py-12 bg-[#BEA99A]"
+        className="px-4 py-10 flex flex-col mt-12 md:py-12 bg-[#BEA99A] relative z-10"
+        style={{ marginTop: "auto" }}
       >
         <div className="section-container pb-10 border-b border-b-[var(--c-border)] mx-auto flex flex-col md:flex-row justify-between gap-10 md:gap-8 min-h-[200px]">
           <div className="space-y-6 md:space-y-5 text-[#141414]">
@@ -75,7 +100,7 @@ export function FooterClient({ content }: Props) {
                 initialValue={content.companyName || "Familie Sauter"}
                 fieldName="companyName"
                 isEditMode={isEditMode}
-                className="font-bold w-fit mb-5 text-xl w-fit md:text-base"
+                className="font-bold mb-5 text-xl w-fit md:text-base"
                 as="h3"
               />
               <EditableTextFooter

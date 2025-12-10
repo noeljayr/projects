@@ -59,6 +59,7 @@ type Props = {
 export default function Home({ content, news, images }: Props) {
   const searchParams = useSearchParams();
   const isEditMode = searchParams.get("mode") === "edit";
+  const [isContentLoaded, setIsContentLoaded] = useState(false);
 
   const heroRef = useRef<HTMLElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
@@ -360,11 +361,27 @@ export default function Home({ content, news, images }: Props) {
   }, [width]);
 
   useEffect(() => {
+    // Set initial state
+    document.body.setAttribute("data-content-loaded", "false");
+
     ScrollTrigger.refresh();
+    // Mark content as loaded after a short delay to ensure everything is rendered
+    const timer = setTimeout(() => {
+      setIsContentLoaded(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
+  // Add a data attribute to indicate when content is loaded
+  useEffect(() => {
+    if (isContentLoaded) {
+      document.body.setAttribute("data-content-loaded", "true");
+    }
+  }, [isContentLoaded]);
+
   return (
-    <div className="flex flex-col overflow-x-hidden">
+    <main className="flex flex-col overflow-x-hidden min-h-screen">
       {/* Hero Section */}
       <div className="bg-[#BEA99A] border-b-[#BEA99A40] overflow-hidden relative pt-[10rem]">
         <Image
@@ -801,6 +818,6 @@ export default function Home({ content, news, images }: Props) {
           )}
         </div>
       </section>
-    </div>
+    </main>
   );
 }

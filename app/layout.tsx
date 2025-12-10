@@ -14,9 +14,9 @@ export default async function RootLayout({
         <meta name="theme-color" content="#F9ECE1" />
       </head>
       <body
-        className={`min-h-screen antialiased bg-[#F9ECE1] overflow-x-hidden`}
+        className={`min-h-screen antialiased bg-[#F9ECE1] overflow-x-hidden flex flex-col`}
       >
-        {children}
+        <div className="flex-1 flex flex-col">{children}</div>
       </body>
     </html>
   );

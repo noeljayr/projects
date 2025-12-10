@@ -73,11 +73,7 @@ async function Page() {
       }
     : {};
 
-  return (
-    <Suspense fallback={<></>}>
-      <Home content={content} news={news} images={images} />
-    </Suspense>
-  );
+  return <Home content={content} news={news} images={images} />;
 }
 
 export default Page;
