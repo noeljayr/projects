@@ -482,7 +482,7 @@ function Page() {
 
                           <input
                             type="text"
-                            placeholder="Welpenname (optional)"
+                            placeholder="Bildunterschrift (optional)"
                             value={dog.name}
                             onChange={(e) =>
                               updateDogName(index, e.target.value)

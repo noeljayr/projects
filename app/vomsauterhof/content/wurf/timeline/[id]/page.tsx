@@ -416,7 +416,7 @@ function Page() {
 
                         <input
                           type="text"
-                          placeholder="Hundename (optional)"
+                          placeholder="Bildunterschrift (optional)"
                           value={dog.name}
                           onChange={(e) => updateDogName(index, e.target.value)}
                           className="w-full font-p3 px-3 py-2 border border-[var(--c-border)] rounded-[0.35rem] outline-none"
