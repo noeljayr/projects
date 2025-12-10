@@ -16,9 +16,6 @@ services:
     env_file:
       - .env
     restart: unless-stopped
-    depends_on:
-      mongodb:
-        condition: service_healthy
     networks:
       - app-network
 
