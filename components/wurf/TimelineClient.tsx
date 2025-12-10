@@ -167,145 +167,152 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
   }));
 
   return (
-    <div className="section-container mx-auto">
-      <div className="flex items-center mb-8 max-[900px]:flex-col max-[900px]:items-start max-[900px]:gap-4">
-        <h3 className="font-bold">Zeitleiste</h3>
-        {showFilters && (
-          <div className="flex ml-auto max-[900px]:ml-0 p-1 bg-[#FBF2EA]/10 items-center cursor-pointer border border-black/10 rounded-full">
-            {["Alle", "Welpen", "Nachzucht"].map((filter) => (
-              <span
-                key={filter}
-                onClick={() => {
-                  setActiveFilter(filter);
-                  setActiveIndex(0);
-                }}
-                className={`px-6 py-1.5 cursor-pointer capitalize rounded-full text-sm font-medium transition-colors ${
-                  filter === activeFilter ? "bg-[#58483B] text-white" : ""
-                }`}
-              >
-                {filter}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Timeline Content */}
-      <div className="flex gap-8 relative max-[900px]:flex-col">
-        {/* Left Sidebar - Dates (Sticky) */}
-        <div
-          ref={dateContainerRef}
-          className="sticky top-32 max-[900px]:top-27 z-[2] max-[900px]:bg-[#F9ECE1] max-[900px]:w-full self-start flex max-[900px]:gap-0  flex-col max-[900px]:py-2  max-[900px]:flex-row h-fit max-[900px]:overflow-x-auto max-[900px]:whitespace-nowrap"
-        >
-          {timelineGroups.map((entry, index) => (
-            <div
-              key={index}
-              ref={(el) => {
-                dateRefs.current[index] = el;
-              }}
-              className="flex flex-col max-[900px]:flex-row max-[900px]:gap-0"
-            >
-              <motion.div
-                className="flex items-center gap-4 max-[900px]:gap-0 cursor-pointer"
-                onClick={() => scrollToSection(index)}
-                transition={{ duration: 0.3 }}
-                style={{
-                  transition: "ease 0.5s",
-                }}
-              >
-                <motion.span
-                  className="h-5 w-5  max-[900px]:h-4  max-[900px]:w-4 rounded-full border-[3px]  max-[900px]:border-[2px] flex-shrink-0"
-                  animate={{
-                    backgroundColor:
-                      activeIndex === index ? "#58483B" : "#F9ECE1",
-                    borderColor: activeIndex === index ? "#D6CBC2" : "#D6CBC2",
-                  }}
-                  style={{
-                    transition: "ease 0.5s",
-                  }}
-                  transition={{ duration: 0.3 }}
-                />
-                <motion.span
-                  className="w-[8rem] font-medium border py-2 rounded-[2rem] text-center"
-                  style={{
-                    fontSize: "calc(var(--p4) * 0.9)",
-                    transition: "ease 0.5s",
-                  }}
-                  animate={{
-                    backgroundColor:
-                      activeIndex === index ? "#58483B" : "white",
-                    color: activeIndex === index ? "white" : "black",
-                    borderColor:
-                      activeIndex === index ? "#58483B" : "var(--c-border)",
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {formatDate(entry.date)}
-                </motion.span>
-              </motion.div>
-
-              {index !== timelineGroups.length - 1 && (
-                <div className="flex flex-col  w-5 relative max-[900px]:w-8 items-center max-[900px]:justify-center">
-                  <div className="w-[2px] h-8 max-[900px]:h-[2px] max-[900px]:w-8 bg-[#D4C9BF]"></div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Right Content - Timeline Entries */}
-        <div className="flex-1 flex flex-col gap-8">
-          {timelineGroups.map((entry, index) => (
-            <motion.div
-              key={index}
-              ref={(el) => {
-                contentRefs.current[index] = el;
-              }}
-              className="bg-[#F7E4D4] border border-[#F1D1B6] rounded-2xl p-6 pt-4 relative max-[900px]:p-3"
-            >
-              <div className="flex items-center mb-4">
-                <h3 className="text-xl font-semibold mr-auto">{entry.title}</h3>
-                {showFilters && (
+    <>
+      {allEntries.length > 0 && (
+        <div className="section-container mx-auto">
+          <div className="flex items-center mb-8 max-[900px]:flex-col max-[900px]:items-start max-[900px]:gap-4">
+            <h3 className="font-bold">Zeitleiste</h3>
+            {showFilters && (
+              <div className="flex ml-auto max-[900px]:ml-0 p-1 bg-[#FBF2EA]/10 items-center cursor-pointer border border-black/10 rounded-full">
+                {["Alle", "Welpen", "Nachzucht"].map((filter) => (
                   <span
-                    className={`right-4 h-[1.8rem] flex items-center text-white text-xs px-3 py-1 rounded-full ${
-                      entry.category === "welpen"
-                        ? "bg-[#58483B]"
-                        : "bg-[#58483B]"
+                    key={filter}
+                    onClick={() => {
+                      setActiveFilter(filter);
+                      setActiveIndex(0);
+                    }}
+                    className={`px-6 py-1.5 cursor-pointer capitalize rounded-full text-sm font-medium transition-colors ${
+                      filter === activeFilter ? "bg-[#58483B] text-white" : ""
                     }`}
                   >
-                    {entry.category === "welpen" ? "Welpen" : "Nachzucht"}
+                    {filter}
                   </span>
-                )}
-              </div>
-
-              {entry.description && (
-                <p className="text-sm text-gray-700 mb-6 whitespace-pre-wrap">
-                  {entry.description}
-                </p>
-              )}
-
-              {/* Dog Images Grid */}
-              <div className="grid grid-cols-3 max-[900px]:grid-cols-2 max-sm:grid-cols-1 gap-y-8 gap-4">
-                {entry.dogs.map((dog, dogIndex) => (
-                  <div key={dogIndex} className="flex flex-col gap-2">
-                    <div className="aspect-[3/4] bg-black/5 rounded-xl overflow-hidden">
-                      <img
-                        src={dog.image}
-                        alt={dog.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">
-                      {dog.name}
-                    </span>
-                  </div>
                 ))}
               </div>
-            </motion.div>
-          ))}
+            )}
+          </div>
+
+          {/* Timeline Content */}
+          <div className="flex gap-8 relative max-[900px]:flex-col">
+            {/* Left Sidebar - Dates (Sticky) */}
+            <div
+              ref={dateContainerRef}
+              className="sticky top-32 max-[900px]:top-27 z-[2] max-[900px]:bg-[#F9ECE1] max-[900px]:w-full self-start flex max-[900px]:gap-0  flex-col max-[900px]:py-2  max-[900px]:flex-row h-fit max-[900px]:overflow-x-auto max-[900px]:whitespace-nowrap"
+            >
+              {timelineGroups.map((entry, index) => (
+                <div
+                  key={index}
+                  ref={(el) => {
+                    dateRefs.current[index] = el;
+                  }}
+                  className="flex flex-col max-[900px]:flex-row max-[900px]:gap-0"
+                >
+                  <motion.div
+                    className="flex items-center gap-4 max-[900px]:gap-0 cursor-pointer"
+                    onClick={() => scrollToSection(index)}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                      transition: "ease 0.5s",
+                    }}
+                  >
+                    <motion.span
+                      className="h-5 w-5  max-[900px]:h-4  max-[900px]:w-4 rounded-full border-[3px]  max-[900px]:border-[2px] flex-shrink-0"
+                      animate={{
+                        backgroundColor:
+                          activeIndex === index ? "#58483B" : "#F9ECE1",
+                        borderColor:
+                          activeIndex === index ? "#D6CBC2" : "#D6CBC2",
+                      }}
+                      style={{
+                        transition: "ease 0.5s",
+                      }}
+                      transition={{ duration: 0.3 }}
+                    />
+                    <motion.span
+                      className="w-[8rem] font-medium border py-2 rounded-[2rem] text-center"
+                      style={{
+                        fontSize: "calc(var(--p4) * 0.9)",
+                        transition: "ease 0.5s",
+                      }}
+                      animate={{
+                        backgroundColor:
+                          activeIndex === index ? "#58483B" : "white",
+                        color: activeIndex === index ? "white" : "black",
+                        borderColor:
+                          activeIndex === index ? "#58483B" : "var(--c-border)",
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {formatDate(entry.date)}
+                    </motion.span>
+                  </motion.div>
+
+                  {index !== timelineGroups.length - 1 && (
+                    <div className="flex flex-col  w-5 relative max-[900px]:w-8 items-center max-[900px]:justify-center">
+                      <div className="w-[2px] h-8 max-[900px]:h-[2px] max-[900px]:w-8 bg-[#D4C9BF]"></div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Right Content - Timeline Entries */}
+            <div className="flex-1 flex flex-col gap-8">
+              {timelineGroups.map((entry, index) => (
+                <motion.div
+                  key={index}
+                  ref={(el) => {
+                    contentRefs.current[index] = el;
+                  }}
+                  className="bg-[#F7E4D4] border border-[#F1D1B6] rounded-2xl p-6 pt-4 relative max-[900px]:p-3"
+                >
+                  <div className="flex items-center mb-4">
+                    <h3 className="text-xl font-semibold mr-auto">
+                      {entry.title}
+                    </h3>
+                    {showFilters && (
+                      <span
+                        className={`right-4 h-[1.8rem] flex items-center text-white text-xs px-3 py-1 rounded-full ${
+                          entry.category === "welpen"
+                            ? "bg-[#58483B]"
+                            : "bg-[#58483B]"
+                        }`}
+                      >
+                        {entry.category === "welpen" ? "Welpen" : "Nachzucht"}
+                      </span>
+                    )}
+                  </div>
+
+                  {entry.description && (
+                    <p className="text-sm text-gray-700 mb-6 whitespace-pre-wrap">
+                      {entry.description}
+                    </p>
+                  )}
+
+                  {/* Dog Images Grid */}
+                  <div className="grid grid-cols-3 max-[900px]:grid-cols-2 max-sm:grid-cols-1 gap-y-8 gap-4">
+                    {entry.dogs.map((dog, dogIndex) => (
+                      <div key={dogIndex} className="flex flex-col gap-2">
+                        <div className="aspect-[3/4] bg-black/5 rounded-xl overflow-hidden">
+                          <img
+                            src={dog.image}
+                            alt={dog.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">
+                          {dog.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
