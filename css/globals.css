@@ -363,7 +363,7 @@ h4 {
 .news-content .video-remove-btn,
 .news-content input,
 .wurf-content input,
-.new-content .resize-handle,
+.news-content .resize-handle,
 .wurf-content .resize-handle {
   display: none;
 }
