@@ -285,7 +285,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
 
                   {entry.description && (
                     <div
-                      className="mt-1.5"
+                      className="mb-4 mt-1.5"
                       dangerouslySetInnerHTML={{ __html: entry.description }}
                     ></div>
                   )}
