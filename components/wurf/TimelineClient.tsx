@@ -156,11 +156,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
 
   // Transform timeline entries for display
   const timelineGroups = filteredEntries.map((entry) => ({
-    date: new Date(entry.date).toLocaleDateString("de-DE", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }),
+    date: entry.date,
     title: entry.title,
     description: entry.description,
     category: entry.category,

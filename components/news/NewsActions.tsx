@@ -3,7 +3,7 @@
 import { motionTransition } from "@/constants/motionTransition";
 import { IconEdit, IconTrash, IconChecks, IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useRef } from "react";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import type { News } from "@/types/News";

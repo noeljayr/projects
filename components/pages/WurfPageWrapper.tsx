@@ -3,7 +3,8 @@
 import Banner from "@/components/Banner";
 import { BannerContent } from "@/types/banner";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import TimelineClient from "@/components/wurf/TimelineClient";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { useEffect } from "react";

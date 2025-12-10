@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function LoginPage() {
@@ -90,8 +90,6 @@ export default function LoginPage() {
                 placeholder="Geben Sie Ihr Passwort ein"
               />
             </div>
-
-            
 
             <button
               type="submit"

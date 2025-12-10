@@ -5,7 +5,7 @@ import { IconArrowLeft, IconPhotoPlus, IconX } from "@tabler/icons-react";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import PublishDate from "@/components/news/PublishDate";
 
 function Page() {

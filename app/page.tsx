@@ -1,13 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 
 function page() {
   const router = useRouter();
 
   router.push("https://roxstein.ch/");
   return (
-    <div className="w-screen h-screen bg-red-500 flex items-center justify-center font-semibold "></div>
+    <div className="w-screen h-screen flex items-center justify-center font-semibold "></div>
   );
 }
 

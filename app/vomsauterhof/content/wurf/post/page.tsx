@@ -4,7 +4,7 @@ import RichTextEditor from "@/components/editor/RichTextEditor";
 import { IconArrowLeft, IconPhotoPlus, IconX } from "@tabler/icons-react";
 import Link from "next/link";
 import React, { useRef, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 
 function Page() {
   const [coverImage, setCoverImage] = useState<string | null>(null);

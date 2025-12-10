@@ -4,7 +4,7 @@ import RichTextEditor from "@/components/editor/RichTextEditor";
 import { IconArrowLeft, IconPhotoPlus, IconX } from "@tabler/icons-react";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import DoB from "@/components/beauceron/DoB";
 import Height from "@/components/beauceron/Height";
 import Weight from "@/components/beauceron/Weight";
