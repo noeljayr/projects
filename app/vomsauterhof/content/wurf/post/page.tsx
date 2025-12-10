@@ -5,10 +5,12 @@ import { IconArrowLeft, IconPhotoPlus, IconX } from "@tabler/icons-react";
 import Link from "next/link";
 import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "nextjs-toploader/app";
+import { uploadImageToDatabase } from "@/lib/uploadImage";
 
 function Page() {
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [name, setName] = useState("");
   const [information, setInformation] = useState("");
   const [category, setCategory] = useState("");
@@ -21,13 +23,20 @@ function Page() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = async (file: File) => {
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setCoverImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsUploadingImage(true);
+        const imageUrl = await uploadImageToDatabase(file);
+        setCoverImage(imageUrl);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert(
+          "Fehler beim Hochladen des Bildes. Bitte versuchen Sie es erneut."
+        );
+      } finally {
+        setIsUploadingImage(false);
+      }
     }
   };
 
@@ -162,9 +171,22 @@ function Page() {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            onClick={handleClick}
+            onClick={!isUploadingImage ? handleClick : undefined}
           >
-            {coverImage ? (
+            {isUploadingImage ? (
+              <>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F38D3B]"></div>
+                <span
+                  style={{
+                    transition: "ease 0.5s",
+                    fontSize: "calc(var(--p4) * 0.9)",
+                  }}
+                  className="font-medium opacity-50 mt-2"
+                >
+                  Hochladen...
+                </span>
+              </>
+            ) : coverImage ? (
               <>
                 <img src={coverImage} alt="Cover" className="h-fit" />
                 <button

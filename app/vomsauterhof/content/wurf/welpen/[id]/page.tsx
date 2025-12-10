@@ -17,6 +17,7 @@ import { useRouter, useParams } from "next/navigation";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import { motionTransition } from "@/constants/motionTransition";
 import { formatDate } from "@/lib/formatDate";
+import { uploadImageToDatabase } from "@/lib/uploadImage";
 
 type WelpenDog = {
   name: string;
@@ -51,6 +52,9 @@ function Page() {
     { name: "", image: "" },
   ]);
   const [isDragging, setIsDragging] = useState<number | null>(null);
+  const [uploadingImages, setUploadingImages] = useState<Set<number>>(
+    new Set()
+  );
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
   const params = useParams();
@@ -109,15 +113,32 @@ function Page() {
     }
   };
 
-  const handleImageUpload = (file: File, dogIndex: number) => {
+  const handleImageUpload = async (file: File, dogIndex: number) => {
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
+      try {
+        // Add to uploading set
+        setUploadingImages((prev) => new Set(prev).add(dogIndex));
+
+        // Upload to database
+        const imageUrl = await uploadImageToDatabase(file);
+
+        // Update form with database URL
         const newDogs = [...formDogs];
-        newDogs[dogIndex].image = e.target?.result as string;
+        newDogs[dogIndex].image = imageUrl;
         setFormDogs(newDogs);
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert(
+          "Fehler beim Hochladen des Bildes. Bitte versuchen Sie es erneut."
+        );
+      } finally {
+        // Remove from uploading set
+        setUploadingImages((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(dogIndex);
+          return newSet;
+        });
+      }
     }
   };
 
@@ -481,10 +502,18 @@ function Page() {
                             onDragLeave={handleDragLeave}
                             onDrop={(e) => handleDrop(e, index)}
                             onClick={() =>
+                              !uploadingImages.has(index) &&
                               fileInputRefs.current[index]?.click()
                             }
                           >
-                            {dog.image ? (
+                            {uploadingImages.has(index) ? (
+                              <>
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F38D3B]"></div>
+                                <span className="text-sm opacity-50 mt-2">
+                                  Hochladen...
+                                </span>
+                              </>
+                            ) : dog.image ? (
                               <>
                                 <img
                                   src={dog.image}
