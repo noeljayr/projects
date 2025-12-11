@@ -115,3 +115,6 @@ Add analytics tracking:
 - **Mobile-Friendly Test**: https://search.google.com/test/mobile-friendly
 - **Facebook Debugger**: https://developers.facebook.com/tools/debug/
 - **Twitter Card Validator**: https://cards-dev.twitter.com/validator
+
+
+#MONGODB_URI=mongodb+srv://vom:49GLQtr9KgdUel3V@cluster0.4uagz9r.mongodb.net/vom_sauterhof?appName=Cluster0
