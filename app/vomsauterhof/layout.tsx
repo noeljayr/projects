@@ -151,8 +151,8 @@ export default async function RootLayout({
       <Navbar content={navbarContent} />
       <Suspense fallback={<LoadingSpinner />}>
         {children}
-        <FooterClient content={footerContent} />
       </Suspense>
+        <FooterClient content={footerContent} />
     </>
   );
 }

@@ -20,25 +20,32 @@ export function FooterClient({ content }: Props) {
   const isEditMode = searchParams.get("mode") === "edit";
   const { userName, enabled, logout } = useAuthStore();
   const isLoggedIn = enabled && userName;
-  const [shouldShow, setShouldShow] = useState(false);
+  const [shouldShow, setShouldShow] = useState(true);
 
   const addEditModeParam = (href: string) => {
     return isEditMode ? `${href}?mode=edit` : href;
   };
 
   useEffect(() => {
-    // Check if content is loaded, if not wait for it
+    // For pages with content loading logic, respect the data-content-loaded attribute
+    // For other pages, show footer immediately
     const checkContentLoaded = () => {
       const isContentLoaded =
         document.body.getAttribute("data-content-loaded") === "true";
+      const hasContentLoadingLogic = document.body.hasAttribute(
+        "data-content-loaded"
+      );
+
       if (
+        !hasContentLoadingLogic || // No content loading logic, show footer
         isContentLoaded ||
         pathname.startsWith("/vomsauterhof/content") ||
         pathname.startsWith("/vomsauterhof/auth")
       ) {
         setShouldShow(true);
-      } else {
-        // Check again after a short delay
+      } else if (hasContentLoadingLogic && !isContentLoaded) {
+        // Only hide if content loading logic exists but content isn't loaded yet
+        setShouldShow(false);
         setTimeout(checkContentLoaded, 100);
       }
     };

@@ -26,8 +26,7 @@ body {
 }
 
 /* Ensure proper layout flow and prevent footer from appearing before content */
-body[data-content-loaded="false"] footer,
-body:not([data-content-loaded]) footer {
+body[data-content-loaded="false"] footer {
   visibility: hidden;
 }
 

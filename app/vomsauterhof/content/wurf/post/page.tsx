@@ -78,7 +78,7 @@ function Page() {
   };
 
   const validate = () => {
-    if (!information.trim() || !name.trim()) {
+    if (!name.trim()) {
       return false;
     }
     return true;

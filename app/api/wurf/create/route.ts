@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validation
-    if (!name || !information) {
+    if (!name) {
       return NextResponse.json(
-        { success: false, message: "Name and information are required" },
+        { success: false, message: "Name is required" },
         { status: 400 }
       );
     }
