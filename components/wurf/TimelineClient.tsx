@@ -236,7 +236,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
                       }}
                       animate={{
                         backgroundColor:
-                          activeIndex === index ? "#58483B" : "white",
+                          activeIndex === index ? "#58483B" : "#fbf2ea",
                         color: activeIndex === index ? "white" : "black",
                         borderColor:
                           activeIndex === index ? "#58483B" : "var(--c-border)",

@@ -52,7 +52,7 @@ function BeauceronCard({ beauceron }: Props) {
         </div>
         <span
           style={{ fontSize: "calc(var(--p4) * 0.95)" }}
-          className="text-white my-3.5 h-[6.5rem] line-clamp-5  opacity-75"
+          className="text-white my-3.5 line-clamp-5 opacity-75"
         >
           {plainTextContent}
         </span>
