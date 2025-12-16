@@ -8,11 +8,15 @@ import { useRouter } from "nextjs-toploader/app";
 import DoB from "@/components/beauceron/DoB";
 import Height from "@/components/beauceron/Height";
 import Weight from "@/components/beauceron/Weight";
+import { uploadImageToDatabase } from "@/lib/uploadImage";
 
 function Page() {
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [additionalImages, setAdditionalImages] = useState<string[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploadingCoverImage, setIsUploadingCoverImage] = useState(false);
+  const [isUploadingAdditionalImages, setIsUploadingAdditionalImages] =
+    useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [dob, setDob] = useState("");
@@ -23,13 +27,20 @@ function Page() {
   const additionalImagesInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = async (file: File) => {
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setCoverImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsUploadingCoverImage(true);
+        const imageUrl = await uploadImageToDatabase(file);
+        setCoverImage(imageUrl);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert(
+          "Fehler beim Hochladen des Bildes. Bitte versuchen Sie es erneut."
+        );
+      } finally {
+        setIsUploadingCoverImage(false);
+      }
     }
   };
 
@@ -60,7 +71,9 @@ function Page() {
   };
 
   const handleClick = () => {
-    fileInputRef.current?.click();
+    if (!isUploadingCoverImage) {
+      fileInputRef.current?.click();
+    }
   };
 
   const handleRemoveImage = () => {
@@ -70,17 +83,30 @@ function Page() {
     }
   };
 
-  const handleAdditionalImagesUpload = (files: FileList) => {
+  const handleAdditionalImagesUpload = async (files: FileList) => {
     const fileArray = Array.from(files);
-    fileArray.forEach((file) => {
-      if (file && file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setAdditionalImages((prev) => [...prev, e.target?.result as string]);
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    setIsUploadingAdditionalImages(true);
+
+    try {
+      const uploadPromises = fileArray.map(async (file) => {
+        if (file && file.type.startsWith("image/")) {
+          return await uploadImageToDatabase(file);
+        }
+        return null;
+      });
+
+      const uploadedUrls = await Promise.all(uploadPromises);
+      const validUrls = uploadedUrls.filter(
+        (url): url is string => url !== null
+      );
+
+      setAdditionalImages((prev) => [...prev, ...validUrls]);
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      alert("Fehler beim Hochladen der Bilder. Bitte versuchen Sie es erneut.");
+    } finally {
+      setIsUploadingAdditionalImages(false);
+    }
   };
 
   const handleAdditionalImagesInputChange = (
@@ -193,9 +219,22 @@ function Page() {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            onClick={handleClick}
+            onClick={!isUploadingCoverImage ? handleClick : undefined}
           >
-            {coverImage ? (
+            {isUploadingCoverImage ? (
+              <>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F38D3B]"></div>
+                <span
+                  style={{
+                    transition: "ease 0.5s",
+                    fontSize: "calc(var(--p4) * 0.9)",
+                  }}
+                  className="font-medium opacity-50 mt-2"
+                >
+                  Hochladen...
+                </span>
+              </>
+            ) : coverImage ? (
               <>
                 <img src={coverImage} alt="Cover" className="h-fit" />
                 <button
@@ -274,18 +313,41 @@ function Page() {
             </div>
           ))}
           <div
-            onClick={() => additionalImagesInputRef.current?.click()}
-            className="w-full aspect-square border border-dashed border-[var(--c-border)] rounded-[0.5rem] flex items-center justify-center flex-col gap-1 cursor-pointer hover:border-[#F38D3B]/50 transition-all"
+            onClick={() =>
+              !isUploadingAdditionalImages &&
+              additionalImagesInputRef.current?.click()
+            }
+            className={`w-full aspect-square border border-dashed border-[var(--c-border)] rounded-[0.5rem] flex items-center justify-center flex-col gap-1 ${
+              isUploadingAdditionalImages
+                ? "cursor-not-allowed opacity-50"
+                : "cursor-pointer hover:border-[#F38D3B]/50"
+            } transition-all`}
           >
-            <IconPhotoPlus className="h-6 w-6" />
-            <span
-              style={{
-                fontSize: "calc(var(--p4) * 0.7)",
-              }}
-              className="text-center opacity-75"
-            >
-              Bild <br /> hinzufügen
-            </span>
+            {isUploadingAdditionalImages ? (
+              <>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#F38D3B]"></div>
+                <span
+                  style={{
+                    fontSize: "calc(var(--p4) * 0.7)",
+                  }}
+                  className="text-center opacity-75 mt-1"
+                >
+                  Hochladen...
+                </span>
+              </>
+            ) : (
+              <>
+                <IconPhotoPlus className="h-6 w-6" />
+                <span
+                  style={{
+                    fontSize: "calc(var(--p4) * 0.7)",
+                  }}
+                  className="text-center opacity-75"
+                >
+                  Bild <br /> hinzufügen
+                </span>
+              </>
+            )}
           </div>
           <input
             ref={additionalImagesInputRef}
