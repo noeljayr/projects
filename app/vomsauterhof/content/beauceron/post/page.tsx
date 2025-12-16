@@ -289,13 +289,13 @@ function Page() {
           }}
         />
 
-        <div className="flex items-center py-4 border-b border-b-black/10 gap-2">
+        <div className="flex items-center flex-wrap py-4 border-b border-b-black/10 gap-2">
           <DoB dob={dob} setDob={setDob} />
           <Weight setWeight={setWeight} weight={weight} />
           <Height height={height} setHeight={setHeight} />
         </div>
 
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-5 max-md:grid-cols-3 max-sm:grid-cols-2 max-[320px]:grid-cols-1 gap-2">
           {additionalImages.map((img, index) => (
             <div key={index} className="relative w-full aspect-square">
               <img
