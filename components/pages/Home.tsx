@@ -51,13 +51,22 @@ type SiteImages = {
   whyBreedDog?: string;
 };
 
+type GalleryImage = {
+  _id: string;
+  imageUrl: string;
+  alt: string;
+  order?: number;
+  createdAt?: Date;
+};
+
 type Props = {
   content: HomepageContent;
   news: News[];
   images: SiteImages;
+  galleryImages: GalleryImage[];
 };
 
-export default function Home({ content, news, images }: Props) {
+export default function Home({ content, news, images, galleryImages }: Props) {
   const searchParams = useSearchParams();
   const isEditMode = searchParams.get("mode") === "edit";
   const [isContentLoaded, setIsContentLoaded] = useState(false);
@@ -453,7 +462,7 @@ export default function Home({ content, news, images }: Props) {
         </section>
       </div>
 
-      <Gallery images={images} />
+      <Gallery images={images} initialGalleryImages={galleryImages} />
 
       {/* Content Section */}
       <section ref={contentRef} className="md:pt-12 pb-20 md:pb-28">

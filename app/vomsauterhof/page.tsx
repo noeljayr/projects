@@ -49,6 +49,21 @@ async function Page() {
     whyBreedDog: imagesData?.whyBreedDog || "/why-breed-dogs.png",
   };
 
+  // Fetch gallery images
+  const galleryCollection = db.collection("gallery");
+  const galleryData = await galleryCollection
+    .find({})
+    .sort({ order: 1, createdAt: 1 })
+    .toArray();
+
+  const galleryImages = galleryData.map((item) => ({
+    _id: item._id.toString(),
+    imageUrl: item.imageUrl,
+    alt: item.alt,
+    order: item.order,
+    createdAt: item.createdAt,
+  }));
+
   // Convert MongoDB document to plain object (remove _id and other non-serializable fields)
   const content: HomepageContent = homepageContent
     ? {
@@ -73,7 +88,14 @@ async function Page() {
       }
     : {};
 
-  return <Home content={content} news={news} images={images} />;
+  return (
+    <Home
+      content={content}
+      news={news}
+      images={images}
+      galleryImages={galleryImages}
+    />
+  );
 }
 
 export default Page;

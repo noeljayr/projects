@@ -281,7 +281,7 @@ export function Navbar({ content }: Props) {
             <div className="flex flex-row-reverse items-center gap-3">
               <button
                 onClick={openMobileMenu}
-                className="lg:hidden p-2 text-black hover:bg-[#FBF2EA]/20 rounded-md transition-colors duration-150"
+                className="lg:hidden ml-1 text-black hover:bg-[#FBF2EA]/20 rounded-md transition-colors duration-150"
                 aria-label="Open menu"
               >
                 <Menu size={24} />

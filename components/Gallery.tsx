@@ -21,9 +21,11 @@ import {
 } from "@tabler/icons-react";
 
 type GalleryImage = {
-  id: string;
-  src: string;
+  _id: string;
+  imageUrl: string;
   alt: string;
+  order?: number;
+  createdAt?: Date;
 };
 
 type SiteImages = {
@@ -39,11 +41,10 @@ type SiteImages = {
 
 type Props = {
   images: SiteImages;
-  galleryImages?: GalleryImage[];
-  onUpdateGallery?: (images: GalleryImage[]) => void;
+  initialGalleryImages: GalleryImage[];
 };
 
-function Gallery({ images, galleryImages, onUpdateGallery }: Props) {
+function Gallery({ images, initialGalleryImages }: Props) {
   const searchParams = useSearchParams();
   const isEditMode = searchParams.get("mode") === "edit";
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -51,37 +52,54 @@ function Gallery({ images, galleryImages, onUpdateGallery }: Props) {
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const [slidesPerView, setSlidesPerView] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize gallery images from props or fallback to legacy images
+  // Initialize gallery images from database or fallback to legacy images
   const [currentImages, setCurrentImages] = useState<GalleryImage[]>(() => {
-    if (galleryImages && galleryImages.length > 0) {
-      return galleryImages;
+    if (initialGalleryImages && initialGalleryImages.length > 0) {
+      return initialGalleryImages;
     }
     // Fallback to legacy image structure
     return [
       {
-        id: "gallery1",
-        src: images.gallery1 || "/section-2.1-img.png",
+        _id: "gallery1",
+        imageUrl: images.gallery1 || "/section-2.1-img.png",
         alt: "Rottweiler puppies in field",
+        order: 1,
       },
       {
-        id: "gallery2",
-        src: images.gallery2 || "/section-2.2-img.png",
+        _id: "gallery2",
+        imageUrl: images.gallery2 || "/section-2.2-img.png",
         alt: "Person with dogs in mountains",
+        order: 2,
       },
       {
-        id: "gallery3",
-        src: images.gallery3 || "/section-2.3-img.png",
+        _id: "gallery3",
+        imageUrl: images.gallery3 || "/section-2.3-img.png",
         alt: "Dogs on mountain rocks",
+        order: 3,
       },
     ];
   });
 
-  useEffect(() => {
-    if (galleryImages) {
-      setCurrentImages(galleryImages);
+  // Fetch gallery images from database
+  const fetchGalleryImages = async () => {
+    try {
+      const response = await fetch("/api/gallery");
+      if (response.ok) {
+        const galleryData = await response.json();
+        setCurrentImages(galleryData);
+      }
+    } catch (error) {
+      console.error("Error fetching gallery images:", error);
     }
-  }, [galleryImages]);
+  };
+
+  useEffect(() => {
+    if (initialGalleryImages && initialGalleryImages.length > 0) {
+      setCurrentImages(initialGalleryImages);
+    }
+  }, [initialGalleryImages]);
 
   // Initialize slides per view based on screen size
   useEffect(() => {
@@ -103,31 +121,80 @@ function Gallery({ images, galleryImages, onUpdateGallery }: Props) {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const newImage: GalleryImage = {
-          id: `gallery_${Date.now()}`,
-          src: e.target?.result as string,
+    if (!file) return;
+
+    setIsLoading(true);
+    try {
+      // Upload file to server
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadResponse = await fetch("/api/images/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const { url } = await uploadResponse.json();
+
+      // Add to gallery database
+      const galleryResponse = await fetch("/api/gallery", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          imageUrl: url,
           alt: `Gallery image ${currentImages.length + 1}`,
-        };
-        const updatedImages = [...currentImages, newImage];
-        setCurrentImages(updatedImages);
-        onUpdateGallery?.(updatedImages);
-      };
-      reader.readAsDataURL(file);
+          order: currentImages.length,
+        }),
+      });
+
+      if (!galleryResponse.ok) {
+        throw new Error("Failed to add image to gallery");
+      }
+
+      // Refresh gallery images
+      await fetchGalleryImages();
+    } catch (error) {
+      console.error("Error adding image:", error);
+      alert("Failed to add image. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDeleteImage = (imageId: string) => {
-    const updatedImages = currentImages.filter((img) => img.id !== imageId);
-    setCurrentImages(updatedImages);
-    onUpdateGallery?.(updatedImages);
+  const handleDeleteImage = async (imageId: string) => {
+    if (!confirm("Are you sure you want to delete this image?")) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/gallery/${imageId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete image");
+      }
+
+      // Refresh gallery images
+      await fetchGalleryImages();
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      alert("Failed to delete image. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
-    <section className="section-container relative py-12 pb-0 md:py-20 mx-auto mt-15">
+    <section className="section-container  relative py-12 pb-0 md:py-20 mx-auto mt-15">
       <Image
         src={paw}
         alt=""
@@ -145,19 +212,21 @@ function Gallery({ images, galleryImages, onUpdateGallery }: Props) {
       />
 
       {isEditMode && (
-        <span
+        <button
           style={{
             transition: "ease 0.5s",
             fontSize: "calc(var(--p4) * 0.9)",
           }}
-          onClick={handleAddImage}
-          className="flex items-center mb-4 p-1.5 pr-2 cursor-pointer rounded-[0.35rem] border border-black/10 w-fit"
+          onClick={!isLoading ? handleAddImage : undefined}
+          disabled={isLoading}
+          className="flex items-center mb-4 p-1.5 pr-2 cursor-pointer rounded-[0.35rem] border border-black/10 w-fit disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <IconPlus className="h-4 w-4 opacity-50 mr-1" /> Bild
-        </span>
+          <IconPlus className="h-4 w-4 opacity-50 mr-1" />
+          Bild
+        </button>
       )}
-      <div ref={galleryRef} className="relative z-1 mb-8">
-        <div className="relative">
+      <div ref={galleryRef} className="relative z-1 mb-8 ">
+        <div className="relative rounded-lg overflow-hidden">
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
             spaceBetween={16}
@@ -165,7 +234,7 @@ function Gallery({ images, galleryImages, onUpdateGallery }: Props) {
             navigation={false}
             pagination={false}
             autoplay={{
-              delay: 4000,
+              delay: 10000,
               disableOnInteraction: false,
             }}
             onSwiper={(swiper) => setSwiperInstance(swiper)}
@@ -183,18 +252,19 @@ function Gallery({ images, galleryImages, onUpdateGallery }: Props) {
             className="gallery-swiper"
           >
             {currentImages.map((image) => (
-              <SwiperSlide key={image.id}>
-                <div className="relative h-[250px] md:h-[374px] group">
+              <SwiperSlide key={image._id}>
+                <div className="relative aspect-square group">
                   <Image
-                    src={image.src}
+                    src={image.imageUrl}
                     alt={image.alt}
                     fill
                     className="object-cover rounded-lg transition-all duration-500 "
                   />
                   {isEditMode && (
                     <button
-                      onClick={() => handleDeleteImage(image.id)}
-                      className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 h-8 w-8  flex items-center justify-center  cursor-pointer transition-opacity duration-200 z-10"
+                      onClick={() => handleDeleteImage(image._id)}
+                      disabled={isLoading}
+                      className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 h-8 w-8  flex items-center justify-center  cursor-pointer transition-opacity duration-200 z-10 disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Delete image"
                     >
                       <IconTrash className="h4 w-4" />
@@ -207,16 +277,25 @@ function Gallery({ images, galleryImages, onUpdateGallery }: Props) {
             {isEditMode && (
               <SwiperSlide>
                 <div
-                  className="relative h-[250px] md:h-[374px] cursor-pointer border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center hover:border-gray-400 transition-colors duration-200 bg-gray-50"
-                  onClick={handleAddImage}
+                  className="relative aspect-square cursor-pointer border-1 border-dashed border-gray-300 rounded-lg flex flex-col items-center mx-[1px] justify-center hover:border-gray-400 transition-colors duration-200 bg-[#FBF2EA]"
+                  onClick={!isLoading ? handleAddImage : undefined}
                 >
-                  <Upload size={32} className="text-gray-400 mb-2" />
-                  <span className="text-gray-500 text-sm font-medium">
-                    Bild hinzufügen
-                  </span>
-                  <span className="text-gray-400 text-xs mt-1">
-                    Zum Hochladen klicken
-                  </span>
+                  {isLoading ? (
+                    <>
+                      <div className="rounded-full h-8 w-8 border-b-2 border-gray-400 mb-2"></div>
+                      <span className="text-gray-500 text-sm font-medium"></span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={32} className="text-gray-400 mb-2" />
+                      <span className="text-gray-500 text-sm font-medium">
+                        Bild hinzufügen
+                      </span>
+                      <span className="text-gray-400 text-xs mt-1">
+                        Zum Hochladen klicken
+                      </span>
+                    </>
+                  )}
                 </div>
               </SwiperSlide>
             )}
@@ -225,7 +304,7 @@ function Gallery({ images, galleryImages, onUpdateGallery }: Props) {
           {/* Custom Navigation Buttons */}
         </div>
 
-        <div className="flex items-center w-full mt-4 px-2 relative">
+        <div className="flex items-center w-full mt-4 px-1 relative">
           <button
             onClick={() => swiperInstance?.slidePrev()}
             disabled={!swiperInstance}
@@ -274,6 +353,7 @@ function Gallery({ images, galleryImages, onUpdateGallery }: Props) {
           type="file"
           accept="image/*"
           onChange={handleFileChange}
+          disabled={isLoading}
           className="hidden"
         />
       </div>
