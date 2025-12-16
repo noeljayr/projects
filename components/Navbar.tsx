@@ -261,8 +261,8 @@ export function Navbar({ content }: Props) {
                   {link.name}
                 </Link>
               ))}
-              
-                <WurfMenu content={content} />
+
+              <WurfMenu content={content} />
             </nav>
 
             <div className="flex flex-row-reverse items-center gap-3">
