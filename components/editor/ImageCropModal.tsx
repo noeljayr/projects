@@ -6,19 +6,22 @@ import { Area } from "react-easy-crop";
 
 interface ImageCropModalProps {
   imageSrc: string;
-  onCropComplete: (croppedImage: string) => Promise<void>;
+  onCropComplete: (croppedImage: string, caption?: string) => Promise<void>;
   onCancel: () => void;
+  initialCaption?: string;
 }
 
 export default function ImageCropModal({
   imageSrc,
   onCropComplete,
   onCancel,
+  initialCaption = "",
 }: ImageCropModalProps) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [caption, setCaption] = useState(initialCaption);
 
   const onCropChange = (location: { x: number; y: number }) => {
     setCrop(location);
@@ -41,7 +44,7 @@ export default function ImageCropModal({
     try {
       setIsUploading(true);
       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-      await onCropComplete(croppedImage);
+      await onCropComplete(croppedImage, caption);
     } catch (e) {
       console.error("Error cropping image:", e);
       setIsUploading(false);
@@ -79,6 +82,26 @@ export default function ImageCropModal({
               onZoomChange={onZoomChange}
               onCropComplete={onCropAreaChange}
             />
+          </div>
+          <div style={{ padding: "16px" }}>
+            <div className="form-group">
+              <label htmlFor="imageCaption">Bildunterschrift (optional):</label>
+              <input
+                id="imageCaption"
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                type="text"
+                placeholder="Bildunterschrift hinzufügen..."
+                style={{
+                  width: "100%",
+                  padding: "8px 12px",
+                  border: "1px solid var(--c-border)",
+                  borderRadius: "0.35rem",
+                  fontSize: "calc(var(--p4) * 0.9)",
+                  marginTop: "4px",
+                }}
+              />
+            </div>
           </div>
         </div>
         <div className="modal-footer">

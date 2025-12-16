@@ -147,7 +147,7 @@ async function Page({ params }: Props) {
           </div>
 
           <div
-            className="prose max-w-none flex flex-col news-content mt-10"
+            className="prose max-w-none flex flex-col news-content no-captions mt-10"
             dangerouslySetInnerHTML={{ __html: selectedNews.content }}
           />
         </div>

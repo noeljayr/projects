@@ -129,7 +129,7 @@ const WurfPageWrapper = ({
   }, []);
 
   return (
-    <div className="gap-12 flex flex-col w-full pb-16">
+    <div className="gap-12 flex flex-col w-screen overflow-hidden pb-16">
       <Banner
         name={bannerContent.title}
         description={bannerContent.description}
@@ -236,7 +236,7 @@ const WurfPageWrapper = ({
             </div>
 
             <div
-              className="font-p2 wurf-content"
+              className="font-p2 wurf-content no-captions"
               dangerouslySetInnerHTML={{ __html: wurf.information }}
             />
           </div>

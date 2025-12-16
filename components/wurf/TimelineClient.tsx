@@ -171,7 +171,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
       {allEntries.length > 0 && (
         <div className="section-container mx-auto">
           <div className="flex items-center mb-8 max-[900px]:flex-col max-[900px]:items-start max-[900px]:gap-4">
-            <h3 className="font-bold">Zeitleiste</h3>
+            <h3 className="font-bold">Nachzucht</h3>
             {showFilters && (
               <div className="flex ml-auto max-[900px]:ml-0 p-1 bg-[#FBF2EA]/10 items-center cursor-pointer border border-black/10 rounded-full">
                 {["Alle", "Welpen", "Nachzucht"].map((filter) => (
@@ -197,7 +197,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
             {/* Left Sidebar - Dates (Sticky) */}
             <div
               ref={dateContainerRef}
-              className="sticky top-32 max-[900px]:top-27 z-[2] max-[900px]:bg-[#F9ECE1] max-[900px]:w-full self-start flex max-[900px]:gap-0  flex-col max-[900px]:py-2  max-[900px]:flex-row h-fit max-[900px]:overflow-x-auto max-[900px]:whitespace-nowrap"
+              className="sticky top-32 max-[900px]:top-27 z-[2] max-[900px]:bg-[#F9ECE1] max-[900px]:w-full self-start flex max-[900px]:gap-0  flex-col max-[900px]:py-2 max-sm:top-[5rem]  max-[900px]:flex-row h-fit max-[900px]:overflow-x-auto max-[900px]:whitespace-nowrap"
             >
               {timelineGroups.map((entry, index) => (
                 <div
@@ -285,7 +285,7 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
 
                   {entry.description && (
                     <div
-                      className="mb-4 mt-1.5"
+                      className="mb-4 mt-1.5 no-captions"
                       dangerouslySetInnerHTML={{ __html: entry.description }}
                     ></div>
                   )}

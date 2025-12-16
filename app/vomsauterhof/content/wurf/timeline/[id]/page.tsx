@@ -305,9 +305,7 @@ function Page() {
             <IconArrowLeft className="h-4 w-4 mr-2" />
             Zurück
           </Link>
-          <h5 className="ml-4 font-semibold truncate">
-            Zeitleiste: {wurfName}
-          </h5>
+          <h5 className="ml-4 font-semibold truncate">Nachzucht: {wurfName}</h5>
         </div>
 
         <MotionConfig transition={motionTransition()}>

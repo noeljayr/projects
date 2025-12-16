@@ -41,6 +41,9 @@ export default function RichTextEditor({
   const [showCropModal, setShowCropModal] = useState(false);
   const [imageToCrop, setImageToCrop] = useState<string>("");
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [editingImageWrapper, setEditingImageWrapper] =
+    useState<HTMLElement | null>(null);
+  const [editingImageCaption, setEditingImageCaption] = useState<string>("");
 
   // History state
   const [history, setHistory] = useState<string[]>([]);
@@ -325,7 +328,7 @@ export default function RichTextEditor({
     e.target.value = "";
   };
 
-  const handleCropComplete = async (croppedImage: string) => {
+  const handleCropComplete = async (croppedImage: string, caption?: string) => {
     // Upload the cropped image
     try {
       const blob = await fetch(croppedImage).then((r) => r.blob());
@@ -342,7 +345,14 @@ export default function RichTextEditor({
       }
 
       const { url } = await response.json();
-      insertImageAtCursor(url);
+
+      // Check if we're editing an existing image
+      if (editingImageWrapper) {
+        updateExistingImage(editingImageWrapper, url, caption);
+        setEditingImageWrapper(null);
+      } else {
+        insertImageAtCursor(url, caption);
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
       alert("Failed to upload image. Please try again.");
@@ -358,6 +368,42 @@ export default function RichTextEditor({
   const handleCropCancel = () => {
     setShowCropModal(false);
     setImageToCrop("");
+    setEditingImageWrapper(null);
+    setEditingImageCaption("");
+  };
+
+  const editImage = (wrapper: HTMLElement) => {
+    const img = wrapper.querySelector("img") as HTMLImageElement;
+    const captionInput = wrapper.querySelector(
+      ".image-caption"
+    ) as HTMLInputElement;
+
+    if (img) {
+      setEditingImageWrapper(wrapper);
+      setEditingImageCaption(captionInput?.value || "");
+      setImageToCrop(img.src);
+      setShowCropModal(true);
+    }
+  };
+
+  const updateExistingImage = (
+    wrapper: HTMLElement,
+    newUrl: string,
+    caption?: string
+  ) => {
+    const img = wrapper.querySelector("img") as HTMLImageElement;
+    const captionInput = wrapper.querySelector(
+      ".image-caption"
+    ) as HTMLInputElement;
+
+    if (img) {
+      img.src = newUrl;
+    }
+
+    if (captionInput && caption !== undefined) {
+      captionInput.value = caption;
+      captionInput.setAttribute("value", caption);
+    }
   };
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -664,9 +710,9 @@ export default function RichTextEditor({
     }
   };
 
-  const insertImageAtCursor = (dataUrl: string) => {
+  const insertImageAtCursor = (dataUrl: string, caption?: string) => {
     const sel = window.getSelection();
-    const wrapper = createImageWrapper(dataUrl);
+    const wrapper = createImageWrapper(dataUrl, caption);
 
     if (!sel || sel.rangeCount === 0) {
       editorRef.current?.focus();
@@ -694,7 +740,10 @@ export default function RichTextEditor({
     }
   };
 
-  const createImageWrapper = (dataUrl: string): HTMLElement => {
+  const createImageWrapper = (
+    dataUrl: string,
+    caption?: string
+  ): HTMLElement => {
     const wrapper = document.createElement("div");
     wrapper.className = "image-wrapper";
     wrapper.contentEditable = "false";
@@ -711,6 +760,12 @@ export default function RichTextEditor({
     captionInput.type = "text";
     captionInput.className = "image-caption";
     captionInput.placeholder = "Bildunterschrift hinzufügen (optional)";
+
+    // Set caption if provided
+    if (caption) {
+      captionInput.value = caption;
+      captionInput.setAttribute("value", caption);
+    }
 
     captionInput.addEventListener("input", (e) => {
       e.stopPropagation();
@@ -771,6 +826,15 @@ export default function RichTextEditor({
       );
     });
 
+    const editBtn = document.createElement("button");
+    editBtn.className = "image-edit-btn";
+    editBtn.innerHTML = "✎";
+    editBtn.title = "Edit image";
+    editBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      editImage(wrapper);
+    });
+
     const removeBtn = document.createElement("button");
     removeBtn.className = "image-remove-btn";
     removeBtn.innerHTML = "×";
@@ -785,6 +849,7 @@ export default function RichTextEditor({
 
     wrapper.appendChild(img);
     wrapper.appendChild(captionInput);
+    wrapper.appendChild(editBtn);
     wrapper.appendChild(removeBtn);
 
     wrapper.addEventListener("click", (e) => {
@@ -852,6 +917,33 @@ export default function RichTextEditor({
           (htmlHandle as any)._mouseDownListener = mouseDownHandler;
         }
       });
+
+      // Add edit button if it doesn't exist
+      let editBtn = htmlWrapper.querySelector(".image-edit-btn") as HTMLElement;
+      if (!editBtn) {
+        editBtn = document.createElement("button");
+        editBtn.className = "image-edit-btn";
+        editBtn.innerHTML = "✎";
+        editBtn.title = "Edit image";
+
+        const removeBtn = htmlWrapper.querySelector(".image-remove-btn");
+        if (removeBtn) {
+          htmlWrapper.insertBefore(editBtn, removeBtn);
+        } else {
+          htmlWrapper.appendChild(editBtn);
+        }
+      }
+
+      // Re-attach edit button listener
+      const existingEditListener = (editBtn as any)._clickListener;
+      if (!existingEditListener) {
+        const editHandler = (e: Event) => {
+          e.stopPropagation();
+          editImage(htmlWrapper);
+        };
+        editBtn.addEventListener("click", editHandler);
+        (editBtn as any)._clickListener = editHandler;
+      }
 
       // Re-attach remove button listener
       const removeBtn = htmlWrapper.querySelector(
@@ -1615,9 +1707,14 @@ export default function RichTextEditor({
     reader.readAsDataURL(file);
   };
 
-  const insertImageAtPoint = (dataUrlOrUrl: string, x: number, y: number) => {
+  const insertImageAtPoint = (
+    dataUrlOrUrl: string,
+    x: number,
+    y: number,
+    caption?: string
+  ) => {
     const range = getRangeFromPoint(x, y);
-    const wrapper = createImageWrapper(dataUrlOrUrl);
+    const wrapper = createImageWrapper(dataUrlOrUrl, caption);
 
     if (!range) {
       editorRef.current?.appendChild(wrapper);
@@ -2090,6 +2187,7 @@ export default function RichTextEditor({
           imageSrc={imageToCrop}
           onCropComplete={handleCropComplete}
           onCancel={handleCropCancel}
+          initialCaption={editingImageCaption}
         />
       )}
     </div>

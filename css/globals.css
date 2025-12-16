@@ -132,6 +132,11 @@
   }
 }
 
+body {
+  overflow-x: hidden;
+  width: 100vw;
+}
+
 h1 {
   font-size: var(--h1);
   font-weight: 700;
@@ -360,28 +365,7 @@ h4 {
   }
 }
 
-.news-content .image-remove-btn,
-.wurf-content .image-remove-btn,
-.wurf-content .video-remove-btn,
-.news-content .video-remove-btn,
-.news-content input,
-.wurf-content input,
-.news-content .resize-handle,
-.wurf-content .resize-handle {
-  display: none;
-}
-
-.news-content .image-wrapper.selected,
-.wurf-content .image-wrapper.selected {
-  outline: 0;
-  border: 0;
-  box-shadow: unset;
-}
-
-.news-content .image-caption::placeholder,
-.wurf-content .image-caption::placeholder {
-  display: none;
-}
+/* These rules are now handled by the .no-captions class above */
 
 .news-content {
   line-height: 1.6;
@@ -491,10 +475,33 @@ h4 {
   display: inline;
 }
 
+/* Unified class to hide captions in any content */
+.no-captions .image-wrapper .image-caption {
+  pointer-events: none;
+  display: none;
+}
+
+.no-captions .image-caption::placeholder {
+  display: none;
+}
+
+.no-captions .image-remove-btn,
+.no-captions .image-edit-btn,
+.no-captions .video-remove-btn,
+.no-captions input,
+.no-captions .resize-handle {
+  display: none;
+}
+
+.no-captions .image-wrapper.selected {
+  outline: 0;
+  border: 0;
+  box-shadow: unset;
+}
+
+/* Legacy support - these classes now extend .no-captions */
 .wurf-content .image-wrapper .image-caption,
 .new-content .image-wrapper .image-caption {
   pointer-events: none;
   display: none;
 }
-
-

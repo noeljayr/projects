@@ -47,7 +47,7 @@ export function Navbar({ content }: Props) {
     try {
       await fetch("/api/auth/signout", { method: "POST" });
       logout();
-      router.push("/");
+      router.push("/vomsauterhof");
       router.refresh();
     } catch (error) {
       console.error("Logout failed:", error);
@@ -228,7 +228,7 @@ export function Navbar({ content }: Props) {
     <>
       <div
         style={{ transition: "var(--transition)" }}
-        className={`fixed top-0 left-0 w-screen z-[999] ${
+        className={`fixed top-0 left-0 w-screen overflow-x-hidden z-[999] ${
           isScrolled ? "bg-[#BEA99A]" : "bg-transparent"
         }`}
       >
@@ -312,7 +312,7 @@ export function Navbar({ content }: Props) {
             >
               <div className="flex items-center justify-between p-6">
                 <Image
-                  src={"logo.svg"}
+                  src={logo}
                   width={60}
                   height={60}
                   alt="Logo"
@@ -332,7 +332,7 @@ export function Navbar({ content }: Props) {
                   <Link
                     href={addEditModeParam("/vomsauterhof/")}
                     className={`mobile-menu-item block text-black font-medium font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/") ? "bg-[#EEE5DD]" : ""
+                      pathname === ("/vomsauterhof/") ? "bg-[#EEE5DD]" : ""
                     }  hover:bg-[#FBF2EA]/50 transition-colors duration-150`}
                   >
                     {content.linkStart || "Start"}

@@ -71,7 +71,7 @@ function WelpenWrapper({ bannerContent, welpen, wurf }: Props) {
         </div>
         {welpen && welpen.information ? (
           <div
-            className="font-p2 wurf-content"
+            className="font-p2 wurf-content no-captions"
             dangerouslySetInnerHTML={{ __html: welpen.information }}
           />
         ) : (

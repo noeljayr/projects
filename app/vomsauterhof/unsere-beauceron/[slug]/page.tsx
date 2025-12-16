@@ -161,7 +161,7 @@ async function Page({ params }: { params: Promise<{ slug: string }> }) {
 
           <span className="w-full h-[1px] bg-[#EDE0D6] max-[900px]:hidden"></span>
 
-          <div className="flex">
+          <div className="flex no-captions">
             <p
               className="opacity-75 font-p3"
               dangerouslySetInnerHTML={{ __html: beauceron.description }}

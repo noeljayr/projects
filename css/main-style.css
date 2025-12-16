@@ -331,7 +331,9 @@ h4 {
 }
 
 .news-content .image-remove-btn,
-.wurf-content .image-remove-btn {
+.wurf-content .image-remove-btn,
+.news-content .image-edit-btn,
+.wurf-content .image-edit-btn {
   display: none;
 }
 

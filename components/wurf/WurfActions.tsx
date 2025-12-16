@@ -112,7 +112,7 @@ function WurfActions({ setShow, show, wurf, onDelete, onRefresh }: Props) {
             className="py-1 px-1.5 cursor-pointer rounded-[0.25rem] bg-[#FBF2EA] hover:brightness-95 flex items-center space-x-2 text-left"
           >
             <IconTimeline color="#9333EA" className="h-4 w-4" />
-            <span>Zeitleiste</span>
+            <span>Nachzucht</span>
           </Link>
 
           <Link
