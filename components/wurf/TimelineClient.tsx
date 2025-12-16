@@ -40,10 +40,42 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
   const dateContainerRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  useEffect(() => {
-    if (timeline.length === 0) return;
+  // Combine timeline and welpen data
+  const allEntries: TimelineEntry[] = [...timeline];
 
-    // Create intersection observer to track which section is in view
+  // Add welpen as a timeline entry if it exists and has data
+  if (welpen && welpen.date && welpen.title && welpen.dogs.length > 0) {
+    allEntries.push({
+      id: "welpen",
+      wurfId: "",
+      date: welpen.date,
+      title: welpen.title,
+      dogs: welpen.dogs,
+      category: "welpen",
+    });
+  }
+
+  // Sort by date
+  allEntries.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  // Filter based on active filter
+  const filteredEntries = allEntries.filter((entry) => {
+    if (activeFilter === "Alle") return true;
+    if (activeFilter === "Welpen") return entry.category === "welpen";
+    if (activeFilter === "Nachzucht") return entry.category === "nachzucht";
+    return true;
+  });
+
+  useEffect(() => {
+    if (filteredEntries.length === 0) return;
+
+    // Disconnect previous observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
     // Create intersection observer to track which section is in view
     const ratios = new Map<number, number>();
 
@@ -81,8 +113,8 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
 
     observerRef.current = observer;
 
-    // Observe all content sections
-    const currentRefs = contentRefs.current;
+    // Observe all content sections (only the filtered ones)
+    const currentRefs = contentRefs.current.slice(0, filteredEntries.length);
     currentRefs.forEach((ref) => {
       if (ref) observer.observe(ref);
     });
@@ -90,7 +122,12 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
     return () => {
       observer.disconnect();
     };
-  }, [timeline]);
+  }, [filteredEntries.length, activeFilter]); // Update when filter changes
+
+  // Reset active index when filter changes
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [activeFilter]);
 
   // Auto-scroll active date into view on mobile
   useEffect(() => {
@@ -121,34 +158,6 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
       block: "center",
     });
   };
-
-  // Combine timeline and welpen data
-  const allEntries: TimelineEntry[] = [...timeline];
-
-  // Add welpen as a timeline entry if it exists and has data
-  if (welpen && welpen.date && welpen.title && welpen.dogs.length > 0) {
-    allEntries.push({
-      id: "welpen",
-      wurfId: "",
-      date: welpen.date,
-      title: welpen.title,
-      dogs: welpen.dogs,
-      category: "welpen",
-    });
-  }
-
-  // Sort by date
-  allEntries.sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
-
-  // Filter based on active filter
-  const filteredEntries = allEntries.filter((entry) => {
-    if (activeFilter === "Alle") return true;
-    if (activeFilter === "Welpen") return entry.category === "welpen";
-    if (activeFilter === "Nachzucht") return entry.category === "nachzucht";
-    return true;
-  });
 
   if (filteredEntries.length === 0 && !showFilters) {
     return null;
