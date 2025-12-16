@@ -18,6 +18,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { AnimatePresence, motion } from "motion/react";
 import { motionTransition } from "@/constants/motionTransition";
 import WurfMenu from "./wurf/WurfMenu";
+import BeauceronMenu from "./beauceron/BeauceronMenu";
 
 type Props = {
   content: NavbarContent;
@@ -183,10 +184,6 @@ export function Navbar({ content }: Props) {
       name: content.linkNews || "News",
       href: "/vomsauterhof/news",
     },
-    {
-      name: content.linkBreed || "Unsere beauceron",
-      href: "/vomsauterhof/unsere-beauceron",
-    },
   ];
 
   const activeLink = (href: string) => {
@@ -261,6 +258,8 @@ export function Navbar({ content }: Props) {
                   {link.name}
                 </Link>
               ))}
+
+              <BeauceronMenu content={content} />
 
               <WurfMenu content={content} />
             </nav>

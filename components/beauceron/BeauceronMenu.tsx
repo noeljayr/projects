@@ -6,13 +6,14 @@ import { categoryToSlug } from "@/lib/categorySlug";
 import { usePathname, useSearchParams } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { NavbarContent } from "@/types/navbar";
+import { Beauceron } from "@/types/Beauceron";
 
 type Props = {
   content: NavbarContent;
 };
 
-function WurfMenu({ content }: Props) {
-  const [categories, setCategories] = useState<string[]>([]);
+function BeauceronMenu({ content }: Props) {
+  const [beauceron, setBeauceron] = useState<Beauceron[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,22 +26,21 @@ function WurfMenu({ content }: Props) {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchBeauceron = async () => {
       try {
-        const response = await fetch("/api/wurf/categories");
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
+        const response = await fetch("/api/beauceron/list");
         const data = await response.json();
-        setCategories(data.categories || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
+        if (data.success) {
+          setBeauceron(data.beauceron);
+        }
+      } catch (error) {
+        console.error("Error fetching beauceron:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCategories();
+    fetchBeauceron();
   }, []);
 
   const activeLink = (href: string) => {
@@ -53,14 +53,14 @@ function WurfMenu({ content }: Props) {
   return (
     <div className="flex group flex-col relative">
       <Link
-        href={addEditModeParam("/wurf")}
+        href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
         className={`text-black font-medium  px-5 py-2 ${
-          activeLink("/vomsauterhof/wurf")
+          activeLink("/vomsauterhof/unsere-beauceron")
             ? "bg-[#EEE5DD] border border-[#D5BEAA]"
             : "bg-[#DBC6B3]"
         } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
       >
-        {content.linkWurf || "Wurf"}
+        {content.linkBreed || "Unsere beauceron"}
 
         <IconChevronDown className="h-4 w-4 ml-2 opacity-75" />
       </Link>
@@ -68,16 +68,16 @@ function WurfMenu({ content }: Props) {
         <div
           style={{
             transition: "ease 0.5s",
-          }}
-          className="absolute opacity-0 group-hover:opacity-100 invisible group-hover:visible top-[50%] group-hover:top-[104%] flex flex-col p-2 w-25 right-0 rounded-[0.65rem] space-y-2 bg-[#FBF2EA] shadow-sm border"
+          }} 
+          className="absolute opacity-0 group-hover:opacity-100 invisible group-hover:visible top-[50%] group-hover:top-[104%] flex flex-col p-2 w-[16rem] right-0 rounded-[0.65rem] space-y-2 bg-[#FBF2EA] shadow-sm border"
         >
-          {categories.map((category, index) => (
+          {beauceron.map((b, index) => (
             <Link
               key={index}
-              href={`/vomsauterhof/wurf/${categoryToSlug(category)}`}
-              className="hover:underline capitalize"
+              href={`/vomsauterhof/unsere-beauceron/${b.slug}`}
+              className="hover:underline capitalize font-p4"
             >
-              {category}
+              {b.name}
             </Link>
           ))}
         </div>
@@ -86,4 +86,4 @@ function WurfMenu({ content }: Props) {
   );
 }
 
-export default WurfMenu;
+export default BeauceronMenu;
