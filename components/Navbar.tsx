@@ -5,13 +5,19 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import logo from "@/public/logo.svg";
-import { IconCheck, IconLogout, IconNotes } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconChevronDown,
+  IconLogout,
+  IconNotes,
+} from "@tabler/icons-react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { NavbarContent } from "@/types/navbar";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { AnimatePresence, motion } from "motion/react";
 import { motionTransition } from "@/constants/motionTransition";
+import WurfMenu from "./wurf/WurfMenu";
 
 type Props = {
   content: NavbarContent;
@@ -181,10 +187,6 @@ export function Navbar({ content }: Props) {
       name: content.linkBreed || "Unsere beauceron",
       href: "/vomsauterhof/unsere-beauceron",
     },
-    {
-      name: content.linkWurf || "Wurf",
-      href: "/vomsauterhof/wurf",
-    },
   ];
 
   const activeLink = (href: string) => {
@@ -222,7 +224,7 @@ export function Navbar({ content }: Props) {
     <>
       <div
         style={{ transition: "var(--transition)" }}
-        className={`fixed top-0 left-0 w-screen overflow-x-hidden z-[999] ${
+        className={`fixed top-0 left-0 w-screen  z-[999] ${
           isScrolled ? "bg-[#BEA99A]" : "bg-transparent"
         }`}
       >
@@ -259,17 +261,8 @@ export function Navbar({ content }: Props) {
                   {link.name}
                 </Link>
               ))}
-              {/* <Link
-                href={addEditModeParam("/wurf")}
-                className={`text-black font-medium cursor-pointer  px-4 py-2 ${
-                  activeLink("wurf")
-                    ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                    : "bg-[#DBC6B3]"
-                } hover:brightness-[0.97] rounded-full flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-              >
-                {content.linkWurf || "Wurf"}
-                <IconChevronDown className="h-4 w-4 ml-2 opacity-75" />
-              </Link> */}
+              
+                <WurfMenu content={content} />
             </nav>
 
             <div className="flex flex-row-reverse items-center gap-3">
@@ -327,7 +320,10 @@ export function Navbar({ content }: Props) {
                 <Link
                   href={addEditModeParam("/vomsauterhof/")}
                   className={`mobile-menu-item block text-black font-medium font-p4 py-2 px-4 rounded-lg ${
-                    pathname === "/vomsauterhof/" || pathname === "/vomsauterhof" ? "bg-[#EEE5DD]" : ""
+                    pathname === "/vomsauterhof/" ||
+                    pathname === "/vomsauterhof"
+                      ? "bg-[#EEE5DD]"
+                      : ""
                   }  hover:bg-[#FBF2EA]/50 transition-colors duration-150`}
                 >
                   {content.linkStart || "Start"}
