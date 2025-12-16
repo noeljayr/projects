@@ -18,6 +18,7 @@ import {
   IconTrash,
   IconChevronLeft,
   IconChevronRight,
+  IconPhotoPlus,
 } from "@tabler/icons-react";
 
 type GalleryImage = {
@@ -234,8 +235,8 @@ function Gallery({ images, initialGalleryImages }: Props) {
             navigation={false}
             pagination={false}
             autoplay={{
-              delay: 10000,
-              disableOnInteraction: false,
+              delay: 15000,
+              disableOnInteraction: true,
             }}
             onSwiper={(swiper) => setSwiperInstance(swiper)}
             onSlideChange={(swiper) => setActiveSlide(swiper.activeIndex)}
@@ -287,7 +288,7 @@ function Gallery({ images, initialGalleryImages }: Props) {
                     </>
                   ) : (
                     <>
-                      <Upload size={32} className="text-gray-400 mb-2" />
+                      <IconPhotoPlus className=" opacity-50 h-6 w-6 mb-2" />
                       <span className="text-gray-500 text-sm font-medium">
                         Bild hinzufügen
                       </span>
