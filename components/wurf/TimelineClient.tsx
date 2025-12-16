@@ -153,10 +153,28 @@ function TimelineClient({ timeline, welpen, showFilters = false }: Props) {
   }, [activeIndex]);
 
   const scrollToSection = (index: number) => {
-    contentRefs.current[index]?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
+    const element = contentRefs.current[index];
+    if (!element) return;
+
+    // Get the title element (first h3 inside the timeline entry)
+    const titleElement = element.querySelector("h3");
+
+    if (titleElement) {
+      // Scroll to the title with some offset to account for sticky header
+      const elementRect = titleElement.getBoundingClientRect();
+      const offset = window.innerWidth <= 900 ? 120 : 140; // Account for sticky sidebar/header
+
+      window.scrollTo({
+        top: window.scrollY + elementRect.top - offset,
+        behavior: "smooth",
+      });
+    } else {
+      // Fallback to scrolling to the container with start alignment
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
   };
 
   if (filteredEntries.length === 0 && !showFilters) {
