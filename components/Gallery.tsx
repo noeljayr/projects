@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { Upload } from "lucide-react";
 
 // Import Swiper styles
 import "swiper/css";
@@ -54,6 +53,7 @@ function Gallery({ images, initialGalleryImages }: Props) {
   const [activeSlide, setActiveSlide] = useState(0);
   const [slidesPerView, setSlidesPerView] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   // Initialize gallery images from database or fallback to legacy images
   const [currentImages, setCurrentImages] = useState<GalleryImage[]>(() => {
@@ -122,11 +122,11 @@ function Gallery({ images, initialGalleryImages }: Props) {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const uploadFile = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -172,6 +172,56 @@ function Gallery({ images, initialGalleryImages }: Props) {
     }
   };
 
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    await uploadFile(file);
+  };
+
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (isEditMode && !isLoading) {
+      setIsDragOver(true);
+    }
+  };
+
+  const handleDragLeave = (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = async (event: React.DragEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragOver(false);
+
+    if (!isEditMode || isLoading) return;
+
+    const files = Array.from(event.dataTransfer.files);
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+
+    if (imageFiles.length === 0) {
+      alert("Please drop image files only.");
+      return;
+    }
+
+    // Upload the first image file
+    if (imageFiles.length > 0) {
+      await uploadFile(imageFiles[0]);
+    }
+
+    // If multiple files, show a message
+    if (imageFiles.length > 1) {
+      alert(
+        `${imageFiles.length} images detected. Only the first image was uploaded. Please upload one image at a time.`
+      );
+    }
+  };
+
   const handleDeleteImage = async (imageId: string) => {
     if (!confirm("Are you sure you want to delete this image?")) return;
 
@@ -195,7 +245,16 @@ function Gallery({ images, initialGalleryImages }: Props) {
     }
   };
   return (
-    <section className="section-container  relative py-12 pb-0 md:py-20 mx-auto mt-15">
+    <section
+      className={`section-container relative py-12 pb-0 md:py-20 mx-auto mt-15 transition-all duration-200 ${
+        isDragOver && isEditMode
+          ? "bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg"
+          : ""
+      }`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       <Image
         src={paw}
         alt=""
@@ -211,6 +270,22 @@ function Gallery({ images, initialGalleryImages }: Props) {
         alt=""
         className="absolute w-25 top-25 rotate-[90deg] -left-40 opacity-10 z-0"
       />
+
+      {isDragOver && isEditMode && (
+        <div className="absolute inset-0 bg-blue-100/50 rounded-lg flex items-center justify-center z-50 pointer-events-none">
+          <div className="bg-white rounded-lg p-6 shadow-lg border-2 border-blue-300 border-dashed">
+            <div className="text-center">
+              <IconPhotoPlus className="h-12 w-12 text-blue-500 mx-auto mb-2" />
+              <p className="text-lg font-medium text-blue-700">
+                Bild hier ablegen
+              </p>
+              <p className="text-sm text-blue-600">
+                Lassen Sie das Bild los, um es hochzuladen
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isEditMode && (
         <button
@@ -280,6 +355,15 @@ function Gallery({ images, initialGalleryImages }: Props) {
                 <div
                   className="relative aspect-square cursor-pointer border-1 border-dashed border-gray-300 rounded-lg flex flex-col items-center mx-[1px] justify-center hover:border-gray-400 transition-colors duration-200 bg-[#FBF2EA]"
                   onClick={!isLoading ? handleAddImage : undefined}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDrop(e);
+                  }}
                 >
                   {isLoading ? (
                     <>
@@ -293,7 +377,7 @@ function Gallery({ images, initialGalleryImages }: Props) {
                         Bild hinzufügen
                       </span>
                       <span className="text-gray-400 text-xs mt-1">
-                        Zum Hochladen klicken
+                        Klicken oder hierher ziehen
                       </span>
                     </>
                   )}
