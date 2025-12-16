@@ -13,6 +13,7 @@ import EditableText from "@/components/EditableText";
 import EditableImage from "@/components/EditableImage";
 import paw from "@/public/pawprint.png";
 import paw2 from "@/public/paw-2.png";
+import Gallery from "../Gallery";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -452,58 +453,7 @@ export default function Home({ content, news, images }: Props) {
         </section>
       </div>
 
-      <section className="section-container relative py-12 pb-0 md:py-20 mx-auto mt-15">
-        <Image
-          src={paw}
-          alt=""
-          className="absolute w-25 -top-2 right-0 opacity-10 z-0"
-        />
-        <Image
-          src={paw}
-          alt=""
-          className="absolute w-25 top-25 -right-40 opacity-10 z-0"
-        />
-        <Image
-          src={paw}
-          alt=""
-          className="absolute w-25 top-25 rotate-[90deg] -left-40 opacity-10 z-0"
-        />
-        <div
-          ref={galleryRef}
-          className="grid grid-cols-1 relative z-1 md:grid-cols-7 gap-4 md:gap-6 mb-8"
-        >
-          <div className="relative h-[250px] md:h-[374px] md:col-span-2 hover-scale cursor-pointer">
-            <EditableImage
-              initialSrc={images.gallery1 || "/section-2.1-img.png"}
-              fieldName="gallery1"
-              isEditMode={isEditMode}
-              alt="Rottweiler puppies in field"
-              fill
-              className="object-cover rounded-lg transition-all duration-500"
-            />
-          </div>
-          <div className="relative h-[250px] md:h-[374px] md:col-span-3 hover-scale cursor-pointer">
-            <EditableImage
-              initialSrc={images.gallery2 || "/section-2.2-img.png"}
-              fieldName="gallery2"
-              isEditMode={isEditMode}
-              alt="Person with dogs in mountains"
-              fill
-              className="object-cover rounded-lg transition-all duration-500"
-            />
-          </div>
-          <div className="relative h-[250px] md:h-[374px] md:col-span-2 hover-scale cursor-pointer">
-            <EditableImage
-              initialSrc={images.gallery3 || "/section-2.3-img.png"}
-              fieldName="gallery3"
-              isEditMode={isEditMode}
-              alt="Dogs on mountain rocks"
-              fill
-              className="object-cover rounded-lg transition-all duration-500"
-            />
-          </div>
-        </div>
-      </section>
+      <Gallery images={images} />
 
       {/* Content Section */}
       <section ref={contentRef} className="md:pt-12 pb-20 md:pb-28">

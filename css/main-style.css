@@ -423,3 +423,75 @@ h4 {
   pointer-events: none;
   display: none;
 }
+
+/* Swiper Gallery Styles */
+.gallery-swiper {
+  padding-bottom: 50px !important;
+}
+
+.gallery-swiper .swiper-pagination {
+  bottom: 10px !important;
+}
+
+.gallery-swiper .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+  width: 12px;
+  height: 12px;
+  margin: 0 6px;
+  transition: all 0.3s ease;
+}
+
+.gallery-swiper .swiper-pagination-bullet-active {
+  background: #ffffff;
+  transform: scale(1.2);
+}
+
+.gallery-swiper .swiper-button-next,
+.gallery-swiper .swiper-button-prev {
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  transition: all 0.3s ease;
+}
+
+.gallery-swiper .swiper-button-next:hover,
+.gallery-swiper .swiper-button-prev:hover {
+  background: rgba(0, 0, 0, 0.6);
+  transform: scale(1.1);
+}
+
+.gallery-swiper .swiper-button-next::after,
+.gallery-swiper .swiper-button-prev::after {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Hide navigation on mobile */
+@media (max-width: 767px) {
+  .gallery-swiper .swiper-button-next,
+  .gallery-swiper .swiper-button-prev {
+    display: none;
+  }
+}
+
+/* Gallery Add Image Button */
+.gallery-swiper .swiper-slide:last-child .bg-gray-50 {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.gallery-swiper .swiper-slide:last-child .bg-gray-50:hover {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+/* Gallery Image Delete Button */
+.gallery-swiper .group:hover .opacity-0 {
+  opacity: 1;
+}
+
+.gallery-swiper .hover\:scale-105:hover {
+  transform: scale(1.05);
+}
