@@ -1,17 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { gsap } from "gsap";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import logo from "@/public/logo.svg";
-import {
-  IconCheck,
-  IconChevronDown,
-  IconLogout,
-  IconNotes,
-} from "@tabler/icons-react";
+import { IconCheck, IconLogout, IconNotes } from "@tabler/icons-react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { NavbarContent } from "@/types/navbar";
@@ -120,9 +114,9 @@ export function Navbar({ content }: Props) {
         mobileMenuRef.current.querySelectorAll(".mobile-menu-item");
       tl.fromTo(
         menuItems,
-        { y: 20, opacity: 0 },
+        { x: 30, opacity: 0 },
         {
-          y: 0,
+          x: 0,
           opacity: 1,
           duration: 0.4,
           stagger: 0.08,
@@ -299,97 +293,97 @@ export function Navbar({ content }: Props) {
           </div>
         </header>
 
-        {isMobileMenuOpen && (
+        <div
+          ref={mobileMenuOverlayRef}
+          className={`fixed inset-0 bg-black/50 z-50 lg:hidden ${
+            !isMobileMenuOpen ? "pointer-events-none opacity-0" : ""
+          }`}
+          onClick={closeMobileMenu}
+        >
           <div
-            ref={mobileMenuOverlayRef}
-            className="fixed inset-0 bg-black/50 z-50 lg:hidden"
-            onClick={closeMobileMenu}
+            ref={mobileMenuRef}
+            className="fixed flex flex-col right-0 top-0 h-dvh w-80 bg-[#BEA99A] shadow-2xl overflow-y-auto translate-x-full opacity-0"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              ref={mobileMenuRef}
-              className="fixed flex flex-col right-0 top-0 h-dvh w-80 bg-[#BEA99A] shadow-2xl overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between p-6">
-                <Image
-                  src={logo}
-                  width={60}
-                  height={60}
-                  alt="Logo"
-                  className="hover-scale"
-                />
-                <button
-                  onClick={closeMobileMenu}
-                  className="p-2 text-black bg-[#EEE5DD] hover:bg-[#FBF2EA]/50 rounded-md transition-colors duration-150"
-                  aria-label="Close menu"
+            <div className="flex items-center justify-between p-6">
+              <Image
+                src={logo}
+                width={60}
+                height={60}
+                alt="Logo"
+                className="hover-scale"
+              />
+              <button
+                onClick={closeMobileMenu}
+                className="p-2 text-black bg-[#EEE5DD] hover:bg-[#FBF2EA]/50 rounded-md transition-colors duration-150"
+                aria-label="Close menu"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <nav className="flex flex-col items-center">
+              <div className="space-y-1 w-full px-4">
+                <Link
+                  href={addEditModeParam("/vomsauterhof/")}
+                  className={`mobile-menu-item block text-black font-medium font-p4 py-2 px-4 rounded-lg ${
+                    pathname === "/vomsauterhof/" || pathname === "/vomsauterhof" ? "bg-[#EEE5DD]" : ""
+                  }  hover:bg-[#FBF2EA]/50 transition-colors duration-150`}
                 >
-                  <X size={24} />
-                </button>
+                  {content.linkStart || "Start"}
+                </Link>
+                <Link
+                  href={addEditModeParam("/vomsauterhof/uber-uns")}
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/uber-uns") ? "bg-[#EEE5DD]" : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  {content.linkAbout || "Über uns"}
+                </Link>
+                <Link
+                  href={addEditModeParam("/vomsauterhof/news")}
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/news") ? "bg-[#EEE5DD]" : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  {content.linkNews || "News"}
+                </Link>
+                <Link
+                  href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/unsere-beauceron")
+                      ? "bg-[#EEE5DD]"
+                      : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  {content.linkBreed || "Unsere beauceron"}
+                </Link>
+                <a
+                  href="/vomsauterhof/wurf"
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/wurf") ? "bg-[#EEE5DD]" : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  {content.linkWurf || "Wuif"}
+                </a>
               </div>
 
-              <nav className="flex flex-col items-center">
-                <div className="space-y-1 w-full px-4">
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/")}
-                    className={`mobile-menu-item block text-black font-medium font-p4 py-2 px-4 rounded-lg ${
-                      pathname === ("/vomsauterhof/") ? "bg-[#EEE5DD]" : ""
-                    }  hover:bg-[#FBF2EA]/50 transition-colors duration-150`}
-                  >
-                    {content.linkStart || "Start"}
-                  </Link>
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/uber-uns")}
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/uber-uns") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    {content.linkAbout || "Über uns"}
-                  </Link>
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/news")}
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/news") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    {content.linkNews || "News"}
-                  </Link>
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/unsere-beauceron")
-                        ? "bg-[#EEE5DD]"
-                        : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    {content.linkBreed || "Unsere beauceron"}
-                  </Link>
-                  <a
-                    href="/vomsauterhof/wurf"
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/wurf") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    {content.linkWurf || "Wuif"}
-                  </a>
+              <div className="mobile-menu-item absolute bottom-2 pt-6 border-t border-[#A89485] w-full max-w-[240px] text-center">
+                <div className="text-black">
+                  <p className="font-semibold mb-3 text-lg">
+                    {content.mobileContactHeading || "Familie Sauter"}
+                  </p>
+                  <p className="text-sm mb-2">
+                    {content.mobilePhone || "079 770 49 24"}
+                  </p>
+                  <p className="text-sm">
+                    {content.mobileEmail || "h.sauter@sauterhof.ch"}
+                  </p>
                 </div>
-
-                <div className="mobile-menu-item absolute bottom-2 pt-6 border-t border-[#A89485] w-full max-w-[240px] text-center">
-                  <div className="text-black">
-                    <p className="font-semibold mb-3 text-lg">
-                      {content.mobileContactHeading || "Familie Sauter"}
-                    </p>
-                    <p className="text-sm mb-2">
-                      {content.mobilePhone || "079 770 49 24"}
-                    </p>
-                    <p className="text-sm">
-                      {content.mobileEmail || "h.sauter@sauterhof.ch"}
-                    </p>
-                  </div>
-                </div>
-              </nav>
-            </div>
+              </div>
+            </nav>
           </div>
-        )}
+        </div>
       </div>
 
       {isLoggedIn && (

@@ -129,7 +129,7 @@ const WurfPageWrapper = ({
   }, []);
 
   return (
-    <div className="gap-12 flex flex-col w-screen overflow-hidden pb-16">
+    <div className="gap-12 flex flex-col pb-16">
       <Banner
         name={bannerContent.title}
         description={bannerContent.description}

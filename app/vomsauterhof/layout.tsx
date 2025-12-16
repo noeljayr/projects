@@ -149,10 +149,8 @@ export default async function RootLayout({
       </Suspense>
       <NextTopLoader color="#58483B" showSpinner={false} />
       <Navbar content={navbarContent} />
-      <Suspense fallback={<LoadingSpinner />}>
-        {children}
-      </Suspense>
-        <FooterClient content={footerContent} />
+      <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+      <FooterClient content={footerContent} />
     </>
   );
 }
