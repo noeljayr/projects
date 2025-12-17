@@ -38,7 +38,7 @@ function WurfActions({ setShow, show, wurf, onDelete, onRefresh }: Props) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ids: [wurf._id],
+          ids: [wurf.id],
           status: "published",
         }),
       });
@@ -63,7 +63,7 @@ function WurfActions({ setShow, show, wurf, onDelete, onRefresh }: Props) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ids: [wurf._id],
+          ids: [wurf.id],
           status: "draft",
         }),
       });
@@ -92,7 +92,7 @@ function WurfActions({ setShow, show, wurf, onDelete, onRefresh }: Props) {
           className="p-1 flex absolute right-0 top-8 z-15 flex-col space-y-1 bg-[#FBF2EA] border border-black/10 rounded-[0.5rem] shadow-lg min-w-[150px]"
         >
           <Link
-            href={`/vomsauterhof/content/wurf/welpen/${wurf._id}`}
+            href={`/vomsauterhof/content/wurf/welpen/${wurf.id}`}
             style={{
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
@@ -104,7 +104,7 @@ function WurfActions({ setShow, show, wurf, onDelete, onRefresh }: Props) {
           </Link>
 
           <Link
-            href={`/vomsauterhof/content/wurf/timeline/${wurf._id}`}
+            href={`/vomsauterhof/content/wurf/timeline/${wurf.id}`}
             style={{
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
@@ -116,7 +116,7 @@ function WurfActions({ setShow, show, wurf, onDelete, onRefresh }: Props) {
           </Link>
 
           <Link
-            href={`/vomsauterhof/content/wurf/edit/${wurf._id}`}
+            href={`/vomsauterhof/content/wurf/edit/${wurf.id}`}
             style={{
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",

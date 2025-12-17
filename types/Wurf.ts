@@ -9,7 +9,7 @@ export interface WurfCategory {
 }
 
 export interface Wurf {
-  _id?: string;
+  id: string;
   name: string;
   information: string;
   image: string;
