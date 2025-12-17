@@ -22,7 +22,7 @@ function BeauceronMenu({ content }: Props) {
   const isEditMode = searchParams.get("mode") === "edit";
 
   const addEditModeParam = (href: string) => {
-    return isEditMode ? `${href}?mode=edit` : href;
+    return isEditMode ? `/vomsauterhof${href}?mode=edit` : href;
   };
 
   useEffect(() => {
@@ -68,7 +68,7 @@ function BeauceronMenu({ content }: Props) {
         <div
           style={{
             transition: "ease 0.5s",
-          }} 
+          }}
           className="absolute opacity-0 group-hover:opacity-100 invisible group-hover:visible top-[50%] group-hover:top-[104%] flex flex-col p-2 w-[16rem] right-0 rounded-[0.65rem] space-y-2 bg-[#FBF2EA] shadow-sm border"
         >
           {beauceron.map((b, index) => (

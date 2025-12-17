@@ -21,7 +21,7 @@ function WurfMenu({ content }: Props) {
   const isEditMode = searchParams.get("mode") === "edit";
 
   const addEditModeParam = (href: string) => {
-    return isEditMode ? `${href}?mode=edit` : href;
+    return isEditMode ? `/vomsauterhof${href}?mode=edit` : href;
   };
 
   useEffect(() => {
