@@ -60,7 +60,7 @@ function BeauceronMenu({ content }: Props) {
             : "bg-[#DBC6B3]"
         } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
       >
-        {content.linkBreed || "Unsere beauceron"}
+        {content.linkBreed || "Unsere Beauceron"}
 
         <IconChevronDown className="h-4 w-4 ml-2 opacity-75" />
       </Link>

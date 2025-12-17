@@ -200,7 +200,7 @@ export function FooterClient({ content }: Props) {
                   isEditMode={isEditMode}
                   className="hover:underline transition-all duration-300 block"
                   as="a"
-                  href={addEditModeParam("/vomsauterhof/wurf")}
+                  href={addEditModeParam("/vomsauterhof/wurf/wurf-a")}
                 />
               </li>
             </ul>

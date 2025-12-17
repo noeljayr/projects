@@ -53,7 +53,7 @@ function WurfMenu({ content }: Props) {
   return (
     <div className="flex group flex-col relative">
       <Link
-        href={addEditModeParam("/vomsauterhof/wurf")}
+        href={addEditModeParam("/vomsauterhof/wurf/wurf-c")}
         className={`text-black font-medium  px-5 py-2 ${
           activeLink("/vomsauterhof/wurf")
             ? "bg-[#EEE5DD] border border-[#D5BEAA]"
