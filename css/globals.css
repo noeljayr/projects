@@ -488,6 +488,7 @@ h4 {
 .no-captions .image-remove-btn,
 .no-captions .image-edit-btn,
 .no-captions .video-remove-btn,
+.no-captions .video-edit-btn,
 .no-captions input,
 .no-captions .resize-handle {
   display: none;
@@ -505,5 +506,3 @@ h4 {
   pointer-events: none;
   display: none;
 }
-
-

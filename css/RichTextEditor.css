@@ -646,6 +646,39 @@ input[type="range"]::-moz-range-thumb:hover {
   background: #4a90e2;
 }
 
+/* Video edit button */
+.video-edit-btn {
+  position: absolute;
+  top: -12px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.video-wrapper:hover .video-edit-btn,
+.video-wrapper.selected .video-edit-btn {
+  opacity: 1;
+}
+
+.video-edit-btn:hover {
+  transform: scale(1.1);
+  background: #357abd;
+}
+
 /* Video remove button */
 .video-remove-btn {
   position: absolute;

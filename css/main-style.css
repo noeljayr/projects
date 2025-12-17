@@ -333,7 +333,11 @@ h4 {
 .news-content .image-remove-btn,
 .wurf-content .image-remove-btn,
 .news-content .image-edit-btn,
-.wurf-content .image-edit-btn {
+.wurf-content .image-edit-btn,
+.news-content .video-remove-btn,
+.wurf-content .video-remove-btn,
+.news-content .video-edit-btn,
+.wurf-content .video-edit-btn {
   display: none;
 }
 

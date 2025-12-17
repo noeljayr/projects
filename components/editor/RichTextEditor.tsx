@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import "@/css/RichTextEditor.css";
 import ImageCropModal from "./ImageCropModal";
+import VideoPreviewModal from "./VideoPreviewModal";
 
 interface RichTextEditorProps {
   value?: string;
@@ -44,6 +45,11 @@ export default function RichTextEditor({
   const [editingImageWrapper, setEditingImageWrapper] =
     useState<HTMLElement | null>(null);
   const [editingImageCaption, setEditingImageCaption] = useState<string>("");
+  const [showVideoPreviewModal, setShowVideoPreviewModal] = useState(false);
+  const [videoToPreview, setVideoToPreview] = useState<string>("");
+  const [editingVideoWrapper, setEditingVideoWrapper] =
+    useState<HTMLElement | null>(null);
+  const [editingVideoCaption, setEditingVideoCaption] = useState<string>("");
 
   // History state
   const [history, setHistory] = useState<string[]>([]);
@@ -372,17 +378,123 @@ export default function RichTextEditor({
     setEditingImageCaption("");
   };
 
+  const handleVideoPreviewComplete = async (caption?: string) => {
+    try {
+      // Convert blob URL back to file for upload
+      const response = await fetch(videoToPreview);
+      const blob = await response.blob();
+
+      setUploadProgress(0);
+      const formData = new FormData();
+      formData.append("file", blob, "video.mp4");
+
+      const uploadResponse = await fetch("/api/images/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const { url } = await uploadResponse.json();
+
+      // Check if we're editing an existing video
+      if (editingVideoWrapper) {
+        updateExistingVideo(editingVideoWrapper, url, caption);
+        setEditingVideoWrapper(null);
+      } else {
+        insertVideoAtCursor(url, caption);
+      }
+
+      // Update editor state immediately after insertion
+      if (editorRef.current) {
+        setInternalHtml(editorRef.current.innerHTML);
+        saveToHistory(editorRef.current.innerHTML);
+      }
+
+      setUploadProgress(null);
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      alert("Failed to upload video. Please try again.");
+      setUploadProgress(null);
+    }
+
+    // Clean up blob URL
+    URL.revokeObjectURL(videoToPreview);
+    setShowVideoPreviewModal(false);
+    setVideoToPreview("");
+  };
+
+  const handleVideoPreviewCancel = () => {
+    // Clean up blob URL
+    URL.revokeObjectURL(videoToPreview);
+    setShowVideoPreviewModal(false);
+    setVideoToPreview("");
+    setEditingVideoWrapper(null);
+    setEditingVideoCaption("");
+  };
+
+  const updateExistingVideo = (
+    wrapper: HTMLElement,
+    newUrl: string,
+    caption?: string
+  ) => {
+    const video = wrapper.querySelector("video") as HTMLVideoElement;
+    const captionElement = wrapper.querySelector(
+      ".video-caption"
+    ) as HTMLElement;
+
+    if (video) {
+      video.src = newUrl;
+    }
+
+    if (captionElement && caption !== undefined) {
+      if (caption) {
+        captionElement.textContent = caption;
+        captionElement.setAttribute("data-caption", caption);
+        captionElement.style.display = "block";
+      } else {
+        captionElement.style.display = "none";
+      }
+    }
+
+    // Update editor state after modifying existing video
+    if (editorRef.current) {
+      setInternalHtml(editorRef.current.innerHTML);
+      saveToHistory(editorRef.current.innerHTML);
+    }
+  };
+
   const editImage = (wrapper: HTMLElement) => {
     const img = wrapper.querySelector("img") as HTMLImageElement;
-    const captionInput = wrapper.querySelector(
+    const captionElement = wrapper.querySelector(
       ".image-caption"
-    ) as HTMLInputElement;
+    ) as HTMLElement;
 
     if (img) {
       setEditingImageWrapper(wrapper);
-      setEditingImageCaption(captionInput?.value || "");
+      setEditingImageCaption(
+        captionElement?.getAttribute("data-caption") || ""
+      );
       setImageToCrop(img.src);
       setShowCropModal(true);
+    }
+  };
+
+  const editVideo = (wrapper: HTMLElement) => {
+    const video = wrapper.querySelector("video") as HTMLVideoElement;
+    const captionElement = wrapper.querySelector(
+      ".video-caption"
+    ) as HTMLElement;
+
+    if (video) {
+      setEditingVideoWrapper(wrapper);
+      setEditingVideoCaption(
+        captionElement?.getAttribute("data-caption") || ""
+      );
+      setVideoToPreview(video.src);
+      setShowVideoPreviewModal(true);
     }
   };
 
@@ -392,17 +504,22 @@ export default function RichTextEditor({
     caption?: string
   ) => {
     const img = wrapper.querySelector("img") as HTMLImageElement;
-    const captionInput = wrapper.querySelector(
+    const captionElement = wrapper.querySelector(
       ".image-caption"
-    ) as HTMLInputElement;
+    ) as HTMLElement;
 
     if (img) {
       img.src = newUrl;
     }
 
-    if (captionInput && caption !== undefined) {
-      captionInput.value = caption;
-      captionInput.setAttribute("value", caption);
+    if (captionElement && caption !== undefined) {
+      if (caption) {
+        captionElement.textContent = caption;
+        captionElement.setAttribute("data-caption", caption);
+        captionElement.style.display = "block";
+      } else {
+        captionElement.style.display = "none";
+      }
     }
   };
 
@@ -421,66 +538,53 @@ export default function RichTextEditor({
       return;
     }
 
-    try {
-      setUploadProgress(0);
-      const formData = new FormData();
-      formData.append("file", file);
+    // Create a temporary URL for preview
+    const videoUrl = URL.createObjectURL(file);
+    setVideoToPreview(videoUrl);
+    setShowVideoPreviewModal(true);
 
-      const response = await fetch("/api/images/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Upload failed");
-      }
-
-      const { url } = await response.json();
-      insertVideoAtCursor(url);
-      setUploadProgress(null);
-    } catch (error) {
-      console.error("Error uploading video:", error);
-      alert("Failed to upload video. Please try again.");
-      setUploadProgress(null);
-    }
-
-    if (editorRef.current) {
-      setInternalHtml(editorRef.current.innerHTML);
-    }
     e.target.value = "";
   };
 
-  const insertVideoAtCursor = (videoUrl: string) => {
+  const insertVideoAtCursor = (videoUrl: string, caption?: string) => {
+    if (!editorRef.current) return;
+
+    const wrapper = createVideoWrapper(videoUrl, caption);
     const sel = window.getSelection();
-    const wrapper = createVideoWrapper(videoUrl);
 
     if (!sel || sel.rangeCount === 0) {
-      editorRef.current?.focus();
-      editorRef.current?.appendChild(wrapper);
-      if (editorRef.current) {
-        setInternalHtml(editorRef.current.innerHTML);
-        saveToHistory(editorRef.current.innerHTML);
+      // No selection, append to end of editor
+      editorRef.current.appendChild(wrapper);
+    } else {
+      // Insert at current cursor position
+      const range = sel.getRangeAt(0);
+
+      // Check if the range is within the editor
+      if (editorRef.current.contains(range.commonAncestorContainer)) {
+        range.deleteContents();
+        range.insertNode(wrapper);
+
+        // Move cursor after the inserted video
+        range.setStartAfter(wrapper);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else {
+        // Range is outside editor, append to end
+        editorRef.current.appendChild(wrapper);
       }
-      return;
     }
 
-    const range = sel.getRangeAt(0);
-    range.deleteContents();
-    range.insertNode(wrapper);
-
-    range.setStartAfter(wrapper);
-    range.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(range);
-    editorRef.current?.focus();
-
-    if (editorRef.current) {
-      setInternalHtml(editorRef.current.innerHTML);
-      saveToHistory(editorRef.current.innerHTML);
-    }
+    // Focus editor and update state
+    editorRef.current.focus();
+    setInternalHtml(editorRef.current.innerHTML);
+    saveToHistory(editorRef.current.innerHTML);
   };
 
-  const createVideoWrapper = (videoUrl: string): HTMLElement => {
+  const createVideoWrapper = (
+    videoUrl: string,
+    caption?: string
+  ): HTMLElement => {
     const wrapper = document.createElement("div");
     wrapper.className = "video-wrapper";
     wrapper.contentEditable = "false";
@@ -493,31 +597,26 @@ export default function RichTextEditor({
     video.style.height = "auto";
     video.style.display = "block";
 
-    const captionInput = document.createElement("input");
-    captionInput.type = "text";
-    captionInput.className = "video-caption";
-    captionInput.placeholder = "Videounterschrift hinzufügen (optional)";
+    // Create read-only caption display instead of input
+    const captionElement = document.createElement("div");
+    captionElement.className = "video-caption";
+    captionElement.style.padding = "8px 12px";
+    captionElement.style.fontSize = "calc(var(--p4) * 0.9)";
+    captionElement.style.borderTop = "1px solid #eee";
 
-    captionInput.addEventListener("input", (e) => {
-      e.stopPropagation();
-      const target = e.target as HTMLInputElement;
-      target.setAttribute("value", target.value);
-      if (editorRef.current) {
-        setInternalHtml(editorRef.current.innerHTML);
-      }
-    });
-
-    captionInput.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-
-    captionInput.addEventListener("mousedown", (e) => {
-      e.stopPropagation();
-    });
+    if (caption) {
+      captionElement.textContent = caption;
+      captionElement.setAttribute("data-caption", caption);
+    } else {
+      captionElement.style.display = "none";
+    }
 
     const syncWrapperHeight = () => {
-      wrapper.style.height =
-        video.offsetHeight + captionInput.offsetHeight + "px";
+      const captionHeight =
+        captionElement.style.display === "none"
+          ? 0
+          : captionElement.offsetHeight;
+      wrapper.style.height = video.offsetHeight + captionHeight + "px";
     };
 
     video.addEventListener("loadedmetadata", syncWrapperHeight);
@@ -526,7 +625,7 @@ export default function RichTextEditor({
     if (window.ResizeObserver) {
       const resizeObserver = new ResizeObserver(syncWrapperHeight);
       resizeObserver.observe(video);
-      resizeObserver.observe(captionInput);
+      resizeObserver.observe(captionElement);
       (wrapper as any)._resizeObserver = resizeObserver;
     }
 
@@ -553,6 +652,15 @@ export default function RichTextEditor({
       );
     });
 
+    const editBtn = document.createElement("button");
+    editBtn.className = "video-edit-btn";
+    editBtn.innerHTML = "✎";
+    editBtn.title = "Edit video";
+    editBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      editVideo(wrapper);
+    });
+
     const removeBtn = document.createElement("button");
     removeBtn.className = "video-remove-btn";
     removeBtn.innerHTML = "×";
@@ -566,7 +674,8 @@ export default function RichTextEditor({
     });
 
     wrapper.appendChild(video);
-    wrapper.appendChild(captionInput);
+    wrapper.appendChild(captionElement);
+    wrapper.appendChild(editBtn);
     wrapper.appendChild(removeBtn);
 
     wrapper.addEventListener("click", (e) => {
@@ -596,11 +705,6 @@ export default function RichTextEditor({
   };
 
   const startVideoDrag = (e: DragEvent, wrapper: HTMLElement) => {
-    if ((e.target as HTMLElement).classList.contains("video-caption")) {
-      e.preventDefault();
-      return;
-    }
-
     draggedImageRef.current = wrapper;
     e.dataTransfer!.effectAllowed = "move";
     e.dataTransfer!.setData("text/html", wrapper.outerHTML);
@@ -756,38 +860,30 @@ export default function RichTextEditor({
     img.style.height = "auto";
     img.style.display = "block";
 
-    const captionInput = document.createElement("input");
-    captionInput.type = "text";
-    captionInput.className = "image-caption";
-    captionInput.placeholder = "Bildunterschrift hinzufügen (optional)";
+    // Create read-only caption display instead of input
+    const captionElement = document.createElement("div");
+    captionElement.className = "image-caption";
+    captionElement.style.padding = "8px 12px";
+    captionElement.style.fontSize = "calc(var(--p4) * 0.9)";
+    captionElement.style.color = "#666";
+    captionElement.style.fontStyle = "italic";
+    captionElement.style.textAlign = "center";
+    captionElement.style.borderTop = "1px solid #eee";
 
-    // Set caption if provided
     if (caption) {
-      captionInput.value = caption;
-      captionInput.setAttribute("value", caption);
+      captionElement.textContent = caption;
+      captionElement.setAttribute("data-caption", caption);
+    } else {
+      captionElement.style.display = "none";
     }
-
-    captionInput.addEventListener("input", (e) => {
-      e.stopPropagation();
-      const target = e.target as HTMLInputElement;
-      target.setAttribute("value", target.value);
-      if (editorRef.current) {
-        setInternalHtml(editorRef.current.innerHTML);
-      }
-    });
-
-    captionInput.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-
-    captionInput.addEventListener("mousedown", (e) => {
-      e.stopPropagation();
-    });
 
     const syncWrapperHeight = () => {
       if (img.complete && img.naturalHeight > 0) {
-        wrapper.style.height =
-          img.offsetHeight + captionInput.offsetHeight + "px";
+        const captionHeight =
+          captionElement.style.display === "none"
+            ? 0
+            : captionElement.offsetHeight;
+        wrapper.style.height = img.offsetHeight + captionHeight + "px";
       }
     };
 
@@ -799,7 +895,7 @@ export default function RichTextEditor({
     if (window.ResizeObserver) {
       const resizeObserver = new ResizeObserver(syncWrapperHeight);
       resizeObserver.observe(img);
-      resizeObserver.observe(captionInput);
+      resizeObserver.observe(captionElement);
       (wrapper as any)._resizeObserver = resizeObserver;
     }
 
@@ -848,7 +944,7 @@ export default function RichTextEditor({
     });
 
     wrapper.appendChild(img);
-    wrapper.appendChild(captionInput);
+    wrapper.appendChild(captionElement);
     wrapper.appendChild(editBtn);
     wrapper.appendChild(removeBtn);
 
@@ -964,66 +1060,26 @@ export default function RichTextEditor({
         }
       }
 
+      // Ensure caption element exists (read-only display)
       const existingCaption = wrapper.querySelector(
         ".image-caption"
-      ) as HTMLInputElement;
+      ) as HTMLElement;
       if (!existingCaption) {
-        const captionInput = document.createElement("input");
-        captionInput.type = "text";
-        captionInput.className = "image-caption";
-        captionInput.placeholder = "Bildunterschrift hinzufügen (optional)";
-
-        captionInput.addEventListener("input", (e) => {
-          e.stopPropagation();
-          const target = e.target as HTMLInputElement;
-          target.setAttribute("value", target.value);
-          if (editorRef.current) {
-            setInternalHtml(editorRef.current.innerHTML);
-          }
-        });
-
-        captionInput.addEventListener("click", (e) => {
-          e.stopPropagation();
-        });
-
-        captionInput.addEventListener("mousedown", (e) => {
-          e.stopPropagation();
-        });
+        const captionElement = document.createElement("div");
+        captionElement.className = "image-caption";
+        captionElement.style.padding = "8px 12px";
+        captionElement.style.fontSize = "calc(var(--p4) * 0.9)";
+        captionElement.style.color = "#666";
+        captionElement.style.fontStyle = "italic";
+        captionElement.style.textAlign = "center";
+        captionElement.style.borderTop = "1px solid #eee";
+        captionElement.style.display = "none"; // Hidden by default
 
         const removeBtn = wrapper.querySelector(".image-remove-btn");
         if (removeBtn) {
-          wrapper.insertBefore(captionInput, removeBtn);
+          wrapper.insertBefore(captionElement, removeBtn);
         } else {
-          wrapper.appendChild(captionInput);
-        }
-      } else {
-        // Restore the value from the HTML attribute to the input's value property
-        const savedValue = existingCaption.getAttribute("value");
-        if (savedValue) {
-          existingCaption.value = savedValue;
-        }
-
-        // Re-attach caption event listeners
-        const existingInputListener = (existingCaption as any)._inputListener;
-        if (!existingInputListener) {
-          const inputHandler = (e: Event) => {
-            e.stopPropagation();
-            const target = e.target as HTMLInputElement;
-            target.setAttribute("value", target.value);
-            if (editorRef.current) {
-              setInternalHtml(editorRef.current.innerHTML);
-            }
-          };
-          const clickHandler = (e: Event) => {
-            e.stopPropagation();
-          };
-          const mouseDownHandler = (e: Event) => {
-            e.stopPropagation();
-          };
-          existingCaption.addEventListener("input", inputHandler);
-          existingCaption.addEventListener("click", clickHandler);
-          existingCaption.addEventListener("mousedown", mouseDownHandler);
-          (existingCaption as any)._inputListener = inputHandler;
+          wrapper.appendChild(captionElement);
         }
       }
     });
@@ -1072,6 +1128,33 @@ export default function RichTextEditor({
         }
       });
 
+      // Add edit button if it doesn't exist
+      let editBtn = htmlWrapper.querySelector(".video-edit-btn") as HTMLElement;
+      if (!editBtn) {
+        editBtn = document.createElement("button");
+        editBtn.className = "video-edit-btn";
+        editBtn.innerHTML = "✎";
+        editBtn.title = "Edit video";
+
+        const removeBtn = htmlWrapper.querySelector(".video-remove-btn");
+        if (removeBtn) {
+          htmlWrapper.insertBefore(editBtn, removeBtn);
+        } else {
+          htmlWrapper.appendChild(editBtn);
+        }
+      }
+
+      // Re-attach edit button listener
+      const existingEditListener = (editBtn as any)._clickListener;
+      if (!existingEditListener) {
+        const editHandler = (e: Event) => {
+          e.stopPropagation();
+          editVideo(htmlWrapper);
+        };
+        editBtn.addEventListener("click", editHandler);
+        (editBtn as any)._clickListener = editHandler;
+      }
+
       // Re-attach remove button listener
       const removeBtn = htmlWrapper.querySelector(
         ".video-remove-btn"
@@ -1091,66 +1174,26 @@ export default function RichTextEditor({
         }
       }
 
+      // Ensure caption element exists (read-only display)
       const existingCaption = wrapper.querySelector(
         ".video-caption"
-      ) as HTMLInputElement;
+      ) as HTMLElement;
       if (!existingCaption) {
-        const captionInput = document.createElement("input");
-        captionInput.type = "text";
-        captionInput.className = "video-caption";
-        captionInput.placeholder = "Videounterschrift hinzufügen (optional)";
-
-        captionInput.addEventListener("input", (e) => {
-          e.stopPropagation();
-          const target = e.target as HTMLInputElement;
-          target.setAttribute("value", target.value);
-          if (editorRef.current) {
-            setInternalHtml(editorRef.current.innerHTML);
-          }
-        });
-
-        captionInput.addEventListener("click", (e) => {
-          e.stopPropagation();
-        });
-
-        captionInput.addEventListener("mousedown", (e) => {
-          e.stopPropagation();
-        });
+        const captionElement = document.createElement("div");
+        captionElement.className = "video-caption";
+        captionElement.style.padding = "8px 12px";
+        captionElement.style.fontSize = "calc(var(--p4) * 0.9)";
+        captionElement.style.color = "#666";
+        captionElement.style.fontStyle = "italic";
+        captionElement.style.textAlign = "center";
+        captionElement.style.borderTop = "1px solid #eee";
+        captionElement.style.display = "none"; // Hidden by default
 
         const removeBtn = wrapper.querySelector(".video-remove-btn");
         if (removeBtn) {
-          wrapper.insertBefore(captionInput, removeBtn);
+          wrapper.insertBefore(captionElement, removeBtn);
         } else {
-          wrapper.appendChild(captionInput);
-        }
-      } else {
-        // Restore the value from the HTML attribute to the input's value property
-        const savedValue = existingCaption.getAttribute("value");
-        if (savedValue) {
-          existingCaption.value = savedValue;
-        }
-
-        // Re-attach caption event listeners
-        const existingInputListener = (existingCaption as any)._inputListener;
-        if (!existingInputListener) {
-          const inputHandler = (e: Event) => {
-            e.stopPropagation();
-            const target = e.target as HTMLInputElement;
-            target.setAttribute("value", target.value);
-            if (editorRef.current) {
-              setInternalHtml(editorRef.current.innerHTML);
-            }
-          };
-          const clickHandler = (e: Event) => {
-            e.stopPropagation();
-          };
-          const mouseDownHandler = (e: Event) => {
-            e.stopPropagation();
-          };
-          existingCaption.addEventListener("input", inputHandler);
-          existingCaption.addEventListener("click", clickHandler);
-          existingCaption.addEventListener("mousedown", mouseDownHandler);
-          (existingCaption as any)._inputListener = inputHandler;
+          wrapper.appendChild(captionElement);
         }
       }
     });
@@ -1177,12 +1220,6 @@ export default function RichTextEditor({
   };
 
   const startImageDrag = (e: DragEvent, wrapper: HTMLElement) => {
-    // Don't start drag if clicking on caption input
-    if ((e.target as HTMLElement).classList.contains("image-caption")) {
-      e.preventDefault();
-      return;
-    }
-
     draggedImageRef.current = wrapper;
     e.dataTransfer!.effectAllowed = "move";
     e.dataTransfer!.setData("text/html", wrapper.outerHTML);
@@ -1664,32 +1701,10 @@ export default function RichTextEditor({
         return;
       }
 
-      try {
-        setUploadProgress(0);
-        const formData = new FormData();
-        formData.append("file", videoFile);
-
-        const response = await fetch("/api/images/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error("Upload failed");
-        }
-
-        const { url } = await response.json();
-        insertVideoAtPoint(url, x, y);
-        setUploadProgress(null);
-      } catch (error) {
-        console.error("Error uploading video:", error);
-        alert("Failed to upload video. Please try again.");
-        setUploadProgress(null);
-      }
-
-      if (editorRef.current) {
-        setInternalHtml(editorRef.current.innerHTML);
-      }
+      // Create a temporary URL for preview
+      const videoUrl = URL.createObjectURL(videoFile);
+      setVideoToPreview(videoUrl);
+      setShowVideoPreviewModal(true);
       return;
     }
 
@@ -1740,9 +1755,14 @@ export default function RichTextEditor({
     }
   };
 
-  const insertVideoAtPoint = (videoUrl: string, x: number, y: number) => {
+  const insertVideoAtPoint = (
+    videoUrl: string,
+    x: number,
+    y: number,
+    caption?: string
+  ) => {
     const range = getRangeFromPoint(x, y);
-    const wrapper = createVideoWrapper(videoUrl);
+    const wrapper = createVideoWrapper(videoUrl, caption);
 
     if (!range) {
       editorRef.current?.appendChild(wrapper);
@@ -2188,6 +2208,15 @@ export default function RichTextEditor({
           onCropComplete={handleCropComplete}
           onCancel={handleCropCancel}
           initialCaption={editingImageCaption}
+        />
+      )}
+
+      {showVideoPreviewModal && videoToPreview && (
+        <VideoPreviewModal
+          videoSrc={videoToPreview}
+          onComplete={handleVideoPreviewComplete}
+          onCancel={handleVideoPreviewCancel}
+          initialCaption={editingVideoCaption}
         />
       )}
     </div>
