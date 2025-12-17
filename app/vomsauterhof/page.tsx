@@ -16,8 +16,8 @@ async function Page() {
   const newsCollection = db.collection("news");
   const newsData = await newsCollection
     .find({ status: "published" })
-    .sort({ createdAt: -1 })
-    .limit(6)
+    .sort({ date: -1 })
+    .limit(10)
     .toArray();
 
   const news = newsData.map((n) => ({

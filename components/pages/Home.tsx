@@ -14,7 +14,7 @@ import EditableImage from "@/components/EditableImage";
 import paw from "@/public/pawprint.png";
 import paw2 from "@/public/paw-2.png";
 import Gallery from "../Gallery";
-
+import Link from "next/link";
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -730,7 +730,7 @@ export default function Home({ content, news, images, galleryImages }: Props) {
           </div>
 
           {news.length > 3 && (
-            <div className="mt-8 md:mt-5">
+            <Link href={"/vomsauterhof/news"} className="mt-8 md:mt-5">
               <div className="border border-[#1A1A1A1A] rounded-full flex p-1 pr-2 items-center justify-center w-fit mx-auto hover-scale cursor-pointer">
                 <div className="flex items-center relative w-[7rem]">
                   {news.slice(3, 6).map((n, index) => (
@@ -773,7 +773,7 @@ export default function Home({ content, news, images, galleryImages }: Props) {
                   </b>
                 </div>
               </div>
-            </div>
+            </Link>
           )}
         </div>
       </section>
