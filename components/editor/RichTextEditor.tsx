@@ -188,20 +188,69 @@ export default function RichTextEditor({
       }
     }
 
+    // No valid selection, create a range at the end of the current line or editor
     if (editorRef.current) {
       const range = document.createRange();
-      if (editorRef.current.lastChild) {
-        if (editorRef.current.lastChild.nodeType === Node.TEXT_NODE) {
-          range.setStart(
-            editorRef.current.lastChild,
-            (editorRef.current.lastChild as Text).textContent?.length || 0
-          );
+
+      // Try to find the last text node or element to place cursor at end of line
+      const walker = document.createTreeWalker(
+        editorRef.current,
+        NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+        {
+          acceptNode: (node) => {
+            // Accept text nodes with content or block elements
+            if (node.nodeType === Node.TEXT_NODE) {
+              return node.textContent?.trim()
+                ? NodeFilter.FILTER_ACCEPT
+                : NodeFilter.FILTER_SKIP;
+            }
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node as Element;
+              // Accept block elements or elements that can contain text
+              if (
+                element.tagName &&
+                ["P", "DIV", "H1", "H2", "H3", "LI", "BLOCKQUOTE"].includes(
+                  element.tagName
+                )
+              ) {
+                return NodeFilter.FILTER_ACCEPT;
+              }
+            }
+            return NodeFilter.FILTER_SKIP;
+          },
+        }
+      );
+
+      let lastNode = null;
+      let currentNode;
+      while ((currentNode = walker.nextNode())) {
+        lastNode = currentNode;
+      }
+
+      if (lastNode) {
+        if (lastNode.nodeType === Node.TEXT_NODE) {
+          // Place cursor at end of text node
+          range.setStart(lastNode, (lastNode as Text).textContent?.length || 0);
         } else {
-          range.setStartAfter(editorRef.current.lastChild);
+          // Place cursor at end of element
+          range.setStart(lastNode, lastNode.childNodes.length);
         }
       } else {
-        range.setStart(editorRef.current, 0);
+        // Fallback: place at end of editor
+        if (editorRef.current.lastChild) {
+          if (editorRef.current.lastChild.nodeType === Node.TEXT_NODE) {
+            range.setStart(
+              editorRef.current.lastChild,
+              (editorRef.current.lastChild as Text).textContent?.length || 0
+            );
+          } else {
+            range.setStartAfter(editorRef.current.lastChild);
+          }
+        } else {
+          range.setStart(editorRef.current, 0);
+        }
       }
+
       range.collapse(true);
       return range;
     }
@@ -309,10 +358,14 @@ export default function RichTextEditor({
   };
 
   const triggerImageUpload = () => {
+    // Save cursor position before opening file dialog
+    savedSelectionRef.current = getCurrentEditorRange();
     fileInputRef.current?.click();
   };
 
   const triggerVideoUpload = () => {
+    // Save cursor position before opening file dialog
+    savedSelectionRef.current = getCurrentEditorRange();
     videoInputRef.current?.click();
   };
 
@@ -376,6 +429,8 @@ export default function RichTextEditor({
     setImageToCrop("");
     setEditingImageWrapper(null);
     setEditingImageCaption("");
+    // Clear saved selection when cancelling
+    savedSelectionRef.current = null;
   };
 
   const handleVideoPreviewComplete = async (caption?: string) => {
@@ -433,6 +488,8 @@ export default function RichTextEditor({
     setVideoToPreview("");
     setEditingVideoWrapper(null);
     setEditingVideoCaption("");
+    // Clear saved selection when cancelling
+    savedSelectionRef.current = null;
   };
 
   const updateExistingVideo = (
@@ -550,33 +607,46 @@ export default function RichTextEditor({
     if (!editorRef.current) return;
 
     const wrapper = createVideoWrapper(videoUrl, caption);
-    const sel = window.getSelection();
 
-    if (!sel || sel.rangeCount === 0) {
-      // No selection, append to end of editor
-      editorRef.current.appendChild(wrapper);
-    } else {
-      // Insert at current cursor position
-      const range = sel.getRangeAt(0);
-
-      // Check if the range is within the editor
-      if (editorRef.current.contains(range.commonAncestorContainer)) {
-        range.deleteContents();
-        range.insertNode(wrapper);
-
-        // Move cursor after the inserted video
-        range.setStartAfter(wrapper);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-      } else {
-        // Range is outside editor, append to end
-        editorRef.current.appendChild(wrapper);
-      }
+    // Use saved selection if available, otherwise get current selection
+    let targetRange = savedSelectionRef.current;
+    if (!targetRange) {
+      targetRange = getCurrentEditorRange();
     }
 
-    // Focus editor and update state
-    editorRef.current.focus();
+    if (
+      targetRange &&
+      editorRef.current.contains(targetRange.commonAncestorContainer)
+    ) {
+      try {
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(targetRange);
+
+        targetRange.deleteContents();
+        targetRange.insertNode(wrapper);
+
+        const newRange = document.createRange();
+        newRange.setStartAfter(wrapper);
+        newRange.collapse(true);
+        selection?.removeAllRanges();
+        selection?.addRange(newRange);
+
+        editorRef.current.focus();
+      } catch (error) {
+        console.error("Error inserting video at cursor:", error);
+        // Fallback: append to end
+        editorRef.current.appendChild(wrapper);
+      }
+    } else {
+      // No valid selection, append to end
+      editorRef.current.appendChild(wrapper);
+    }
+
+    // Clear saved selection after use
+    savedSelectionRef.current = null;
+
+    // Update state
     setInternalHtml(editorRef.current.innerHTML);
     saveToHistory(editorRef.current.innerHTML);
   };
@@ -817,28 +887,45 @@ export default function RichTextEditor({
   };
 
   const insertImageAtCursor = (dataUrl: string, caption?: string) => {
-    const sel = window.getSelection();
     const wrapper = createImageWrapper(dataUrl, caption);
 
-    if (!sel || sel.rangeCount === 0) {
-      editorRef.current?.focus();
-      editorRef.current?.appendChild(wrapper);
-      if (editorRef.current) {
-        setInternalHtml(editorRef.current.innerHTML);
-        saveToHistory(editorRef.current.innerHTML);
-      }
-      return;
+    // Use saved selection if available, otherwise get current selection
+    let targetRange = savedSelectionRef.current;
+    if (!targetRange) {
+      targetRange = getCurrentEditorRange();
     }
 
-    const range = sel.getRangeAt(0);
-    range.deleteContents();
-    range.insertNode(wrapper);
+    if (
+      targetRange &&
+      editorRef.current?.contains(targetRange.commonAncestorContainer)
+    ) {
+      try {
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(targetRange);
 
-    range.setStartAfter(wrapper);
-    range.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(range);
-    editorRef.current?.focus();
+        targetRange.deleteContents();
+        targetRange.insertNode(wrapper);
+
+        const newRange = document.createRange();
+        newRange.setStartAfter(wrapper);
+        newRange.collapse(true);
+        selection?.removeAllRanges();
+        selection?.addRange(newRange);
+
+        editorRef.current?.focus();
+      } catch (error) {
+        console.error("Error inserting image at cursor:", error);
+        // Fallback: append to end
+        editorRef.current?.appendChild(wrapper);
+      }
+    } else {
+      // No valid selection, append to end
+      editorRef.current?.appendChild(wrapper);
+    }
+
+    // Clear saved selection after use
+    savedSelectionRef.current = null;
 
     if (editorRef.current) {
       setInternalHtml(editorRef.current.innerHTML);
@@ -1655,6 +1742,12 @@ export default function RichTextEditor({
       return;
     }
 
+    // Save cursor position at drop point for media files
+    const dropRange = getRangeFromPoint(x, y);
+    if (dropRange) {
+      savedSelectionRef.current = dropRange;
+    }
+
     if (files && files.length) {
       handleDroppedFiles(files, x, y);
     } else {
@@ -1696,6 +1789,8 @@ export default function RichTextEditor({
       const maxSize = 100 * 1024 * 1024; // 100MB
       if (videoFile.size > maxSize) {
         alert("Video file is too large. Maximum size is 100MB.");
+        // Clear saved selection on error
+        savedSelectionRef.current = null;
         return;
       }
 
@@ -1707,7 +1802,11 @@ export default function RichTextEditor({
     }
 
     // Handle image files
-    if (!imageFiles.length) return;
+    if (!imageFiles.length) {
+      // Clear saved selection if no valid files
+      savedSelectionRef.current = null;
+      return;
+    }
 
     // For drag and drop, we'll crop the first image only
     const file = imageFiles[0];
