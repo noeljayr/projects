@@ -30,7 +30,13 @@ export default function EditableImage({
   const [tempImageSrc, setTempImageSrc] = useState(initialSrc);
   const [isHovered, setIsHovered] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Helper function to check if image source is base64
+  const isBase64Image = (src: string) => {
+    return src.startsWith("data:image/");
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,6 +54,10 @@ export default function EditableImage({
       return;
     }
 
+    // Store the file for upload
+    setSelectedFile(file);
+
+    // Create preview URL for display
     const reader = new FileReader();
     reader.onloadend = () => {
       setTempImageSrc(reader.result as string);
@@ -58,6 +68,27 @@ export default function EditableImage({
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      let imageUrl = tempImageSrc;
+
+      // If a new file was selected, upload it first
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        const uploadResponse = await fetch("/api/images/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload image");
+        }
+
+        const uploadResult = await uploadResponse.json();
+        imageUrl = uploadResult.url;
+      }
+
+      // Update the database with the image URL (either new upload URL or existing base64)
       const response = await fetch("/api/images/update", {
         method: "POST",
         headers: {
@@ -65,13 +96,14 @@ export default function EditableImage({
         },
         body: JSON.stringify({
           fieldName,
-          imageData: tempImageSrc,
+          imageData: imageUrl,
         }),
       });
 
       if (response.ok) {
-        setImageSrc(tempImageSrc);
+        setImageSrc(imageUrl);
         setIsEditing(false);
+        setSelectedFile(null);
       } else {
         alert("Failed to save image");
       }
@@ -85,6 +117,7 @@ export default function EditableImage({
 
   const handleCancel = () => {
     setTempImageSrc(imageSrc);
+    setSelectedFile(null);
     setIsEditing(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -137,8 +170,13 @@ export default function EditableImage({
               >
                 <IconUpload className="h-6 w-6 text-[#58483B]" />
                 <span className="text-sm font-medium text-[#58483B]">
-                  Wählen Sie Bild
+                  {selectedFile ? selectedFile.name : "Wählen Sie Bild"}
                 </span>
+                {selectedFile && (
+                  <span className="text-xs text-[#58483B]/70">
+                    {(selectedFile.size / 1024 / 1024).toFixed(1)}MB
+                  </span>
+                )}
               </label>
               <input
                 id={`file-${fieldName}`}
@@ -157,7 +195,11 @@ export default function EditableImage({
               className="flex items-center gap-2 bg-[#58483B] text-white px-3 py-1.5 rounded-md cursor-pointer hover:opacity-95 transition-opacity disabled:opacity-50 text-sm"
             >
               <IconCheck className="h-4 w-4" />
-              {isSaving ? "Sparen..." : "Speichern"}
+              {isSaving
+                ? selectedFile
+                  ? "Hochladen..."
+                  : "Speichern..."
+                : "Speichern"}
             </button>
             <button
               onClick={handleCancel}
