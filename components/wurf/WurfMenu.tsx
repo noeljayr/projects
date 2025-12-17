@@ -57,7 +57,7 @@ function WurfMenu({ content }: Props) {
   };
 
   return (
-    <div className="flex group flex-col relative">
+    <div className="flex group items-center flex-col relative">
       <Link
         href={addEditModeParam(
           categories.length > 0
@@ -79,7 +79,7 @@ function WurfMenu({ content }: Props) {
           style={{
             transition: "ease 0.5s",
           }}
-          className="absolute opacity-0 group-hover:opacity-100 invisible group-hover:visible top-[50%] group-hover:top-[104%] flex flex-col p-2 w-25 right-0 rounded-[0.65rem] space-y-2 bg-[#FBF2EA] shadow-sm border"
+          className="absolute opacity-0 group-hover:opacity-100 invisible group-hover:visible top-[50%] group-hover:top-[104%] flex flex-col p-2 w-25 rounded-[0.65rem] space-y-2 bg-[#FBF2EA] shadow-sm border"
         >
           {categories.map((category) => (
             <Link

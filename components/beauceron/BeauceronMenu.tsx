@@ -7,6 +7,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { NavbarContent } from "@/types/navbar";
 import { Beauceron } from "@/types/Beauceron";
+import EditableTextNavbar from "../EditableTextNavbar";
 
 type Props = {
   content: NavbarContent;
@@ -16,6 +17,7 @@ function BeauceronMenu({ content }: Props) {
   const [beauceron, setBeauceron] = useState<Beauceron[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEditingText, setIsEditingText] = useState(false);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -51,7 +53,11 @@ function BeauceronMenu({ content }: Props) {
   };
 
   return (
-    <div className="flex group flex-col relative">
+    <div
+      className={`flex items-center flex-col relative ${
+        !isEditingText ? "group" : ""
+      }`}
+    >
       <Link
         href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
         className={`text-black font-medium  px-3 py-2 ${
@@ -60,22 +66,30 @@ function BeauceronMenu({ content }: Props) {
             : "bg-[#DBC6B3]"
         } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
       >
-        {content.linkBreed || "Unsere Beauceron"}
+        <EditableTextNavbar
+          initialValue={content.linkBreed || "Unsere Beauceron"}
+          fieldName="linkBreed"
+          isEditMode={isEditMode}
+          onEditingChange={setIsEditingText}
+        />
 
         <IconChevronDown className="h-4 w-4 ml-2 opacity-75" />
       </Link>
-      {!loading && (
+      {!loading && !isEditingText && (
         <div
           style={{
             transition: "ease 0.5s",
           }}
-          className="absolute opacity-0 group-hover:opacity-100 invisible group-hover:visible top-[50%] group-hover:top-[104%] flex flex-col p-2 w-[16rem] right-0 rounded-[0.65rem] space-y-2 bg-[#FBF2EA] shadow-sm border"
+          className="absolute opacity-0 group-hover:opacity-100 invisible group-hover:visible top-[50%] group-hover:top-[104%] flex flex-col p-2 w-[14rem] rounded-[0.65rem] space-y-2 bg-[#FBF2EA] shadow-sm border"
         >
           {beauceron.map((b, index) => (
             <Link
               key={index}
               href={`/vomsauterhof/unsere-beauceron/${b.slug}`}
-              className="hover:underline capitalize font-p4"
+              className="hover:underline capitalize"
+              style={{
+                fontSize: `0.8rem`,
+              }}
             >
               {b.name}
             </Link>
