@@ -12,6 +12,8 @@ type Props = {
   as?: "h1" | "h2" | "h3" | "h4" | "p" | "span";
   multiline?: boolean;
   placeholder?: string;
+  variant?: "navbar" | "banner";
+  onEditingChange?: (isEditing: boolean) => void;
 };
 
 export default function EditableTextWurfCategory({
@@ -23,6 +25,8 @@ export default function EditableTextWurfCategory({
   as: Component = "p",
   multiline = false,
   placeholder,
+  variant = "banner",
+  onEditingChange,
 }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(initialValue);
@@ -74,12 +78,96 @@ export default function EditableTextWurfCategory({
     setTempValue(value);
     setIsEditing(false);
     setIsHovered(false);
+    onEditingChange?.(false);
   };
 
   if (!isEditMode) {
     return <Component className={className}>{value || placeholder}</Component>;
   }
 
+  // Navbar variant - inline compact style
+  if (variant === "navbar") {
+    return (
+      <div
+        className="relative inline-block"
+        onMouseEnter={() => !isEditing && setIsHovered(true)}
+        onMouseLeave={() => !isEditing && setIsHovered(false)}
+        onClick={(e) => {
+          if (isEditMode) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+      >
+        {isEditing ? (
+          <div className="relative w-[9rem] inline-block">
+            <input
+              type="text"
+              value={tempValue}
+              onChange={(e) => setTempValue(e.target.value)}
+              className={`${className} border-1 border-[#58483B] rounded-full px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#58483B] bg-[#FBF2EA] text-black w-full`}
+              autoFocus
+              placeholder={placeholder}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSave();
+                if (e.key === "Escape") handleCancel();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            />
+            <div className="absolute -bottom-10 left-0 flex gap-1.5 z-50">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleSave();
+                }}
+                disabled={isSaving}
+                className="flex items-center justify-center bg-[#58483B] text-white p-1.5 rounded-md cursor-pointer hover:opacity-95 transition-opacity disabled:opacity-50 shadow-lg"
+                title="Speichern"
+              >
+                <IconCheck className="h-4 w-4" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleCancel();
+                }}
+                disabled={isSaving}
+                className="flex items-center justify-center bg-gray-300 text-black p-1.5 rounded-md cursor-pointer hover:bg-gray-400 transition-colors disabled:opacity-50 shadow-lg"
+                title="Stornieren"
+              >
+                <IconX className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <span className={className}>{value || placeholder}</span>
+            {isHovered && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsEditing(true);
+                  onEditingChange?.(true);
+                }}
+                className="absolute -top-1.5 -right-1.5 bg-[#58483B] text-white p-1 rounded-full hover:bg-[#6d5a4a] cursor-pointer transition-colors shadow-lg z-10"
+                aria-label={`Edit ${fieldName}`}
+              >
+                <IconEdit size={12} />
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  // Banner variant - block style with larger inputs
   return (
     <div
       className="relative"

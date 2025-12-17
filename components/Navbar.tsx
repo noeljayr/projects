@@ -15,6 +15,7 @@ import { motionTransition } from "@/constants/motionTransition";
 import BeauceronMenu from "./beauceron/BeauceronMenu";
 import { WurfCategory } from "@/types/Wurf";
 import EditableTextNavbar from "./EditableTextNavbar";
+import EditableTextWurfCategory from "./EditableTextWurfCategory";
 
 type Props = {
   content: NavbarContent;
@@ -299,7 +300,13 @@ export function Navbar({ content, wurfCategories }: Props) {
                       : "bg-[#DBC6B3]"
                   } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
                 >
-                  {c.name}
+                  <EditableTextWurfCategory
+                    initialValue={c.name}
+                    fieldName="name"
+                    categorySlug={c.slug}
+                    isEditMode={isEditMode}
+                    variant="navbar"
+                  />
                 </Link>
               ))}
             </nav>
@@ -414,18 +421,25 @@ export function Navbar({ content, wurfCategories }: Props) {
                     isEditMode={isEditMode}
                   />
                 </Link>
-                <a
-                  href="/vomsauterhof/wurf"
-                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                    activeLink("/vomsauterhof/wurf") ? "bg-[#EEE5DD]" : ""
-                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.linkWurf || "Wuif"}
-                    fieldName="linkWurf"
-                    isEditMode={isEditMode}
-                  />
-                </a>
+                {wurfCategories.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={addEditModeParam(`/vomsauterhof/wurf/${c.slug}`)}
+                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                      activeLink(`/vomsauterhof/wurf/${c.slug}`)
+                        ? "bg-[#EEE5DD]"
+                        : ""
+                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                  >
+                    <EditableTextWurfCategory
+                      initialValue={c.name}
+                      fieldName="name"
+                      categorySlug={c.slug}
+                      isEditMode={isEditMode}
+                      variant="navbar"
+                    />
+                  </Link>
+                ))}
               </div>
 
               <div className="mobile-menu-item absolute bottom-2 pt-6 border-t border-[#A89485] w-full max-w-[240px] text-center">
