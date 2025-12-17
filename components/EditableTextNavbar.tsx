@@ -86,12 +86,12 @@ export default function EditableTextNavbar({
       }}
     >
       {isEditing ? (
-        <div className="relative inline-block">
+        <div className="relative w-[9rem] inline-block">
           <input
             type="text"
             value={tempValue}
             onChange={(e) => setTempValue(e.target.value)}
-            className={`${className} border-1 border-[#58483B] rounded-full px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#58483B] bg-[#FBF2EA] text-black min-w-[80px]`}
+            className={`${className} border-1 border-[#58483B] rounded-full px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[#58483B] bg-[#FBF2EA] text-black w-full`}
             autoFocus
             placeholder={placeholder}
             onKeyDown={(e) => {
