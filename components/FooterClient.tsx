@@ -6,6 +6,7 @@ import Parteners from "./Parteners";
 import { FooterContent } from "@/types/footer";
 import { usePathname, useSearchParams } from "next/navigation";
 import EditableTextFooter from "./EditableTextFooter";
+import EditableTextFooterWurfCategory from "./EditableTextFooterWurfCategory";
 import Link from "next/link";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { WurfCategory } from "@/types/Wurf";
@@ -196,8 +197,16 @@ export function FooterClient({ content, wurfCategories }: Props) {
                 />
               </li>
               {wurfCategories.map((c) => (
-                <li>
-                  <Link className="" href={`/vomsauterhof/wurf/${c.slug}`}>{c.name}</Link>
+                <li key={c.slug}>
+                  <EditableTextFooterWurfCategory
+                    initialValue={c.name}
+                    fieldName="name"
+                    categorySlug={c.slug}
+                    isEditMode={isEditMode}
+                    className="hover:underline transition-all duration-300 block"
+                    as="a"
+                    href={addEditModeParam(`/vomsauterhof/wurf/${c.slug}`)}
+                  />
                 </li>
               ))}
             </ul>
