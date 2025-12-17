@@ -21,7 +21,7 @@ function WurfMenu({ content }: Props) {
   const isEditMode = searchParams.get("mode") === "edit";
 
   const addEditModeParam = (href: string) => {
-    return isEditMode ? `/vomsauterhof${href}?mode=edit` : href;
+    return isEditMode ? `${href}?mode=edit` : href;
   };
 
   useEffect(() => {
@@ -53,7 +53,7 @@ function WurfMenu({ content }: Props) {
   return (
     <div className="flex group flex-col relative">
       <Link
-        href={addEditModeParam("/wurf")}
+        href={addEditModeParam("/vomsauterhof/wurf")}
         className={`text-black font-medium  px-5 py-2 ${
           activeLink("/vomsauterhof/wurf")
             ? "bg-[#EEE5DD] border border-[#D5BEAA]"
