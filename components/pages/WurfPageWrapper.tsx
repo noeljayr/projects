@@ -8,7 +8,7 @@ import { useRouter } from "nextjs-toploader/app";
 import TimelineClient from "@/components/wurf/TimelineClient";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { useEffect } from "react";
-import { categoryToSlug } from "@/lib/categorySlug";
+
 import paw2 from "@/public/paw-2.png";
 import Image from "next/image";
 
@@ -46,10 +46,20 @@ type WelpenData = {
   dogs: TimelineDog[];
 } | null;
 
+type WurfCategory = {
+  _id: string;
+  name: string;
+  description: string;
+  slug: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 type Props = {
   bannerContent: BannerContent;
-  categories: string[];
-  activeCategory: string;
+  categories: WurfCategory[];
+  activeCategory: WurfCategory;
   wurf: WurfData;
   timeline: TimelineEntry[];
   welpen: WelpenData;
@@ -68,14 +78,14 @@ const WurfPageWrapper = ({
 
   const isEditMode = searchParams.get("mode") === "edit";
 
-  const handleCategoryChange = (category: string) => {
+  const handleCategoryChange = (categorySlug: string) => {
     const params = new URLSearchParams();
     if (isEditMode) {
       params.set("mode", "edit");
     }
     const queryString = params.toString();
     router.push(
-      `/vomsauterhof/wurf/${categoryToSlug(category)}${
+      `/vomsauterhof/wurf/${categorySlug}${
         queryString ? `?${queryString}` : ""
       }`
     );
@@ -135,31 +145,10 @@ const WurfPageWrapper = ({
         description={bannerContent.description}
         isEditMode={isEditMode}
         page="wurf"
+        categorySlug={activeCategory.slug}
       />
 
-      {categories.length > 0 && (
-        <div className="flex w-full flex-wrap max-sm:flex-grow section-container mx-auto gap-4">
-          {categories.map((c) => {
-            return (
-              <span
-                key={c}
-                style={{
-                  transition: "ease 0.5s",
-                }}
-                onClick={() => handleCategoryChange(c)}
-                className={`px-4 capitalize py-2 border cursor-pointer hover:brightness-95 rounded-[0.5rem] ${
-                  activeCategory === c
-                    ? "bg-[#58483B] border-[#58483B] text-white"
-                    : "bg-[#FBF2EA] border border-black/10 "
-                }`}
-              >
-                {c}
-              </span>
-            );
-          })}
-        </div>
-      )}
-
+  
       {wurf ? (
         <>
           {wurf.image && (

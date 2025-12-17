@@ -13,15 +13,37 @@ function Page() {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [name, setName] = useState("");
   const [information, setInformation] = useState("");
-  const [category, setCategory] = useState("");
+  const [categorySlug, setCategorySlug] = useState("");
+  const [categories, setCategories] = useState<
+    Array<{ id: string; name: string; slug: string }>
+  >([]);
   const [documents, setDocuments] = useState({
     stammbaum: "",
     workingDog: "",
     arbeit: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/wurf/categories");
+      const data = await response.json();
+      if (data.success) {
+        setCategories(data.categories);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } finally {
+      setIsLoadingCategories(false);
+    }
+  };
 
   const handleImageUpload = async (file: File) => {
     if (file && file.type.startsWith("image/")) {
@@ -97,7 +119,7 @@ function Page() {
           name,
           information,
           image: coverImage || "",
-          category: category.trim(),
+          categorySlug: categorySlug,
           documents,
           status,
         }),
@@ -243,16 +265,24 @@ function Page() {
 
         <div className="flex flex-col gap-2 py-4 border-b border-b-black/10">
           <label className="font-medium text-sm opacity-75">Kategorie</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="px-3 py-2 border border-[var(--c-border)] rounded-[0.35rem] outline-none bg-[#FBF2EA]"
-          >
-            <option value="">Kategorie auswählen</option>
-            <option value="wurf a">Wurf A</option>
-            <option value="wurf b">Wurf B</option>
-            <option value="wurf c">Wurf C</option>
-          </select>
+          {isLoadingCategories ? (
+            <div className="px-3 py-2 border border-[var(--c-border)] rounded-[0.35rem] bg-[#FBF2EA] opacity-50">
+              Kategorien werden geladen...
+            </div>
+          ) : (
+            <select
+              value={categorySlug}
+              onChange={(e) => setCategorySlug(e.target.value)}
+              className="px-3 py-2 border border-[var(--c-border)] rounded-[0.35rem] outline-none bg-[#FBF2EA]"
+            >
+              <option value="">Kategorie auswählen</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.slug}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="flex flex-col gap-3 py-4 border-b border-b-black/10">

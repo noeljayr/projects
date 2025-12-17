@@ -8,12 +8,14 @@ import { usePathname, useSearchParams } from "next/navigation";
 import EditableTextFooter from "./EditableTextFooter";
 import Link from "next/link";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { WurfCategory } from "@/types/Wurf";
 
 type Props = {
   content: FooterContent;
+  wurfCategories: WurfCategory[];
 };
 
-export function FooterClient({ content }: Props) {
+export function FooterClient({ content, wurfCategories }: Props) {
   const footerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -193,16 +195,11 @@ export function FooterClient({ content }: Props) {
                   href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
                 />
               </li>
-              <li>
-                <EditableTextFooter
-                  initialValue={content.linkWurf || "Wuif"}
-                  fieldName="linkWurf"
-                  isEditMode={isEditMode}
-                  className="hover:underline transition-all duration-300 block"
-                  as="a"
-                  href={addEditModeParam("/vomsauterhof/wurf/wurf-a")}
-                />
-              </li>
+              {wurfCategories.map((c) => (
+                <li>
+                  <Link className="" href={`/vomsauterhof/wurf/${c.slug}`}>{c.name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

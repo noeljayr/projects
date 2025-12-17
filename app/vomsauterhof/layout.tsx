@@ -26,6 +26,7 @@ import { FooterContent } from "@/types/footer";
 import { OrganizationSchema } from "@/components/StructuredData";
 import NextTopLoader from "nextjs-toploader";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { WurfCategory } from "@/types/Wurf";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://vom-sauterhof.de"),
@@ -140,6 +141,22 @@ export default async function RootLayout({
       }
     : {};
 
+  const categoriesCollection = db.collection("wurf_categories");
+  const categories = await categoriesCollection
+      .find({ status: "published" })
+      .sort({ createdAt: 1 })
+      .toArray();
+
+   const transformedCategories : WurfCategory[] = categories.map((cat) => ({
+      id: cat._id.toString(),
+      name: cat.name,
+      description: cat.description,
+      slug: cat.slug,
+      status: cat.status,
+      createdAt: cat.createdAt,
+      updatedAt: cat.updatedAt,
+    }));
+
   return (
     <>
       <OrganizationSchema />
@@ -148,9 +165,9 @@ export default async function RootLayout({
         <Mode />
       </Suspense>
       <NextTopLoader color="#58483B" showSpinner={false} />
-      <Navbar content={navbarContent} />
+      <Navbar wurfCategories={transformedCategories} content={navbarContent} />
       <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
-      <FooterClient content={footerContent} />
+      <FooterClient wurfCategories={transformedCategories} content={footerContent} />
     </>
   );
 }

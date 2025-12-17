@@ -1,25 +1,20 @@
 import clientPromise from "@/lib/mongodb";
 import { redirect } from "next/navigation";
-import { categoryToSlug } from "@/lib/categorySlug";
 
 async function Page() {
   const client = await clientPromise;
   const db = client.db("vom_sauterhof");
 
-  // Fetch all published categories
-  const wurfCollection = db.collection("wurf");
-  const allWurf = await wurfCollection
+  // Fetch all published categories from wurf_categories collection
+  const categoriesCollection = db.collection("wurf_categories");
+  const categories = await categoriesCollection
     .find({ status: "published" })
     .sort({ createdAt: 1 })
     .toArray();
 
-  const categories = allWurf
-    .map((w) => w.category)
-    .filter((c) => c && c.trim() !== "");
-
   // Redirect to the first category
   if (categories.length > 0) {
-    redirect(`/vomsauterhof/wurf/${categoryToSlug(categories[0])}`);
+    redirect(`/vomsauterhof/wurf/${categories[0].slug}`);
   }
 
   // If no categories, redirect to home or show error

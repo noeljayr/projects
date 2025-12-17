@@ -5,17 +5,24 @@ export async function GET(request: NextRequest) {
   try {
     const client = await clientPromise;
     const db = client.db("vom_sauterhof");
-    const wurfCollection = db.collection("wurf");
+    const categoriesCollection = db.collection("wurf_categories");
 
-    // Get all distinct categories, excluding empty ones
-    const categories = await wurfCollection.distinct("category", {
-      category: { $exists: true, $ne: "" },
-      status: "published", // Only get categories from published wurf
-    });
+    // Get all published categories
+    const categories = await categoriesCollection
+      .find({ status: "published" })
+      .sort({ createdAt: 1 })
+      .toArray();
+
+    const transformedCategories = categories.map((cat) => ({
+      id: cat._id.toString(),
+      name: cat.name,
+      description: cat.description,
+      slug: cat.slug,
+    }));
 
     return NextResponse.json({
       success: true,
-      categories: categories.sort(),
+      categories: transformedCategories,
     });
   } catch (error) {
     console.error("Error fetching categories:", error);

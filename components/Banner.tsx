@@ -4,12 +4,14 @@ import React from "react";
 import EditableTextAbout from "./EditableTextAbout";
 import EditableTextBanner from "./EditableTextBanner";
 import EditableTextKontakt from "./EditableTextKontakt";
+import EditableTextWurfCategory from "./EditableTextWurfCategory";
 
 type Props = {
   name?: string;
   description?: string;
   isEditMode?: boolean;
-  page?: string; // "about", "news", or "kontakt"
+  page?: string; // "about", "news", "kontakt", or "wurf"
+  categorySlug?: string; // Required when page is "wurf"
 };
 
 function Banner({
@@ -17,12 +19,15 @@ function Banner({
   description,
   isEditMode = false,
   page = "about",
+  categorySlug,
 }: Props) {
   const EditableComponent =
     page === "about"
       ? EditableTextAbout
       : page === "kontakt"
       ? EditableTextKontakt
+      : page === "wurf"
+      ? EditableTextWurfCategory
       : EditableTextBanner;
 
   return (
@@ -40,6 +45,15 @@ function Banner({
           <EditableTextKontakt
             initialValue={name}
             fieldName="bannerTitle"
+            isEditMode={isEditMode}
+            className="text-center w-fit"
+            as="h1"
+          />
+        ) : page === "wurf" && categorySlug ? (
+          <EditableTextWurfCategory
+            initialValue={name}
+            fieldName="name"
+            categorySlug={categorySlug}
             isEditMode={isEditMode}
             className="text-center w-fit"
             as="h1"
@@ -72,6 +86,17 @@ function Banner({
             className="opacity-75 font-p3 w-[65ch] max-sm:w-full max-sm:px-10 mx-auto text-center mt-2"
             as="p"
             multiline
+          />
+        ) : page === "wurf" && categorySlug ? (
+          <EditableTextWurfCategory
+            initialValue={description}
+            fieldName="description"
+            categorySlug={categorySlug}
+            isEditMode={isEditMode}
+            className="opacity-75 font-p3 w-[65ch] max-sm:w-full max-sm:px-10 mx-auto text-center mt-2"
+            as="p"
+            multiline
+            placeholder="Beschreibung der Wurf-Kategorie..."
           />
         ) : (
           <EditableTextBanner

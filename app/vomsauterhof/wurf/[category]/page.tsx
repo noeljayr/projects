@@ -2,45 +2,48 @@ import clientPromise from "@/lib/mongodb";
 import { BannerContent } from "@/types/banner";
 import WurfPageWrapper from "@/components/pages/WurfPageWrapper";
 import { notFound } from "next/navigation";
-import { slugToCategory } from "@/lib/categorySlug";
 
 async function Page({ params }: { params: Promise<{ category: string }> }) {
-  const { category: slug } = await params;
+  const { category: categorySlug } = await params;
   const client = await clientPromise;
   const db = client.db("vom_sauterhof");
 
-  // Fetch banner content
-  const bannersCollection = db.collection("banners");
-  const bannerData = await bannersCollection.findOne({ page: "wurf" });
-  const bannerContent: BannerContent = bannerData
-    ? {
-        title: bannerData.title,
-        description: bannerData.description ? bannerData.description : "lorem",
-      }
-    : {};
-
   // Fetch all published categories
-  const wurfCollection = db.collection("wurf");
-  const allWurf = await wurfCollection
+  const categoriesCollection = db.collection("wurf_categories");
+  const categoriesData = await categoriesCollection
     .find({ status: "published" })
     .sort({ createdAt: 1 })
     .toArray();
 
-  const categories = allWurf
-    .map((w) => w.category)
-    .filter((c) => c && c.trim() !== "");
-
-  // Convert slug back to category name
-  const activeCategory = slugToCategory(slug, categories);
+  // Transform categories to plain objects
+  const allCategories = categoriesData.map((cat) => ({
+    _id: cat._id.toString(),
+    name: cat.name,
+    description: cat.description,
+    slug: cat.slug,
+    status: cat.status,
+    createdAt: cat.createdAt.toISOString(),
+    updatedAt: cat.updatedAt.toISOString(),
+  }));
 
   // Check if category exists
+  const activeCategory = allCategories.find((cat) => cat.slug === categorySlug);
   if (!activeCategory) {
     notFound();
   }
 
+  // Fetch banner content - use category data for banner
+  const bannerContent: BannerContent = {
+    title: activeCategory.name,
+    description:
+      activeCategory.description ||
+      "Entdecken Sie unsere Würfe und deren Entwicklung.",
+  };
+
   // Fetch the wurf data for the active category
+  const wurfCollection = db.collection("wurf");
   const wurfData = await wurfCollection.findOne({
-    category: activeCategory,
+    categorySlug: categorySlug,
     status: "published",
   });
 
@@ -51,6 +54,7 @@ async function Page({ params }: { params: Promise<{ category: string }> }) {
         information: wurfData.information,
         image: wurfData.image || "",
         category: wurfData.category || "",
+        categorySlug: wurfData.categorySlug || "",
         documents: {
           stammbaum: wurfData.documents?.stammbaum || "",
           workingDog: wurfData.documents?.workingDog || "",
@@ -99,7 +103,7 @@ async function Page({ params }: { params: Promise<{ category: string }> }) {
   return (
     <WurfPageWrapper
       bannerContent={bannerContent}
-      categories={categories}
+      categories={allCategories}
       activeCategory={activeCategory}
       wurf={wurf}
       timeline={timeline}

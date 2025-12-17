@@ -2,17 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { categoryToSlug } from "@/lib/categorySlug";
 import { usePathname, useSearchParams } from "next/navigation";
 import { IconChevronDown } from "@tabler/icons-react";
 import { NavbarContent } from "@/types/navbar";
+
+type WurfCategory = {
+  id: string;
+  name: string;
+  description: string;
+  slug: string;
+};
 
 type Props = {
   content: NavbarContent;
 };
 
 function WurfMenu({ content }: Props) {
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<WurfCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,7 +59,11 @@ function WurfMenu({ content }: Props) {
   return (
     <div className="flex group flex-col relative">
       <Link
-        href={addEditModeParam("/vomsauterhof/wurf/wurf-c")}
+        href={addEditModeParam(
+          categories.length > 0
+            ? `/vomsauterhof/wurf/${categories[0].slug}`
+            : "/vomsauterhof/wurf"
+        )}
         className={`text-black font-medium  px-5 py-2 ${
           activeLink("/vomsauterhof/wurf")
             ? "bg-[#EEE5DD] border border-[#D5BEAA]"
@@ -71,13 +81,13 @@ function WurfMenu({ content }: Props) {
           }}
           className="absolute opacity-0 group-hover:opacity-100 invisible group-hover:visible top-[50%] group-hover:top-[104%] flex flex-col p-2 w-25 right-0 rounded-[0.65rem] space-y-2 bg-[#FBF2EA] shadow-sm border"
         >
-          {categories.map((category, index) => (
+          {categories.map((category) => (
             <Link
-              key={index}
-              href={`/vomsauterhof/wurf/${categoryToSlug(category)}`}
+              key={category.id}
+              href={addEditModeParam(`/vomsauterhof/wurf/${category.slug}`)}
               className="hover:underline capitalize"
             >
-              {category}
+              {category.name}
             </Link>
           ))}
         </div>

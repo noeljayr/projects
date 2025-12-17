@@ -19,12 +19,14 @@ import { AnimatePresence, motion } from "motion/react";
 import { motionTransition } from "@/constants/motionTransition";
 import WurfMenu from "./wurf/WurfMenu";
 import BeauceronMenu from "./beauceron/BeauceronMenu";
+import { WurfCategory } from "@/types/Wurf";
 
 type Props = {
   content: NavbarContent;
+  wurfCategories: WurfCategory[];
 };
 
-export function Navbar({ content }: Props) {
+export function Navbar({ content, wurfCategories }: Props) {
   const headerRef = useRef<HTMLElement>(null);
   const desktopNavRef = useRef<HTMLElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -229,7 +231,7 @@ export function Navbar({ content }: Props) {
           ref={headerRef}
           className="py-2 flex items-center justify-between"
         >
-          <div className="section-container mx-auto grid grid-cols-[auto_auto] items-center justify-between">
+          <div className="section-container mx-auto  flex items-center justify-between">
             <Link
               href={"/vomsauterhof"}
               className="flex items-center justify-center"
@@ -243,13 +245,13 @@ export function Navbar({ content }: Props) {
 
             <nav
               ref={desktopNavRef}
-              className="hidden lg:flex items-center absolute justify-self-center space-x-1 bg-[#DBC6B3] text-[14px] rounded-full p-1"
+              className="hidden lg:flex items-center space-x-0.5 bg-[#DBC6B3] text-[13.5px] rounded-full p-1"
             >
               {links.map((link, index) => (
                 <Link
                   key={index}
                   href={addEditModeParam(link.href)}
-                  className={`text-black font-medium  px-5 py-2 ${
+                  className={`text-black font-medium  px-3 py-2 ${
                     activeLink(link.href)
                       ? "bg-[#EEE5DD] border border-[#D5BEAA]"
                       : "bg-[#DBC6B3]"
@@ -261,7 +263,21 @@ export function Navbar({ content }: Props) {
 
               <BeauceronMenu content={content} />
 
-              <WurfMenu content={content} />
+              {/* <WurfMenu content={content} /> */}
+
+              {wurfCategories.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={addEditModeParam(`/vomsauterhof/wurf/${c.slug}`)}
+                  className={`text-black font-medium  px-3 py-2 ${
+                    activeLink(`/vomsauterhof/wurf/${c.slug}`)
+                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
+                      : "bg-[#DBC6B3]"
+                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
+                >
+                  {c.name}
+                </Link>
+              ))}
             </nav>
 
             <div className="flex flex-row-reverse items-center gap-3">
@@ -276,7 +292,7 @@ export function Navbar({ content }: Props) {
               <a
                 target="_blank"
                 href={"mailto:ti.genoveva@bluewin.ch"}
-                className="text-white font-medium px-4 md:px-6 py-2 h-[35px] md:h-[41px] text-sm md:text-base rounded-[0.65rem] hover:opacity-95 transition-opacity duration-150"
+                className="text-white font-medium px-4 py-2 text-sm md:text-base rounded-[0.65rem] hover:opacity-95 transition-opacity duration-150 font-p4 "
                 style={{ backgroundColor: "#58483B" }}
               >
                 {content.contactButton || "Kontaktieren"}

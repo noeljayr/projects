@@ -14,7 +14,8 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, name, information, image, category, documents, status } = body;
+    const { id, name, information, image, categorySlug, documents, status } =
+      body;
 
     if (!id) {
       return NextResponse.json(
@@ -30,49 +31,57 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    if (!categorySlug) {
+      return NextResponse.json(
+        { success: false, message: "Category is required" },
+        { status: 400 }
+      );
+    }
+
     const client = await clientPromise;
     const db = client.db("vom_sauterhof");
     const wurfCollection = db.collection("wurf");
+    const categoriesCollection = db.collection("wurf_categories");
 
-    // Validate category is one of the allowed values
-    const allowedCategories = ["wurf a", "wurf b", "wurf c"];
-    if (
-      category &&
-      category.trim() &&
-      !allowedCategories.includes(category.trim().toLowerCase())
-    ) {
+    // Validate that the category exists
+    const categoryExists = await categoriesCollection.findOne({
+      slug: categorySlug,
+      status: "published",
+    });
+
+    if (!categoryExists) {
       return NextResponse.json(
         {
           success: false,
-          message: "Ungültige Kategorie. Bitte wählen Sie Wurf A, B oder C.",
+          message:
+            "Ungültige Kategorie. Bitte wählen Sie eine gültige Kategorie.",
         },
         { status: 400 }
       );
     }
 
-    // Check if category already exists for a different wurf (if category is provided)
-    if (category && category.trim()) {
-      const existingCategory = await wurfCollection.findOne({
-        category: category.trim(),
-        _id: { $ne: new ObjectId(id) },
-      });
-      if (existingCategory) {
-        return NextResponse.json(
-          {
-            success: false,
-            message:
-              "Diese Kategorie existiert bereits. Bitte wählen Sie eine andere Kategorie.",
-          },
-          { status: 400 }
-        );
-      }
+    // Check if category already has a different wurf entry
+    const existingCategoryWurf = await wurfCollection.findOne({
+      categorySlug: categorySlug,
+      _id: { $ne: new ObjectId(id) },
+    });
+    if (existingCategoryWurf) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Diese Kategorie hat bereits einen Wurf-Eintrag. Bitte wählen Sie eine andere Kategorie.",
+        },
+        { status: 400 }
+      );
     }
 
     const updateData: any = {
       name,
       information,
       image: image || "",
-      category: category || "",
+      category: categoryExists.name, // Keep for backward compatibility
+      categorySlug: categorySlug,
       documents: {
         stammbaum: documents?.stammbaum || "",
         workingDog: documents?.workingDog || "",

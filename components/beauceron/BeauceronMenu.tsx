@@ -54,7 +54,7 @@ function BeauceronMenu({ content }: Props) {
     <div className="flex group flex-col relative">
       <Link
         href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
-        className={`text-black font-medium  px-5 py-2 ${
+        className={`text-black font-medium  px-3 py-2 ${
           activeLink("/vomsauterhof/unsere-beauceron")
             ? "bg-[#EEE5DD] border border-[#D5BEAA]"
             : "bg-[#DBC6B3]"
