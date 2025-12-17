@@ -654,7 +654,7 @@ export default function RichTextEditor({
 
     const editBtn = document.createElement("button");
     editBtn.className = "video-edit-btn";
-    editBtn.innerHTML = "✎";
+    editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 15l8.385 -8.415a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3z" /><path d="M16 5l3 3" /><path d="M9 7.07a7 7 0 0 0 1 13.93a7 7 0 0 0 6.929 -6" /></svg>`;
     editBtn.title = "Edit video";
     editBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -663,7 +663,9 @@ export default function RichTextEditor({
 
     const removeBtn = document.createElement("button");
     removeBtn.className = "video-remove-btn";
-    removeBtn.innerHTML = "×";
+    removeBtn.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+    `;
     removeBtn.title = "Remove video";
     removeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -865,9 +867,6 @@ export default function RichTextEditor({
     captionElement.className = "image-caption";
     captionElement.style.padding = "8px 12px";
     captionElement.style.fontSize = "calc(var(--p4) * 0.9)";
-    captionElement.style.color = "#666";
-    captionElement.style.fontStyle = "italic";
-    captionElement.style.textAlign = "center";
     captionElement.style.borderTop = "1px solid #eee";
 
     if (caption) {
@@ -924,7 +923,7 @@ export default function RichTextEditor({
 
     const editBtn = document.createElement("button");
     editBtn.className = "image-edit-btn";
-    editBtn.innerHTML = "✎";
+    editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 15l8.385 -8.415a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3z" /><path d="M16 5l3 3" /><path d="M9 7.07a7 7 0 0 0 1 13.93a7 7 0 0 0 6.929 -6" /></svg>`;
     editBtn.title = "Edit image";
     editBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -933,7 +932,9 @@ export default function RichTextEditor({
 
     const removeBtn = document.createElement("button");
     removeBtn.className = "image-remove-btn";
-    removeBtn.innerHTML = "×";
+    removeBtn.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+    `;
     removeBtn.title = "Remove image";
     removeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -1069,9 +1070,6 @@ export default function RichTextEditor({
         captionElement.className = "image-caption";
         captionElement.style.padding = "8px 12px";
         captionElement.style.fontSize = "calc(var(--p4) * 0.9)";
-        captionElement.style.color = "#666";
-        captionElement.style.fontStyle = "italic";
-        captionElement.style.textAlign = "center";
         captionElement.style.borderTop = "1px solid #eee";
         captionElement.style.display = "none"; // Hidden by default
 
@@ -1133,7 +1131,7 @@ export default function RichTextEditor({
       if (!editBtn) {
         editBtn = document.createElement("button");
         editBtn.className = "video-edit-btn";
-        editBtn.innerHTML = "✎";
+        editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"12iewBox="0 0 24124" fill="none" stroke="currentColor" strwhite" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 15l8.385 -8.415a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3z" /><path d="M16 5l3 3" /><path d="M9 7.07a7 7 0 0 0 1 13.93a7 7 0 0 0 6.929 -6" /></svg>`;
         editBtn.title = "Edit video";
 
         const removeBtn = htmlWrapper.querySelector(".video-remove-btn");
