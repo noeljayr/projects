@@ -46,7 +46,7 @@ export default function NewsPageClient({ content, news }: Props) {
         <div className="grid grid-cols-[1fr_auto] max-sm:w-full p-1 border border-[var(--c-border)] rounded-[0.5rem] w-[20rem] bg-[#EEE2D7]">
           <input
             type="text"
-            placeholder={content.searchPlaceholder || "Search"}
+            placeholder={"Suchen..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="outline-0 border-0 bg-transparent h-full font-p3 pl-2 font-medium w-full"
