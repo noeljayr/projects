@@ -128,19 +128,21 @@ export default function NewsPageClient({
           totalPages={paginationInfo.totalPages}
           onPageChange={handlePageChange}
           disabled={isPending}
-         
         />
 
         <div className="text-sm  ml-auto">
           {paginationInfo.totalCount > 0 ? (
             <p>
-             <span className="text-gray-600"> Anzeige von{" "}</span>
-              <span className="font-bold">{(paginationInfo.currentPage - 1) * paginationInfo.limit + 1} bis{" "}
-              {Math.min(
-                paginationInfo.currentPage * paginationInfo.limit,
-                paginationInfo.totalCount
-              )}{" "}
-              von {paginationInfo.totalCount} </span>
+              <span className="text-gray-600"> Anzeige von </span>
+              <span className="font-bold">
+                {(paginationInfo.currentPage - 1) * paginationInfo.limit + 1}{" "}
+                bis{" "}
+                {Math.min(
+                  paginationInfo.currentPage * paginationInfo.limit,
+                  paginationInfo.totalCount
+                )}{" "}
+                von {paginationInfo.totalCount}{" "}
+              </span>
               <span className="text-gray-600">Nachrichten</span>
             </p>
           ) : (
