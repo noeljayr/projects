@@ -5,7 +5,8 @@ import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import { motionTransition } from "@/constants/motionTransition";
 import Link from "next/link";
-import type { News } from "@/types/News";
+import type { News, PaginationMeta } from "@/types/News";
+import Pagination from "@/components/ui/Pagination";
 import DeleteModal from "./DeleteModal";
 import NewsActions from "./NewsActions";
 import { formatDate2 } from "@/lib/formatDate";
@@ -17,17 +18,33 @@ function NewsTable() {
   const [showDelete, setShowDelete] = useState(false);
   const [activeActionId, setActiveActionId] = useState<string | null>(null);
   const [newsToDelete, setNewsToDelete] = useState<Set<string>>(new Set());
+  const [pagination, setPagination] = useState<PaginationMeta>({
+    currentPage: 1,
+    totalPages: 1,
+    totalCount: 0,
+    limit: 10,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     fetchNews();
-  }, []);
+  }, [currentPage, itemsPerPage]);
 
   const fetchNews = async () => {
     try {
-      const response = await fetch("/api/news/list");
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: itemsPerPage.toString(),
+      });
+
+      const response = await fetch(`/api/news/list?${params}`);
       const data = await response.json();
       if (data.success) {
         setNews(data.news);
+        setPagination(data.pagination);
       }
     } catch (error) {
       console.error("Error fetching news:", error);
@@ -72,7 +89,12 @@ function NewsTable() {
       if (data.success) {
         alert(data.message);
         setSelectedIds(new Set());
-        fetchNews();
+        // Check if current page becomes empty after unpublishing
+        if (news.length === selectedIds.size && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        } else {
+          fetchNews();
+        }
       } else {
         alert(data.message || "Failed to unpublish news");
       }
@@ -86,6 +108,15 @@ function NewsTable() {
     setNewsToDelete(new Set([newsId]));
     setShowDelete(true);
     setActiveActionId(null);
+  };
+
+  const handleRefreshAfterDelete = () => {
+    // If we're on a page > 1 and it becomes empty, go to previous page
+    if (news.length === 1 && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    } else {
+      fetchNews();
+    }
   };
 
   const isAllSelected = selectedIds.size === news.length && news.length > 0;
@@ -261,6 +292,8 @@ function NewsTable() {
                           src={
                             n.coverImage.startsWith("data:")
                               ? n.coverImage
+                              : n.coverImage.startsWith("/api/media/")
+                              ? n.coverImage
                               : `/news/${n.coverImage}`
                           }
                         />
@@ -313,13 +346,26 @@ function NewsTable() {
                 );
               })}
             </motion.div>
+
+            {/* Pagination Controls */}
+            <motion.div layout="position" key="pagination">
+              <Pagination
+                pagination={pagination}
+                onPageChange={setCurrentPage}
+                onLimitChange={(limit) => {
+                  setItemsPerPage(limit);
+                  setCurrentPage(1);
+                }}
+                className="mt-6 pt-4 border-t border-[var(--c-border)]"
+              />
+            </motion.div>
           </motion.div>
         </AnimatePresence>
 
         <AnimatePresence>
           {showDelete && (
             <DeleteModal
-              fetchNews={fetchNews}
+              fetchNews={handleRefreshAfterDelete}
               ids={newsToDelete}
               setSelectedId={setSelectedIds}
               setShowDelete={setShowDelete}

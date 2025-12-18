@@ -7,10 +7,13 @@ import React, { useRef, useState } from "react";
 
 import { useRouter } from "nextjs-toploader/app";
 import PublishDate from "@/components/news/PublishDate";
+import { uploadImageToDatabase } from "@/lib/uploadImage";
 
 function Page() {
   const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [publishDate, setPublishDate] = useState("");
@@ -18,13 +21,28 @@ function Page() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = async (file: File) => {
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setCoverImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      setIsUploading(true);
+      try {
+        // Show preview immediately
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setCoverImage(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+
+        // Upload to database
+        const uploadedUrl = await uploadImageToDatabase(file);
+        setCoverImageUrl(uploadedUrl);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Failed to upload image. Please try again.");
+        setCoverImage(null);
+        setCoverImageUrl(null);
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -60,6 +78,7 @@ function Page() {
 
   const handleRemoveImage = () => {
     setCoverImage(null);
+    setCoverImageUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -85,7 +104,7 @@ function Page() {
         body: JSON.stringify({
           title,
           content,
-          coverImage: coverImage || "",
+          coverImage: coverImageUrl || "",
           publishDate: publishDate || undefined,
           status,
         }),
@@ -126,7 +145,9 @@ function Page() {
           <button
             type="button"
             onClick={() => handleSubmit("draft")}
-            disabled={isSubmitting || !validate() || !coverImage}
+            disabled={
+              isSubmitting || !validate() || !coverImageUrl || isUploading
+            }
             style={{
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
@@ -139,7 +160,9 @@ function Page() {
           <button
             type="button"
             onClick={() => handleSubmit("published")}
-            disabled={isSubmitting || !validate() || !coverImage}
+            disabled={
+              isSubmitting || !validate() || !coverImageUrl || isUploading
+            }
             style={{
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
@@ -156,7 +179,9 @@ function Page() {
               isDragging ? "border-[#F38D3B] bg-[#F38D3B]/5" : "border-black/10"
             } border-dashed rounded-[0.5rem] w-full ${
               coverImage ? "h-fit border-0" : "h-[20rem]"
-            } cursor-pointer transition-all hover:border-[#F38D3B]/50 overflow-hidden`}
+            } cursor-pointer transition-all hover:border-[#F38D3B]/50 overflow-hidden ${
+              isUploading ? "pointer-events-none opacity-75" : ""
+            }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -175,10 +200,12 @@ function Page() {
                     e.stopPropagation();
                     handleRemoveImage();
                   }}
-                  className="absolute top-2 right-2 p-1.5 bg-[#FBF2EA]/90 hover:bg-[#FBF2EA] rounded-full shadow-md transition-all z-10"
+                  disabled={isUploading}
+                  className="absolute top-2 right-2 p-1.5 bg-[#FBF2EA]/90 hover:bg-[#FBF2EA] rounded-full shadow-md transition-all z-10 disabled:opacity-50"
                 >
                   <IconX className="h-4 w-4" />
                 </button>
+                {isUploading && <></>}
               </>
             ) : (
               <>
@@ -190,7 +217,11 @@ function Page() {
                   }}
                   className="font-medium opacity-50"
                 >
-                  {isDragging ? "Coverbild:" : "Klicken/Ziehen zum Hochladen"}
+                  {isUploading
+                    ? "Uploading..."
+                    : isDragging
+                    ? "Coverbild:"
+                    : "Klicken/Ziehen zum Hochladen"}
                 </span>
               </>
             )}

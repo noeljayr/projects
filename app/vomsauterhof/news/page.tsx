@@ -1,6 +1,11 @@
 import NewsPageWrapper from "@/components/pages/NewsPageWrapper";
 import clientPromise from "@/lib/mongodb";
 import { BannerContent } from "@/types/banner";
+import {
+  extractPaginationParams,
+  buildMongoQuery,
+  buildMongoSort,
+} from "@/lib/url-utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -14,7 +19,11 @@ export const metadata: Metadata = {
   },
 };
 
-async function Page() {
+type PageProps = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+async function Page({ searchParams }: PageProps) {
   const client = await clientPromise;
   const db = client.db("vom_sauterhof");
 
@@ -39,12 +48,25 @@ async function Page() {
       }
     : {};
 
-  // Fetch all published news
+  // Extract pagination and filter parameters from URL
+  const { page, limit, search, sort } = extractPaginationParams(searchParams);
+  const skip = (page - 1) * limit;
+
+  // Build MongoDB query and sort
   const newsCollection = db.collection("news");
-  const newsData = await newsCollection
-    .find({ status: "published" })
-    .sort({ createdAt: -1 })
-    .toArray();
+  const query = buildMongoQuery(search, { status: "published" });
+  const sortOrder = buildMongoSort(sort);
+
+  // Fetch paginated news
+  const [newsData, totalCount] = await Promise.all([
+    newsCollection
+      .find(query)
+      .sort(sortOrder)
+      .skip(skip)
+      .limit(limit)
+      .toArray(),
+    newsCollection.countDocuments(query),
+  ]);
 
   const news = newsData.map((n) => ({
     id: n._id.toString(),
@@ -58,11 +80,28 @@ async function Page() {
     status: n.status,
   }));
 
+  // Calculate pagination info
+  const totalPages = Math.ceil(totalCount / limit);
+  const hasNextPage = page < totalPages;
+  const hasPrevPage = page > 1;
+
+  const paginationInfo = {
+    currentPage: page,
+    totalPages,
+    totalCount,
+    hasNextPage,
+    hasPrevPage,
+    limit,
+  };
+
   return (
     <NewsPageWrapper
       bannerContent={bannerContent}
       newsPageContent={newsPageContent}
       news={news}
+      paginationInfo={paginationInfo}
+      currentSearch={search}
+      currentSort={sort}
     />
   );
 }

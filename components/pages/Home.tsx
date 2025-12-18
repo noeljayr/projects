@@ -62,11 +62,18 @@ type GalleryImage = {
 type Props = {
   content: HomepageContent;
   news: News[];
+  totalNewsCount: number;
   images: SiteImages;
   galleryImages: GalleryImage[];
 };
 
-export default function Home({ content, news, images, galleryImages }: Props) {
+export default function Home({
+  content,
+  news,
+  totalNewsCount,
+  images,
+  galleryImages,
+}: Props) {
   const searchParams = useSearchParams();
   const isEditMode = searchParams.get("mode") === "edit";
   const [isContentLoaded, setIsContentLoaded] = useState(false);
@@ -729,7 +736,7 @@ export default function Home({ content, news, images, galleryImages }: Props) {
             ))}
           </div>
 
-          {news.length > 3 && (
+          {totalNewsCount > 3 && (
             <Link href={"/vomsauterhof/news"} className="mt-8 md:mt-5">
               <div className="border border-[#1A1A1A1A] rounded-full flex p-1 pr-2 items-center justify-center w-fit mx-auto hover-scale cursor-pointer">
                 <div className="flex items-center relative w-[7rem]">
@@ -759,7 +766,7 @@ export default function Home({ content, news, images, galleryImages }: Props) {
                       className="inline"
                       as="span"
                     />{" "}
-                    <span className="text-[#D87B2C]">{news.length}+</span>
+                    <span className="text-[#D87B2C]">{totalNewsCount - 3}+</span>
                   </b>
                   <b className="flex items-center opacity-35">
                     <EditableText

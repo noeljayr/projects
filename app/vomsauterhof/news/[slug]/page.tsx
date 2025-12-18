@@ -33,6 +33,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const imageUrl = newsData.coverImage?.startsWith("data:")
     ? "/vomsauterhof/opengraph-image.png"
+    : newsData.coverImage?.startsWith("/api/media/")
+    ? newsData.coverImage
     : `/vomsauterhof/news/${newsData.coverImage}`;
 
   return {
@@ -105,6 +107,8 @@ async function Page({ params }: Props) {
   }));
 
   const imageUrl = selectedNews.coverImage.startsWith("data:")
+    ? selectedNews.coverImage
+    : selectedNews.coverImage.startsWith("/api/media/")
     ? selectedNews.coverImage
     : `/vomsauterhof/news/${selectedNews.coverImage}`;
 

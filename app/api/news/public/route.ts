@@ -10,19 +10,15 @@ export async function GET(request: NextRequest) {
     // Get pagination parameters from query string
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
-    const status = searchParams.get("status"); // Optional status filter
+    const limit = parseInt(searchParams.get("limit") || "12");
 
     // Validate pagination parameters
     const validatedPage = Math.max(1, page);
-    const validatedLimit = Math.min(Math.max(1, limit), 100); // Max 100 items per page
+    const validatedLimit = Math.min(Math.max(1, limit), 50); // Max 50 items per page for public
     const skip = (validatedPage - 1) * validatedLimit;
 
-    // Build query filter
-    const filter: any = {};
-    if (status) {
-      filter.status = status;
-    }
+    // Only fetch published news for public endpoint
+    const filter = { status: "published" };
 
     // Get total count for pagination metadata
     const totalCount = await newsCollection.countDocuments(filter);
@@ -62,7 +58,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Error fetching news:", error);
+    console.error("Error fetching public news:", error);
     return NextResponse.json(
       { success: false, message: "Failed to fetch news" },
       { status: 500 }

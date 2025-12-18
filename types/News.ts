@@ -9,3 +9,19 @@ export type News = {
   slug: string;
   status: string;
 };
+
+export type PaginationMeta = {
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+  limit: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+};
+
+export type PaginatedNewsResponse = {
+  success: boolean;
+  news: News[];
+  pagination: PaginationMeta;
+  message?: string;
+};

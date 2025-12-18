@@ -12,16 +12,31 @@ type NewsPageContent = {
   sortOldest?: string;
 };
 
+type PaginationInfo = {
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+};
+
 type Props = {
   bannerContent: BannerContent;
   newsPageContent: NewsPageContent;
   news: News[];
+  paginationInfo: PaginationInfo;
+  currentSearch: string;
+  currentSort: string;
 };
 
 export default function NewsPageWrapper({
   bannerContent,
   newsPageContent,
   news,
+  paginationInfo,
+  currentSearch,
+  currentSort,
 }: Props) {
   const searchParams = useSearchParams();
   const isEditMode = searchParams.get("mode") === "edit";
@@ -34,7 +49,13 @@ export default function NewsPageWrapper({
         isEditMode={isEditMode}
         page="news"
       />
-      <NewsPageClient content={newsPageContent} news={news} />
+      <NewsPageClient
+        content={newsPageContent}
+        news={news}
+        paginationInfo={paginationInfo}
+        currentSearch={currentSearch}
+        currentSort={currentSort}
+      />
     </div>
   );
 }

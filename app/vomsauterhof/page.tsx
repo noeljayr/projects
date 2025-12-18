@@ -17,8 +17,13 @@ async function Page() {
   const newsData = await newsCollection
     .find({ status: "published" })
     .sort({ date: -1 })
-    .limit(10)
+    .limit(6)
     .toArray();
+
+  // Get total count of published news
+  const totalNewsCount = await newsCollection.countDocuments({
+    status: "published",
+  });
 
   const news = newsData.map((n) => ({
     id: n._id.toString(),
@@ -92,6 +97,7 @@ async function Page() {
     <Home
       content={content}
       news={news}
+      totalNewsCount={totalNewsCount}
       images={images}
       galleryImages={galleryImages}
     />

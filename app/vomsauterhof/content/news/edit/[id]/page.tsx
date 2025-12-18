@@ -7,10 +7,13 @@ import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import PublishDate from "@/components/news/PublishDate";
+import { uploadImageToDatabase } from "@/lib/uploadImage";
 
 function Page() {
   const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [publishDate, setPublishDate] = useState("");
@@ -35,7 +38,9 @@ function Page() {
       if (data.success) {
         setTitle(data.news.title);
         setContent(data.news.content);
-        setCoverImage(data.news.coverImage || null);
+        const existingCoverImage = data.news.coverImage || null;
+        setCoverImage(existingCoverImage);
+        setCoverImageUrl(existingCoverImage);
         setPublishDate(data.news.date);
       } else {
         alert(data.message || "Failed to fetch news");
@@ -50,13 +55,33 @@ function Page() {
     }
   };
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = async (file: File) => {
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setCoverImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      setIsUploading(true);
+      try {
+        // Show preview immediately
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setCoverImage(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+
+        // Upload to database
+        const uploadedUrl = await uploadImageToDatabase(file);
+        setCoverImageUrl(uploadedUrl);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Failed to upload image. Please try again.");
+        // Revert to original image if upload fails
+        const response = await fetch(`/api/news/get?id=${id}`);
+        const data = await response.json();
+        if (data.success) {
+          setCoverImage(data.news.coverImage || null);
+          setCoverImageUrl(data.news.coverImage || null);
+        }
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -92,6 +117,7 @@ function Page() {
 
   const handleRemoveImage = () => {
     setCoverImage(null);
+    setCoverImageUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -118,7 +144,7 @@ function Page() {
           id,
           title,
           content,
-          coverImage: coverImage || "",
+          coverImage: coverImageUrl || "",
           publishDate: publishDate || undefined,
           status,
         }),
@@ -166,7 +192,9 @@ function Page() {
           <button
             type="button"
             onClick={() => handleSubmit("draft")}
-            disabled={isSubmitting || !validate() || !coverImage}
+            disabled={
+              isSubmitting || !validate() || !coverImageUrl || isUploading
+            }
             style={{
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
@@ -179,7 +207,9 @@ function Page() {
           <button
             type="button"
             onClick={() => handleSubmit("published")}
-            disabled={isSubmitting || !validate() || !coverImage}
+            disabled={
+              isSubmitting || !validate() || !coverImageUrl || isUploading
+            }
             style={{
               transition: "ease 0.5s",
               fontSize: "calc(var(--p4) * 0.9)",
@@ -196,7 +226,9 @@ function Page() {
               isDragging ? "border-[#F38D3B] bg-[#F38D3B]/5" : "border-black/10"
             } ${
               coverImage ? "h-fit border-0" : "h-[20rem]"
-            } border-dashed rounded-[0.5rem] w-full cursor-pointer transition-all hover:border-[#F38D3B]/50 overflow-hidden`}
+            } border-dashed rounded-[0.5rem] w-full cursor-pointer transition-all hover:border-[#F38D3B]/50 overflow-hidden ${
+              isUploading ? "pointer-events-none opacity-75" : ""
+            }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -208,10 +240,12 @@ function Page() {
                   src={
                     coverImage.startsWith("data:")
                       ? coverImage
+                      : coverImage.startsWith("/api/media/")
+                      ? coverImage
                       : `/vomsauterhof/news/${coverImage}`
                   }
                   alt="Cover"
-                  className="h-fit w-full"
+                  className="h-fit w-full rounded-[0.8rem]"
                 />
                 <button
                   type="button"
@@ -219,10 +253,12 @@ function Page() {
                     e.stopPropagation();
                     handleRemoveImage();
                   }}
-                  className="absolute top-2 right-2 p-1.5 bg-[#FBF2EA]/90 hover:bg-[#FBF2EA] rounded-full shadow-md transition-all z-10"
+                  disabled={isUploading}
+                  className="absolute top-2 right-2 p-1.5 bg-[#FBF2EA]/90 hover:bg-[#FBF2EA] rounded-full shadow-md transition-all z-10 disabled:opacity-50"
                 >
                   <IconX className="h-4 w-4" />
                 </button>
+                {isUploading && <></>}
               </>
             ) : (
               <>
@@ -234,7 +270,11 @@ function Page() {
                   }}
                   className="font-medium opacity-50"
                 >
-                  {isDragging ? "Coverbild:" : "Klicken/Ziehen zum Hochladen"}
+                  {isUploading
+                    ? "Uploading..."
+                    : isDragging
+                    ? "Coverbild:"
+                    : "Klicken/Ziehen zum Hochladen"}
                 </span>
               </>
             )}
