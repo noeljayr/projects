@@ -34,8 +34,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Handle mode and category query parameters
-  const allowedParams = ["mode", "category"];
+  // Handle query parameters - allow pagination and filtering params
+  const allowedParams = ["mode", "category", "page", "search", "sort", "limit"];
   const hasInvalidParams = objectKeys.some(
     (key) => !allowedParams.includes(key)
   );

@@ -18,21 +18,15 @@ export function updateSearchParams(
   const params = new URLSearchParams(currentParams.toString());
 
   Object.entries(updates).forEach(([key, value]) => {
-    if (value === null || value === undefined || value === "" || value === 0) {
+    if (value === null || value === undefined || value === "") {
+      params.delete(key);
+    } else if (key === "page" && value === 1) {
+      // Don't include page=1 in URL (it's the default)
       params.delete(key);
     } else {
       params.set(key, String(value));
     }
   });
-
-  // Reset to page 1 when changing search or sort (unless explicitly setting page)
-  if (
-    resetPage &&
-    !("page" in updates) &&
-    ("search" in updates || "sort" in updates)
-  ) {
-    params.delete("page");
-  }
 
   return params.toString() ? `?${params.toString()}` : "";
 }

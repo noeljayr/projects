@@ -20,10 +20,11 @@ export const metadata: Metadata = {
 };
 
 type PageProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 async function Page({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
   const client = await clientPromise;
   const db = client.db("vom_sauterhof");
 
@@ -49,7 +50,8 @@ async function Page({ searchParams }: PageProps) {
     : {};
 
   // Extract pagination and filter parameters from URL
-  const { page, limit, search, sort } = extractPaginationParams(searchParams);
+  const { page, limit, search, sort } =
+    extractPaginationParams(resolvedSearchParams);
   const skip = (page - 1) * limit;
 
   // Build MongoDB query and sort

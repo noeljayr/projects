@@ -88,8 +88,10 @@ export default function Pagination({
               key={pageNum}
               onClick={() => onPageChange(pageNum)}
               disabled={disabled}
-              className={`h-8 w-8 text-sm cursor-pointer rounded-lg disabled:cursor-not-allowed ${
-                isCurrentPage ? "font-black text-[#cd6917]" : " opacity-75"
+              className={`h-8 w-8 text-sm font-medium rounded-lg disabled:cursor-not-allowed hover:bg-gray-100 ${
+                isCurrentPage
+                  ? "font-black text-[#cd6917] "
+                  : "opacity-75 hover:opacity-100"
               }`}
             >
               {pageNum}
@@ -101,7 +103,7 @@ export default function Pagination({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages || disabled}
-        className="flex items-center h-8 w-8 cursor-pointer justify-center text-sm font-medium text-gray-500 bg-[#FBF2EA] border border-gray-300 rounded-full hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center h-8 w-8 cursor-pointer justify-center font-medium text-gray-500 bg-[#FBF2EA] border border-gray-300 rounded-full hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <IconChevronRight className="w-4 h-4" />
       </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import { IconSearch } from "@tabler/icons-react";
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { News } from "@/types/News";
 import NewsCard from "@/components/news/NewsCard";
@@ -41,21 +41,28 @@ export default function NewsPageClient({
   const [isPending, startTransition] = useTransition();
   const [searchQuery, setSearchQuery] = useState(currentSearch);
 
+  // Sync search input with URL parameters
+  useEffect(() => {
+    setSearchQuery(currentSearch);
+  }, [currentSearch]);
+
   // Helper function to update URL with new parameters
   const updateURL = (updates: Record<string, string | number | null>) => {
     const newURL = updateSearchParams(searchParams, updates);
+    const fullURL = `/vomsauterhof/news${newURL}`;
+
     startTransition(() => {
-      router.push(`/vomsauterhof/news${newURL}`);
+      router.push(fullURL);
     });
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    updateURL({ search: searchQuery });
+    updateURL({ search: searchQuery, page: 1 });
   };
 
   const handleSortChange = (newSort: "new" | "old") => {
-    updateURL({ sort: newSort });
+    updateURL({ sort: newSort, page: 1 });
   };
 
   const handlePageChange = (page: number) => {
@@ -114,12 +121,14 @@ export default function NewsPageClient({
           <NewsCard news={n} key={n.id} />
         ))}
 
-        {news.length === 0 && (
-          <div className="font-p3 w-full absolute h-[16rem] opacity-75 flex items-center justify-center">
-            Wir konnten das nicht finden.
+        
+      </div>
+
+      {news.length === 0 && (
+          <div className="font-p3 w-full h-[14rem] mt-12 md:col-span-2 lg:col-span-3 col-span-1  mb-0 opacity-75 flex items-center justify-center">
+            <span className="w-fit">Wir konnten das nicht finden.</span>
           </div>
         )}
-      </div>
 
       {/* Pagination */}
       <div className="w-full items-center flex mt-12">
@@ -130,23 +139,42 @@ export default function NewsPageClient({
           disabled={isPending}
         />
 
-        <div className="text-sm  ml-auto">
+        <div className="  ml-auto">
           {paginationInfo.totalCount > 0 ? (
             <p>
-              <span className="text-gray-600"> Anzeige von </span>
-              <span className="font-bold">
-                {(paginationInfo.currentPage - 1) * paginationInfo.limit + 1}{" "}
-                bis{" "}
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                }}
+                className="text-gray-600"
+              >
+                {" "}
+                Anzeige von{" "}
+              </span>
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                }}
+                className="font-bold"
+              >
+                {(paginationInfo.currentPage - 1) * paginationInfo.limit + 1} -{" "}
                 {Math.min(
                   paginationInfo.currentPage * paginationInfo.limit,
                   paginationInfo.totalCount
                 )}{" "}
                 von {paginationInfo.totalCount}{" "}
               </span>
-              <span className="text-gray-600">Nachrichten</span>
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                }}
+                className="text-gray-600"
+              >
+                Nachrichten
+              </span>
             </p>
           ) : (
-            <>Na</>
+            <></>
           )}
         </div>
       </div>
