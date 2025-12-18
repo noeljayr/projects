@@ -26,7 +26,13 @@ export default function EditableTextNavbar({
   const [isHovered, setIsHovered] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = async () => {
+  const handleSave = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.nativeEvent.stopImmediatePropagation();
+    }
+
     setIsSaving(true);
     try {
       const response = await fetch("/api/navbar", {
@@ -61,7 +67,13 @@ export default function EditableTextNavbar({
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.nativeEvent.stopImmediatePropagation();
+    }
+
     setTempValue(value);
     setIsEditing(false);
     setIsHovered(false);
@@ -77,16 +89,16 @@ export default function EditableTextNavbar({
       className="relative inline-block"
       onMouseEnter={() => !isEditing && setIsHovered(true)}
       onMouseLeave={() => !isEditing && setIsHovered(false)}
-      onClick={(e) => {
-        // Prevent navigation when clicking on the editable component in edit mode
-        if (isEditMode) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      }}
     >
       {isEditing ? (
-        <div className="relative w-[9rem] inline-block">
+        <div
+          className="relative w-[9rem] inline-block"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+          }}
+        >
           <input
             type="text"
             value={tempValue}
@@ -95,8 +107,16 @@ export default function EditableTextNavbar({
             autoFocus
             placeholder={placeholder}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleSave();
-              if (e.key === "Escape") handleCancel();
+              if (e.key === "Enter") {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSave();
+              }
+              if (e.key === "Escape") {
+                e.preventDefault();
+                e.stopPropagation();
+                handleCancel();
+              }
             }}
             onClick={(e) => {
               e.preventDefault();
@@ -104,12 +124,20 @@ export default function EditableTextNavbar({
             }}
           />
           {/* Absolute positioned buttons */}
-          <div className="absolute -bottom-10 left-0 flex gap-1.5 z-50">
+          <div
+            className="absolute -bottom-10 left-0 flex gap-1.5 z-50"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.nativeEvent.stopImmediatePropagation();
+            }}
+          >
             <button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                handleSave();
+                e.nativeEvent.stopImmediatePropagation();
+                handleSave(e);
               }}
               disabled={isSaving}
               className="flex items-center justify-center bg-[#58483B] text-white p-1.5 rounded-md cursor-pointer hover:opacity-95 transition-opacity disabled:opacity-50 shadow-lg"
@@ -121,7 +149,8 @@ export default function EditableTextNavbar({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                handleCancel();
+                e.nativeEvent.stopImmediatePropagation();
+                handleCancel(e);
               }}
               disabled={isSaving}
               className="flex items-center justify-center bg-gray-300 text-black p-1.5 rounded-md cursor-pointer hover:bg-gray-400 transition-colors disabled:opacity-50 shadow-lg"

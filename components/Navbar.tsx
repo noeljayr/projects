@@ -181,15 +181,15 @@ export function Navbar({ content }: Props) {
     },
     {
       name: content.wurfA,
-      href: "/vomsauterhof/wurf-a",
+      href: "/vomsauterhof/wurf/wurf-a",
     },
     {
       name: content.wurfB,
-      href: "/vomsauterhof/wurf-b",
+      href: "/vomsauterhof/wurf/wurf-b",
     },
     {
       name: content.wurfC,
-      href: "/vomsauterhof/wurf-c",
+      href: "/vomsauterhof/wurf/wurf-c",
     },
   ];
 
@@ -252,193 +252,97 @@ export function Navbar({ content }: Props) {
               ref={desktopNavRef}
               className="hidden lg:flex items-center space-x-3 bg-[#DBC6B3] text-[13.5px] rounded-full p-1"
             >
-              {isEditMode ? (
-                <div
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[0].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.linkStart || "Start"}
-                    fieldName="linkStart"
-                    isEditMode={isEditMode}
-                  />
-                </div>
-              ) : (
-                <Link
-                  href={addEditModeParam(links[0].href)}
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[0].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.linkStart || "Start"}
-                    fieldName="linkStart"
-                    isEditMode={isEditMode}
-                  />
-                </Link>
-              )}
+              <Link
+                href={addEditModeParam(links[0].href)}
+                className={`text-black font-medium  px-2.5 py-2 ${
+                  activeLink(links[0].href)
+                    ? "bg-[#EEE5DD] border border-[#D5BEAA]"
+                    : "bg-[#DBC6B3]"
+                } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
+              >
+                <EditableTextNavbar
+                  initialValue={content.linkStart || "Start"}
+                  fieldName="linkStart"
+                  isEditMode={isEditMode}
+                />
+              </Link>
 
-              {isEditMode ? (
-                <div
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[1].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.linkAbout || "Über uns"}
-                    fieldName="linkAbout"
-                    isEditMode={isEditMode}
-                  />
-                </div>
-              ) : (
-                <Link
-                  href={addEditModeParam(links[1].href)}
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[1].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.linkAbout || "Über uns"}
-                    fieldName="linkAbout"
-                    isEditMode={isEditMode}
-                  />
-                </Link>
-              )}
+              <Link
+                href={addEditModeParam(links[1].href)}
+                className={`text-black font-medium  px-2.5 py-2 ${
+                  activeLink(links[1].href)
+                    ? "bg-[#EEE5DD] border border-[#D5BEAA]"
+                    : "bg-[#DBC6B3]"
+                } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
+              >
+                <EditableTextNavbar
+                  initialValue={content.linkAbout || "Über uns"}
+                  fieldName="linkAbout"
+                  isEditMode={isEditMode}
+                />
+              </Link>
 
-              {isEditMode ? (
-                <div
-                  className={`text-black font-medium  px-3 py-2 ${
-                    activeLink(links[2].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.linkNews || "News"}
-                    fieldName="linkNews"
-                    isEditMode={isEditMode}
-                  />
-                </div>
-              ) : (
-                <Link
-                  href={addEditModeParam(links[2].href)}
-                  className={`text-black font-medium  px-3 py-2 ${
-                    activeLink(links[2].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.linkNews || "News"}
-                    fieldName="linkNews"
-                    isEditMode={isEditMode}
-                  />
-                </Link>
-              )}
+              <Link
+                href={addEditModeParam(links[2].href)}
+                className={`text-black font-medium  px-3 py-2 ${
+                  activeLink(links[2].href)
+                    ? "bg-[#EEE5DD] border border-[#D5BEAA]"
+                    : "bg-[#DBC6B3]"
+                } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
+              >
+                <EditableTextNavbar
+                  initialValue={content.linkNews || "News"}
+                  fieldName="linkNews"
+                  isEditMode={isEditMode}
+                />
+              </Link>
 
               <BeauceronMenu content={content} />
 
-              {isEditMode ? (
-                <div
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[3].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.wurfA}
-                    fieldName="wurfA"
-                    isEditMode={isEditMode}
-                  />
-                </div>
-              ) : (
-                <Link
-                  href={addEditModeParam(links[3].href)}
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[3].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.wurfA}
-                    fieldName="wurfA"
-                    isEditMode={isEditMode}
-                  />
-                </Link>
-              )}
+              <Link
+                href={addEditModeParam(links[3].href)}
+                className={`text-black font-medium  px-2.5 py-2 ${
+                  activeLink(links[3].href)
+                    ? "bg-[#EEE5DD] border border-[#D5BEAA]"
+                    : "bg-[#DBC6B3]"
+                } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
+              >
+                <EditableTextNavbar
+                  initialValue={content.wurfA}
+                  fieldName="wurfA"
+                  isEditMode={isEditMode}
+                />
+              </Link>
 
-              {isEditMode ? (
-                <div
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[4].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.wurfB}
-                    fieldName="wurfB"
-                    isEditMode={isEditMode}
-                  />
-                </div>
-              ) : (
-                <Link
-                  href={addEditModeParam(links[4].href)}
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[4].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.wurfB}
-                    fieldName="wurfB"
-                    isEditMode={isEditMode}
-                  />
-                </Link>
-              )}
+              <Link
+                href={addEditModeParam(links[4].href)}
+                className={`text-black font-medium  px-2.5 py-2 ${
+                  activeLink(links[4].href)
+                    ? "bg-[#EEE5DD] border border-[#D5BEAA]"
+                    : "bg-[#DBC6B3]"
+                } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
+              >
+                <EditableTextNavbar
+                  initialValue={content.wurfB}
+                  fieldName="wurfB"
+                  isEditMode={isEditMode}
+                />
+              </Link>
 
-              {isEditMode ? (
-                <div
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[5].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.wurfC}
-                    fieldName="wurfC"
-                    isEditMode={isEditMode}
-                  />
-                </div>
-              ) : (
-                <Link
-                  href={addEditModeParam(links[5].href)}
-                  className={`text-black font-medium  px-2.5 py-2 ${
-                    activeLink(links[5].href)
-                      ? "bg-[#EEE5DD] border border-[#D5BEAA]"
-                      : "bg-[#DBC6B3]"
-                  } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.wurfC}
-                    fieldName="wurfC"
-                    isEditMode={isEditMode}
-                  />
-                </Link>
-              )}
+              <Link
+                href={addEditModeParam(links[5].href)}
+                className={`text-black font-medium  px-2.5 py-2 ${
+                  activeLink(links[5].href)
+                    ? "bg-[#EEE5DD] border border-[#D5BEAA]"
+                    : "bg-[#DBC6B3]"
+                } hover:brightness-[0.97] rounded-full cursor-pointer flex justify-center items-center leading-[0] transition-[filter,background-color] h-[2rem] duration-150`}
+              >
+                <EditableTextNavbar
+                  initialValue={content.wurfC}
+                  fieldName="wurfC"
+                  isEditMode={isEditMode}
+                />
+              </Link>
             </nav>
 
             <div className="flex flex-row-reverse items-center gap-3">
@@ -450,33 +354,19 @@ export function Navbar({ content }: Props) {
                 <Menu size={24} />
               </button>
 
-              {isEditMode ? (
-                <div
-                  className="text-white font-medium px-4 py-2 text-sm md:text-base rounded-[0.65rem] hover:opacity-95 transition-opacity duration-150 font-p4 "
-                  style={{ backgroundColor: "#58483B" }}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.contactButton || "Kontaktieren"}
-                    fieldName="contactButton"
-                    isEditMode={isEditMode}
-                    className="text-white"
-                  />
-                </div>
-              ) : (
-                <a
-                  target="_blank"
-                  href={"mailto:ti.genoveva@bluewin.ch"}
-                  className="text-white font-medium px-4 py-2 text-sm md:text-base rounded-[0.65rem] hover:opacity-95 transition-opacity duration-150 font-p4 "
-                  style={{ backgroundColor: "#58483B" }}
-                >
-                  <EditableTextNavbar
-                    initialValue={content.contactButton || "Kontaktieren"}
-                    fieldName="contactButton"
-                    isEditMode={isEditMode}
-                    className="text-white"
-                  />
-                </a>
-              )}
+              <a
+                target="_blank"
+                href={"mailto:ti.genoveva@bluewin.ch"}
+                className="text-white font-medium px-4 py-2 text-sm md:text-base rounded-[0.65rem] hover:opacity-95 transition-opacity duration-150 font-p4 "
+                style={{ backgroundColor: "#58483B" }}
+              >
+                <EditableTextNavbar
+                  initialValue={content.contactButton || "Kontaktieren"}
+                  fieldName="contactButton"
+                  isEditMode={isEditMode}
+                  className="text-white"
+                />
+              </a>
             </div>
           </div>
         </header>
@@ -512,198 +402,95 @@ export function Navbar({ content }: Props) {
 
             <nav className="flex flex-col items-center">
               <div className="space-y-1 w-full px-4">
-                {isEditMode ? (
-                  <div
-                    className={`mobile-menu-item block text-black font-medium font-p4 py-2 px-4 rounded-lg ${
-                      pathname === "/vomsauterhof/" ||
-                      pathname === "/vomsauterhof"
-                        ? "bg-[#EEE5DD]"
-                        : ""
-                    }  hover:bg-[#FBF2EA]/50 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.linkStart || "Start"}
-                      fieldName="linkStart"
-                      isEditMode={isEditMode}
-                    />
-                  </div>
-                ) : (
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/")}
-                    className={`mobile-menu-item block text-black font-medium font-p4 py-2 px-4 rounded-lg ${
-                      pathname === "/vomsauterhof/" ||
-                      pathname === "/vomsauterhof"
-                        ? "bg-[#EEE5DD]"
-                        : ""
-                    }  hover:bg-[#FBF2EA]/50 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.linkStart || "Start"}
-                      fieldName="linkStart"
-                      isEditMode={isEditMode}
-                    />
-                  </Link>
-                )}
-                {isEditMode ? (
-                  <div
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/uber-uns") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.linkAbout || "Über uns"}
-                      fieldName="linkAbout"
-                      isEditMode={isEditMode}
-                    />
-                  </div>
-                ) : (
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/uber-uns")}
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/uber-uns") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.linkAbout || "Über uns"}
-                      fieldName="linkAbout"
-                      isEditMode={isEditMode}
-                    />
-                  </Link>
-                )}
-                {isEditMode ? (
-                  <div
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/news") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.linkNews || "News"}
-                      fieldName="linkNews"
-                      isEditMode={isEditMode}
-                    />
-                  </div>
-                ) : (
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/news")}
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/news") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.linkNews || "News"}
-                      fieldName="linkNews"
-                      isEditMode={isEditMode}
-                    />
-                  </Link>
-                )}
-                {isEditMode ? (
-                  <div
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/unsere-beauceron")
-                        ? "bg-[#EEE5DD]"
-                        : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.linkBreed || "Unsere beauceron"}
-                      fieldName="linkBreed"
-                      isEditMode={isEditMode}
-                    />
-                  </div>
-                ) : (
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/unsere-beauceron")
-                        ? "bg-[#EEE5DD]"
-                        : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.linkBreed || "Unsere beauceron"}
-                      fieldName="linkBreed"
-                      isEditMode={isEditMode}
-                    />
-                  </Link>
-                )}
-                {isEditMode ? (
-                  <div
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/wurf-a") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.wurfA}
-                      fieldName="wurfA"
-                      isEditMode={isEditMode}
-                    />
-                  </div>
-                ) : (
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/wurf-a")}
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/wurf-a") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.wurfA}
-                      fieldName="wurfA"
-                      isEditMode={isEditMode}
-                    />
-                  </Link>
-                )}
-                {isEditMode ? (
-                  <div
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/wurf-b") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.wurfB}
-                      fieldName="wurfB"
-                      isEditMode={isEditMode}
-                    />
-                  </div>
-                ) : (
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/wurf-b")}
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/wurf-b") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.wurfB}
-                      fieldName="wurfB"
-                      isEditMode={isEditMode}
-                    />
-                  </Link>
-                )}
-                {isEditMode ? (
-                  <div
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/wurf-c") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.wurfC}
-                      fieldName="wurfC"
-                      isEditMode={isEditMode}
-                    />
-                  </div>
-                ) : (
-                  <Link
-                    href={addEditModeParam("/vomsauterhof/wurf-c")}
-                    className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                      activeLink("/vomsauterhof/wurf-c") ? "bg-[#EEE5DD]" : ""
-                    } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
-                  >
-                    <EditableTextNavbar
-                      initialValue={content.wurfC}
-                      fieldName="wurfC"
-                      isEditMode={isEditMode}
-                    />
-                  </Link>
-                )}
+                <Link
+                  href={addEditModeParam("/vomsauterhof/")}
+                  className={`mobile-menu-item block text-black font-medium font-p4 py-2 px-4 rounded-lg ${
+                    pathname === "/vomsauterhof/" ||
+                    pathname === "/vomsauterhof"
+                      ? "bg-[#EEE5DD]"
+                      : ""
+                  }  hover:bg-[#FBF2EA]/50 transition-colors duration-150`}
+                >
+                  <EditableTextNavbar
+                    initialValue={content.linkStart || "Start"}
+                    fieldName="linkStart"
+                    isEditMode={isEditMode}
+                  />
+                </Link>
+                <Link
+                  href={addEditModeParam("/vomsauterhof/uber-uns")}
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/uber-uns") ? "bg-[#EEE5DD]" : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  <EditableTextNavbar
+                    initialValue={content.linkAbout || "Über uns"}
+                    fieldName="linkAbout"
+                    isEditMode={isEditMode}
+                  />
+                </Link>
+                <Link
+                  href={addEditModeParam("/vomsauterhof/news")}
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/news") ? "bg-[#EEE5DD]" : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  <EditableTextNavbar
+                    initialValue={content.linkNews || "News"}
+                    fieldName="linkNews"
+                    isEditMode={isEditMode}
+                  />
+                </Link>
+                <Link
+                  href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/unsere-beauceron")
+                      ? "bg-[#EEE5DD]"
+                      : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  <EditableTextNavbar
+                    initialValue={content.linkBreed || "Unsere beauceron"}
+                    fieldName="linkBreed"
+                    isEditMode={isEditMode}
+                  />
+                </Link>
+                <Link
+                  href={addEditModeParam("/vomsauterhof/wurf/wurf-a")}
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/wurf-a") ? "bg-[#EEE5DD]" : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  <EditableTextNavbar
+                    initialValue={content.wurfA}
+                    fieldName="wurfA"
+                    isEditMode={isEditMode}
+                  />
+                </Link>
+                <Link
+                  href={addEditModeParam("/vomsauterhof/wurf/wurf-b")}
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/wurf-b") ? "bg-[#EEE5DD]" : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  <EditableTextNavbar
+                    initialValue={content.wurfB}
+                    fieldName="wurfB"
+                    isEditMode={isEditMode}
+                  />
+                </Link>
+                <Link
+                  href={addEditModeParam("/vomsauterhof/wurf/wurf-c")}
+                  className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
+                    activeLink("/vomsauterhof/wurf-c") ? "bg-[#EEE5DD]" : ""
+                  } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
+                >
+                  <EditableTextNavbar
+                    initialValue={content.wurfC}
+                    fieldName="wurfC"
+                    isEditMode={isEditMode}
+                  />
+                </Link>
               </div>
 
               <div className="mobile-menu-item absolute bottom-2 pt-6 border-t border-[#A89485] w-full max-w-[240px] text-center">

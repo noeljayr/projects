@@ -26,7 +26,13 @@ export default function EditableText({
   const [isHovered, setIsHovered] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = async () => {
+  const handleSave = async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.nativeEvent.stopImmediatePropagation();
+    }
+
     setIsSaving(true);
     try {
       const response = await fetch("/api/homepage/update-content", {
@@ -52,7 +58,13 @@ export default function EditableText({
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.nativeEvent.stopImmediatePropagation();
+    }
+
     setTempValue(value);
     setIsEditing(false);
     setIsHovered(false);
@@ -92,7 +104,12 @@ export default function EditableText({
               style={{
                 fontSize: "calc(var(--p4) * 0.9)",
               }}
-              onClick={handleSave}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.nativeEvent.stopImmediatePropagation();
+                handleSave(e);
+              }}
               disabled={isSaving}
               className="flex items-center gap-2 bg-[#58483B] text-white px-3 py-1.5 rounded-[0.35rem] cursor-pointer hover:opacity-95 transition-opacity disabled:opacity-50"
             >
@@ -103,7 +120,12 @@ export default function EditableText({
               style={{
                 fontSize: "calc(var(--p4) * 0.9)",
               }}
-              onClick={handleCancel}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.nativeEvent.stopImmediatePropagation();
+                handleCancel(e);
+              }}
               disabled={isSaving}
               className="flex items-center gap-2 bg-gray-300 text-black px-3 py-1.5 rounded-[0.35rem] cursor-pointer hover:bg-gray-400 transition-colors disabled:opacity-50"
             >

@@ -1,7 +1,7 @@
 "use client";
 
 import { IconCheck, IconDots, IconPhoto, IconPlus } from "@tabler/icons-react";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import { motionTransition } from "@/constants/motionTransition";
 import Link from "next/link";
@@ -28,6 +28,7 @@ function NewsTable() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
     fetchNews();
@@ -35,6 +36,7 @@ function NewsTable() {
 
   const fetchNews = async () => {
     try {
+      setIsPending(true);
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
@@ -50,6 +52,7 @@ function NewsTable() {
       console.error("Error fetching news:", error);
     } finally {
       setIsLoading(false);
+      setIsPending(false);
     }
   };
 
@@ -108,6 +111,10 @@ function NewsTable() {
     setNewsToDelete(new Set([newsId]));
     setShowDelete(true);
     setActiveActionId(null);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const handleRefreshAfterDelete = () => {
@@ -347,18 +354,53 @@ function NewsTable() {
               })}
             </motion.div>
 
-            {/* Pagination Controls */}
-            <motion.div layout="position" key="pagination">
+            <div className="w-full items-center flex mt-12">
               <Pagination
-                pagination={pagination}
-                onPageChange={setCurrentPage}
-                onLimitChange={(limit) => {
-                  setItemsPerPage(limit);
-                  setCurrentPage(1);
-                }}
-                className="mt-6 pt-4 border-t border-[var(--c-border)]"
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                onPageChange={handlePageChange}
+                disabled={isPending}
               />
-            </motion.div>
+
+              <div className="  ml-auto">
+                {pagination.totalCount > 0 ? (
+                  <p>
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                      }}
+                      className="text-gray-600"
+                    >
+                      {" "}
+                      Anzeige von{" "}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                      }}
+                      className="font-bold"
+                    >
+                      {(pagination.currentPage - 1) * pagination.limit + 1} -{" "}
+                      {Math.min(
+                        pagination.currentPage * pagination.limit,
+                        pagination.totalCount
+                      )}{" "}
+                      von {pagination.totalCount}{" "}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                      }}
+                      className="text-gray-600"
+                    >
+                      Nachrichten
+                    </span>
+                  </p>
+                ) : (
+                  <></>
+                )}
+              </div>
+            </div>
           </motion.div>
         </AnimatePresence>
 
