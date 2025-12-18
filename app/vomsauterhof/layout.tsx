@@ -108,54 +108,56 @@ export default async function RootLayout({
   // Fetch navbar content
   const navbarCollection = db.collection("navbar");
   const navbarData = await navbarCollection.findOne({});
-  const navbarContent: NavbarContent = navbarData
-    ? {
-        linkStart: navbarData.linkStart,
-        linkAbout: navbarData.linkAbout,
-        linkNews: navbarData.linkNews,
-        linkBreed: navbarData.linkBreed,
-        linkWurf: navbarData.linkWurf,
-        contactButton: navbarData.contactButton,
-        mobileContactHeading: navbarData.mobileContactHeading,
-        mobilePhone: navbarData.mobilePhone,
-        mobileEmail: navbarData.mobileEmail,
-      }
-    : {};
+  const navbarContent: NavbarContent = {
+    linkStart: navbarData?.linkStart,
+    linkAbout: navbarData?.linkAbout,
+    linkNews: navbarData?.linkNews,
+    linkBreed: navbarData?.linkBreed,
+    linkWurf: navbarData?.linkWurf,
+    wurfA: navbarData?.wurfA || "Wurf A",
+    wurfB: navbarData?.wurfB || "Wurf B",
+    wurfC: navbarData?.wurfC || "Wurf C",
+    contactButton: navbarData?.contactButton,
+    mobileContactHeading: navbarData?.mobileContactHeading,
+    mobilePhone: navbarData?.mobilePhone,
+    mobileEmail: navbarData?.mobileEmail,
+  };
 
   // Fetch footer content
   const footerCollection = db.collection("footer");
   const footerData = await footerCollection.findOne({});
-  const footerContent: FooterContent = footerData
-    ? {
-        companyName: footerData.companyName,
-        address1: footerData.address1,
-        address2: footerData.address2,
-        phone: footerData.phone,
-        email: footerData.email,
-        linksHeading: footerData.linksHeading,
-        linkStart: footerData.linkStart,
-        linkAbout: footerData.linkAbout,
-        linkNews: footerData.linkNews,
-        linkBeauceron: footerData.linkBeauceron,
-        linkWurf: footerData.linkWurf,
-      }
-    : {};
+  const footerContent: FooterContent = {
+    companyName: footerData?.companyName,
+    address1: footerData?.address1,
+    address2: footerData?.address2,
+    phone: footerData?.phone,
+    email: footerData?.email,
+    linksHeading: footerData?.linksHeading,
+    linkStart: footerData?.linkStart,
+    linkAbout: footerData?.linkAbout,
+    linkNews: footerData?.linkNews,
+    linkBeauceron: footerData?.linkBeauceron,
+    linkWurf: footerData?.linkWurf,
+    linkWurfA: footerData?.linkWurfA || "Wurf A",
+    linkWurfB: footerData?.linkWurfB || "Wurf B",
+    linkWurfC: footerData?.linkWurfC || "Wurf C",
+  };
 
   const categoriesCollection = db.collection("wurf_categories");
   const categories = await categoriesCollection
-      .find({ status: "published" })
-      .sort({ createdAt: 1 })
-      .toArray();
+    .find({ status: "published" })
+    .sort({ createdAt: 1 })
+    .toArray();
 
-   const transformedCategories : WurfCategory[] = categories.map((cat) => ({
-      id: cat._id.toString(),
-      name: cat.name,
-      description: cat.description,
-      slug: cat.slug,
-      status: cat.status,
-      createdAt: cat.createdAt,
-      updatedAt: cat.updatedAt,
-    }));
+  const transformedCategories: WurfCategory[] = categories.map((cat) => ({
+    id: cat._id.toString(),
+    name: cat.name,
+    description: cat.description,
+    slug: cat.slug,
+    status: cat.status,
+    createdAt: cat.createdAt,
+    updatedAt: cat.updatedAt,
+  }));
 
   return (
     <>
@@ -165,9 +167,9 @@ export default async function RootLayout({
         <Mode />
       </Suspense>
       <NextTopLoader color="#58483B" showSpinner={false} />
-      <Navbar wurfCategories={transformedCategories} content={navbarContent} />
+      <Navbar content={navbarContent} />
       <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
-      <FooterClient wurfCategories={transformedCategories} content={footerContent} />
+      <FooterClient content={footerContent} />
     </>
   );
 }

@@ -6,22 +6,19 @@ import Parteners from "./Parteners";
 import { FooterContent } from "@/types/footer";
 import { usePathname, useSearchParams } from "next/navigation";
 import EditableTextFooter from "./EditableTextFooter";
-import EditableTextFooterWurfCategory from "./EditableTextFooterWurfCategory";
 import Link from "next/link";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { WurfCategory } from "@/types/Wurf";
 
 type Props = {
   content: FooterContent;
-  wurfCategories: WurfCategory[];
 };
 
-export function FooterClient({ content, wurfCategories }: Props) {
+export function FooterClient({ content }: Props) {
   const footerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isEditMode = searchParams.get("mode") === "edit";
-  const { userName, enabled, logout } = useAuthStore();
+  const { userName, enabled } = useAuthStore();
   const isLoggedIn = enabled && userName;
   const [shouldShow, setShouldShow] = useState(true);
 
@@ -196,19 +193,38 @@ export function FooterClient({ content, wurfCategories }: Props) {
                   href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
                 />
               </li>
-              {wurfCategories.map((c) => (
-                <li key={c.slug}>
-                  <EditableTextFooterWurfCategory
-                    initialValue={c.name}
-                    fieldName="name"
-                    categorySlug={c.slug}
-                    isEditMode={isEditMode}
-                    className="hover:underline transition-all duration-300 block"
-                    as="a"
-                    href={addEditModeParam(`/vomsauterhof/wurf/${c.slug}`)}
-                  />
-                </li>
-              ))}
+
+              <li>
+                <EditableTextFooter
+                  initialValue={content.linkWurfA}
+                  fieldName="linkWurfA"
+                  isEditMode={isEditMode}
+                  className="hover:underline transition-all duration-300 block"
+                  as="a"
+                  href={addEditModeParam("/vomsauterhof/wurf-a")}
+                />
+              </li>
+              <li>
+                <EditableTextFooter
+                  initialValue={content.linkWurfB}
+                  fieldName="linkWurfB"
+                  isEditMode={isEditMode}
+                  className="hover:underline transition-all duration-300 block"
+                  as="a"
+                  href={addEditModeParam("/vomsauterhof/wurf-b")}
+                />
+              </li>
+
+              <li>
+                <EditableTextFooter
+                  initialValue={content.linkWurfC}
+                  fieldName="linkWurfC"
+                  isEditMode={isEditMode}
+                  className="hover:underline transition-all duration-300 block"
+                  as="a"
+                  href={addEditModeParam("/vomsauterhof/wurf-c")}
+                />
+              </li>
             </ul>
           </div>
         </div>

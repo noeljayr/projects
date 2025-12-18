@@ -10,4 +10,7 @@ export type FooterContent = {
   linkNews?: string;
   linkBeauceron?: string;
   linkWurf?: string;
+  linkWurfA: string;
+  linkWurfB: string;
+  linkWurfC: string;
 };

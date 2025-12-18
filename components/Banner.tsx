@@ -12,6 +12,7 @@ type Props = {
   isEditMode?: boolean;
   page?: string; // "about", "news", "kontakt", or "wurf"
   categorySlug?: string; // Required when page is "wurf"
+  style?: React.CSSProperties
 };
 
 function Banner({
@@ -20,6 +21,7 @@ function Banner({
   isEditMode = false,
   page = "about",
   categorySlug,
+  style
 }: Props) {
   const EditableComponent =
     page === "about"
@@ -31,7 +33,7 @@ function Banner({
       : EditableTextBanner;
 
   return (
-    <div className="w-screen flex items-center justify-center flex-col pb-32 mb-12 pt-40 bg-[#BFA999] border-b-[15px] border-b-[#58483B]">
+    <div style={style} className="w-screen flex items-center justify-center flex-col pb-32 mb-12 pt-40 bg-[#BFA999] border-b-[15px] border-b-[#58483B]">
       {name &&
         (page === "about" ? (
           <EditableTextAbout

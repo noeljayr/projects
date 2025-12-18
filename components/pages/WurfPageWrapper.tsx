@@ -146,12 +146,15 @@ const WurfPageWrapper = ({
         isEditMode={isEditMode}
         page="wurf"
         categorySlug={activeCategory.slug}
+        style={{
+          marginBottom: 0,
+        }}
       />
 
       {wurf ? (
         <>
           {wurf.image && (
-            <div className="relative flex w-full py-[4rem] px-[10%] max-sm:px-[5%] bg-[#58483B]">
+            <div className="relative flex w-full py-[4rem] mb-16 px-[10%] max-sm:px-[5%] bg-[#58483B]">
               <div className="w-full h-full section-container flex absolute z-0">
                 <Image
                   src={paw2}
