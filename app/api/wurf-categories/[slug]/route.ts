@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { generateSlug } from "@/lib/generateSlug";
 
 export async function GET(
   request: NextRequest,
@@ -68,31 +67,10 @@ export async function PATCH(
       updatedAt: new Date(),
     };
 
-    // If name is being updated, generate new slug
-    let newSlug = slug;
+    // If name is being updated, update only the name (keep slug static)
     if (name && name.trim() !== category.name) {
-      const baseSlug = generateSlug(name);
-      newSlug = baseSlug;
-      let counter = 1;
-
-      while (
-        await categoriesCollection.findOne({
-          slug: newSlug,
-          _id: { $ne: category._id },
-        })
-      ) {
-        newSlug = `${baseSlug}-${counter}`;
-        counter++;
-      }
-
       updateData.name = name.trim();
-      updateData.slug = newSlug;
-
-      // Update all wurf entries that reference this category
-      await wurfCollection.updateMany(
-        { categorySlug: slug },
-        { $set: { categorySlug: newSlug, updatedAt: new Date() } }
-      );
+      // Note: slug remains unchanged to maintain static URLs
     }
 
     if (description !== undefined) {
@@ -102,7 +80,7 @@ export async function PATCH(
     await categoriesCollection.updateOne({ slug }, { $set: updateData });
 
     const updatedCategory = await categoriesCollection.findOne({
-      slug: newSlug,
+      slug: slug, // Use original slug since it remains unchanged
     });
 
     return NextResponse.json({

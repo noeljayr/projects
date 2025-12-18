@@ -57,12 +57,7 @@ export default function EditableTextWurfCategory({
         setValue(tempValue);
         setIsEditing(false);
         setIsHovered(false);
-
-        // If the slug changed (name update), redirect to new URL
-        if (fieldName === "name" && result.category.slug !== categorySlug) {
-          window.location.href = `/vomsauterhof/wurf/${result.category.slug}${window.location.search}`;
-          return;
-        }
+        // Note: No redirect needed since slug remains static when name changes
       } else {
         throw new Error(result.message || "Failed to update category");
       }

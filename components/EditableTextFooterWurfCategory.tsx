@@ -51,13 +51,7 @@ export default function EditableTextFooterWurfCategory({
         setValue(tempValue);
         setIsEditing(false);
         setIsHovered(false);
-
-        // If the slug changed (name update), redirect to new URL
-        if (fieldName === "name" && result.category.slug !== categorySlug) {
-          // Reload the page to reflect the new category structure
-          window.location.reload();
-          return;
-        }
+        // Note: No redirect needed since slug remains static when name changes
       } else {
         throw new Error(result.message || "Failed to update category");
       }
