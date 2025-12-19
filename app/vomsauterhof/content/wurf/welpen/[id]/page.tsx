@@ -83,8 +83,8 @@ function Page() {
 
       // For non-timeline categories, fetch old single-entry welpen data
       if (
-        wurfData.wurf.category !== "wurf b" &&
-        wurfData.wurf.category !== "wurf c"
+        wurfData.wurf.category !== "wurf-b" &&
+        wurfData.wurf.category !== "wurf-c"
       ) {
         const welpenResponse = await fetch(`/api/welpen/get?wurfId=${wurfId}`);
         const welpenData = await welpenResponse.json();
@@ -198,7 +198,7 @@ function Page() {
   };
 
   const isTimelineStyle =
-    wurfCategory === "wurf b" || wurfCategory === "wurf c";
+    wurfCategory === "wurf-b" || wurfCategory === "wurf-c";
 
   const handleSubmit = async () => {
     if (!formDate || !formTitle) {
