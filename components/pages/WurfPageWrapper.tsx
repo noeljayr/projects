@@ -190,16 +190,15 @@ const WurfPageWrapper = ({
 
           <div className="flex flex-col gap-8 section-container mx-auto">
             <div className="flex items-center max-[900px]:flex-col max-[900px]:items-start">
-              <div className="flex items-center">
+              <div className="flex items-center w-full">
                 <h3>{wurf.name}</h3>
 
-                {wurf.category === "wurf a" && (
+                {wurf.category === "wurf-a" && (
                   <Link
                     href={`/vomsauterhof/welpen/${wurf.id}`}
-                    className="ml-6 flex items-center text-white bg-[#58483B] px-2 py-1 rounded-[0.5rem]"
+                    className="px-4 py-2 flex ml-auto bg-[#58483B] text-white text-sm font-medium rounded-[0.5rem]"
                   >
                     Welpen
-                    <IconArrowUpRight className="h-4 w-4 ml-2" color="white" />
                   </Link>
                 )}
               </div>

@@ -403,6 +403,7 @@ export function Navbar({ content }: Props) {
             <nav className="flex flex-col items-center">
               <div className="space-y-1 w-full px-4">
                 <Link
+                  onClick={closeMobileMenu}
                   href={addEditModeParam("/vomsauterhof/")}
                   className={`mobile-menu-item block text-black font-medium font-p4 py-2 px-4 rounded-lg ${
                     pathname === "/vomsauterhof/" ||
@@ -418,6 +419,7 @@ export function Navbar({ content }: Props) {
                   />
                 </Link>
                 <Link
+                  onClick={closeMobileMenu}
                   href={addEditModeParam("/vomsauterhof/uber-uns")}
                   className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
                     activeLink("/vomsauterhof/uber-uns") ? "bg-[#EEE5DD]" : ""
@@ -430,6 +432,7 @@ export function Navbar({ content }: Props) {
                   />
                 </Link>
                 <Link
+                  onClick={closeMobileMenu}
                   href={addEditModeParam("/vomsauterhof/news")}
                   className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
                     activeLink("/vomsauterhof/news") ? "bg-[#EEE5DD]" : ""
@@ -442,6 +445,7 @@ export function Navbar({ content }: Props) {
                   />
                 </Link>
                 <Link
+                  onClick={closeMobileMenu}
                   href={addEditModeParam("/vomsauterhof/unsere-beauceron")}
                   className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
                     activeLink("/vomsauterhof/unsere-beauceron")
@@ -456,9 +460,12 @@ export function Navbar({ content }: Props) {
                   />
                 </Link>
                 <Link
+                  onClick={closeMobileMenu}
                   href={addEditModeParam("/vomsauterhof/wurf/wurf-a")}
                   className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                    activeLink("/vomsauterhof/wurf-a") ? "bg-[#EEE5DD]" : ""
+                    activeLink("/vomsauterhof/wurf/wurf-a")
+                      ? "bg-[#EEE5DD]"
+                      : ""
                   } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
                 >
                   <EditableTextNavbar
@@ -468,9 +475,12 @@ export function Navbar({ content }: Props) {
                   />
                 </Link>
                 <Link
+                  onClick={closeMobileMenu}
                   href={addEditModeParam("/vomsauterhof/wurf/wurf-b")}
                   className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                    activeLink("/vomsauterhof/wurf-b") ? "bg-[#EEE5DD]" : ""
+                    activeLink("/vomsauterhof/wurf/wurf-b")
+                      ? "bg-[#EEE5DD]"
+                      : ""
                   } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
                 >
                   <EditableTextNavbar
@@ -480,9 +490,12 @@ export function Navbar({ content }: Props) {
                   />
                 </Link>
                 <Link
+                  onClick={closeMobileMenu}
                   href={addEditModeParam("/vomsauterhof/wurf/wurf-c")}
                   className={`mobile-menu-item block text-black font-p4 py-2 px-4 rounded-lg ${
-                    activeLink("/vomsauterhof/wurf-c") ? "bg-[#EEE5DD]" : ""
+                    activeLink("/vomsauterhof/wurf/wurf-c")
+                      ? "bg-[#EEE5DD]"
+                      : ""
                   } hover:bg-[#FBF2EA]/30 transition-colors duration-150`}
                 >
                   <EditableTextNavbar
