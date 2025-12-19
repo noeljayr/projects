@@ -4,6 +4,8 @@ import { BannerContent } from "@/types/banner";
 import Banner from "./Banner";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import Image from "next/image";
+import paw2 from "@/public/paw-2.png";
 
 type Props = {
   bannerContent: BannerContent;
@@ -36,11 +38,9 @@ function WelpenWrapper({ bannerContent, welpen, wurf }: Props) {
       wrapper.removeChild(caption);
       wrapper.appendChild(span);
     });
-
-    
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     const videoWrappers = document.querySelectorAll(".video-wrapper");
 
     if (!videoWrappers) return;
@@ -54,18 +54,21 @@ function WelpenWrapper({ bannerContent, welpen, wurf }: Props) {
       wrapper.removeChild(caption);
       wrapper.appendChild(span);
     });
-  }, [])
+  }, []);
 
   return (
-    <>
+    <div className="flex flex-col pb-16">
       <Banner
         name={bannerContent.title}
         description={bannerContent.description}
         isEditMode={isEditMode}
         page="wurf"
+        style={{
+          marginBottom: 0,
+        }}
       />
 
-      <div className="flex flex-col gap-8 section-container mx-auto">
+      <div className="flex flex-col gap-8 pt-16 section-container mx-auto">
         <div className="flex items-center">
           <h3>{wurf.name} - Welpen</h3>
         </div>
@@ -82,7 +85,7 @@ function WelpenWrapper({ bannerContent, welpen, wurf }: Props) {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
 

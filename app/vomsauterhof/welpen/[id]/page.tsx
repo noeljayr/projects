@@ -49,13 +49,7 @@ async function Page({ params }: { params: Promise<{ id: string }> }) {
     : {};
 
   return (
-    <div className="gap-16 flex flex-col w-full pb-16">
-      <WelpenWrapper
-        welpen={welpen}
-        wurf={wurf}
-        bannerContent={bannerContent}
-      />
-    </div>
+    <WelpenWrapper welpen={welpen} wurf={wurf} bannerContent={bannerContent} />
   );
 }
 
