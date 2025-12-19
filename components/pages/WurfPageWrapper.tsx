@@ -231,7 +231,7 @@ const WurfPageWrapper = ({
             />
           </div>
 
-          {wurf.category === "wurf a" ? (
+          {wurf.category === "wurf-a" ? (
             <>
               {welpen && welpen.information && <></>}
               <TimelineClient timeline={timeline} showFilters={false} />
