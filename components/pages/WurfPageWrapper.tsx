@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import TimelineClient from "@/components/wurf/TimelineClient";
-import { IconArrowUpRight } from "@tabler/icons-react";
+
 import { useEffect } from "react";
 
 import paw2 from "@/public/paw-2.png";
@@ -194,12 +194,20 @@ const WurfPageWrapper = ({
                 <h3>{wurf.name}</h3>
 
                 {wurf.category === "wurf-a" && (
-                  <Link
-                    href={`/vomsauterhof/welpen/${wurf.id}`}
-                    className="px-4 py-2 flex ml-auto bg-[#58483B] text-white text-sm font-medium rounded-[0.5rem]"
-                  >
-                    Welpen
-                  </Link>
+                  <div className="flex gap-2 ml-auto">
+                    <Link
+                      href={`/vomsauterhof/welpen/${wurf.id}`}
+                      className="px-4 py-2 bg-[#58483B] text-white text-sm font-medium rounded-[0.5rem]"
+                    >
+                      Welpen
+                    </Link>
+                    <Link
+                      href={`/vomsauterhof/nachzucht/${wurf.id}`}
+                      className="px-4 py-2 bg-[#58483B] text-white text-sm font-medium rounded-[0.5rem]"
+                    >
+                      Nachzucht
+                    </Link>
+                  </div>
                 )}
               </div>
 
@@ -234,7 +242,6 @@ const WurfPageWrapper = ({
           {wurf.category === "wurf-a" ? (
             <>
               {welpen && welpen.information && <></>}
-              <TimelineClient timeline={timeline} showFilters={false} />
             </>
           ) : (
             <TimelineClient
