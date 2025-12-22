@@ -2279,7 +2279,7 @@ export default function RichTextEditor({
                 }}
                 className={`py-2 flex items-center px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer`}
               >
-                Stornieren
+                Abbrechen
               </button>
 
               <button

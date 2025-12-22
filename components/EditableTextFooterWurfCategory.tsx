@@ -114,7 +114,7 @@ export default function EditableTextFooterWurfCategory({
               className="flex items-center gap-1 bg-gray-300 text-black px-2 py-1 rounded text-xs cursor-pointer hover:bg-gray-400 transition-colors disabled:opacity-50"
             >
               <IconX className="h-3 w-3" />
-              Stornieren
+              Abbrechen
             </button>
           </div>
         </div>

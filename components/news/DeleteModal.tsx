@@ -88,7 +88,7 @@ function DeleteModal({
               }}
               className={`py-1 px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)]  rounded-[0.35rem] cursor-pointer ml-auto`}
             >
-              Stornieren
+              Abbrechen
             </button>
 
             <button

@@ -115,7 +115,7 @@ export default function ImageCropModal({
             }}
             className="py-1 flex items-center px-2 bg-[#FBF2EA] hover:brightness-95 font-medium border border-[var(--c-border)] rounded-[0.35rem] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Stornieren
+            Abbrechen
           </button>
           <button
             onClick={createCroppedImage}

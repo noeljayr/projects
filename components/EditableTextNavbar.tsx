@@ -154,7 +154,7 @@ export default function EditableTextNavbar({
               }}
               disabled={isSaving}
               className="flex items-center justify-center bg-gray-300 text-black p-1.5 rounded-md cursor-pointer hover:bg-gray-400 transition-colors disabled:opacity-50 shadow-lg"
-              title="Stornieren"
+              title="Abbrechen"
             >
               <IconX className="h-4 w-4" />
             </button>

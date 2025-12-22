@@ -78,7 +78,7 @@ export default function NewsPageClient({
         >
           <input
             type="text"
-            placeholder={content.searchPlaceholder || "Suchen..."}
+            placeholder={"Suchen..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="outline-0 border-0 bg-transparent h-full font-p3 pl-2 font-medium w-full"

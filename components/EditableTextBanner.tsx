@@ -110,7 +110,7 @@ export default function EditableTextBanner({
               className="flex items-center gap-2 bg-gray-300 text-black px-3 py-1.5 rounded-[0.35rem] cursor-pointer hover:bg-gray-400 transition-colors disabled:opacity-50"
             >
               <IconX className="h-4 w-4" />
-              Stornieren
+              Abbrechen
             </button>
           </div>
         </div>

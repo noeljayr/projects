@@ -1,10 +1,8 @@
-"use client"
+"use client";
 
 import { useEffect } from "react";
 
-function BeauceronWrapper({content}:{content: string}) {
-
-    
+function BeauceronWrapper({ content }: { content: string }) {
   useEffect(() => {
     const imageWrappers = document.querySelectorAll(".image-wrapper");
 
@@ -37,13 +35,9 @@ function BeauceronWrapper({content}:{content: string}) {
     });
   }, []);
 
-
   return (
-    <p
-              className="opacity-75 font-p3"
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
-  )
+    <div className="font-p3" dangerouslySetInnerHTML={{ __html: content }} />
+  );
 }
 
-export default BeauceronWrapper
+export default BeauceronWrapper;

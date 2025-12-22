@@ -380,7 +380,7 @@ export function Navbar({ content }: Props) {
         >
           <div
             ref={mobileMenuRef}
-            className="fixed flex flex-col right-0 top-0 h-dvh w-80 bg-[#BEA99A] shadow-2xl overflow-y-auto translate-x-full opacity-0"
+            className="fixed flex flex-col right-0 top-0 h-screen w-80 bg-[#BEA99A] shadow-2xl overflow-y-auto translate-x-full opacity-0"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-6">

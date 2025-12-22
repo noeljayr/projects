@@ -127,12 +127,12 @@ async function Page({ params }: { params: Promise<{ slug: string }> }) {
         </div>
 
         <div className="w-full flex flex-col gap-4 max-[900px]:flex max-[900px]:flex-col max-[900px]:gap-6 border border-[rgba(0,_0,_0,_0.15)] p-4 rounded-[1rem]">
-          <div className="flex max-[900px]:grid max-[900px]:grid-cols-3 max-[900px]:w-full gap-4  max-[900px]:border-black/5 max-sm:grid-cols-2 max-[370px]:grid-cols-1 ">
+          <div className="flex max-[900px]:grid max-[900px]:grid-cols-3 max-[900px]:w-full gap-4  max-[900px]:border-black/5 max-sm:flex max-sm:flex-wrap ">
             {documentMap.stammbaum && (
               <Link
                 href={`/api/beauceron/documents/download?fileId=${documentMap.ausstellungsresultate}`}
                 target="_blank"
-                className="w-full min-[900px]:w-fit font-medium flex items-center  border border-[rgba(26,_26,_26,_0.05)] bg-[#EEE5DD] px-4 py-2 rounded-[0.5rem] font-p4"
+                className="w-full grow max-sm:w-fit min-[900px]:w-fit font-medium flex items-center  border border-[rgba(26,_26,_26,_0.05)] bg-[#EEE5DD] px-4 py-2 rounded-[0.5rem] font-p4"
               >
                 <IconFileTypePdf className="h-4 w-4 mr-2" />
                 Ausstellungsresultate
@@ -142,7 +142,7 @@ async function Page({ params }: { params: Promise<{ slug: string }> }) {
               <Link
                 href={`/api/beauceron/documents/download?fileId=${documentMap.arbeitsresultate}`}
                 target="_blank"
-                className="w-full  min-[900px]:w-fit font-medium flex items-center  border border-[rgba(26,_26,_26,_0.05)] bg-[#EEE5DD] px-4 py-2 rounded-[0.5rem] font-p4"
+                className="w-full grow max-sm:w-fit  min-[900px]:w-fit font-medium flex items-center  border border-[rgba(26,_26,_26,_0.05)] bg-[#EEE5DD] px-4 py-2 rounded-[0.5rem] font-p4"
               >
                 <IconFileTypePdf className="h-4 w-4 mr-2" />
                 Arbeitsresultate
@@ -152,7 +152,7 @@ async function Page({ params }: { params: Promise<{ slug: string }> }) {
               <Link
                 href={`/api/beauceron/documents/download?fileId=${documentMap.zucht}`}
                 target="_blank"
-                className="w-full  min-[900px]:w-fit font-medium flex items-center  border border-[rgba(26,_26,_26,_0.05)] bg-[#EEE5DD] px-4 py-2 rounded-[0.5rem] font-p4"
+                className="w-full grow max-sm:w-fit  min-[900px]:w-fit font-medium flex items-center  border border-[rgba(26,_26,_26,_0.05)] bg-[#EEE5DD] px-4 py-2 rounded-[0.5rem] font-p4"
               >
                 <IconFileTypePdf className="h-4 w-4 mr-2" />
                 Zucht
@@ -160,7 +160,14 @@ async function Page({ params }: { params: Promise<{ slug: string }> }) {
             )}
           </div>
 
-          <span className="w-full h-[1px] bg-[#EDE0D6] max-[900px]:hidden"></span>
+          {!documentMap.arbeitsresultate &&
+          !documentMap.ausstellungsresultate &&
+          !documentMap.stammbaum &&
+          !documentMap.zucht ? (
+            <></>
+          ) : (
+            <span className="w-full h-[1px] bg-[#EDE0D6] max-[900px]:hidden"></span>
+          )}
 
           <div className="flex no-captions">
             <BeauceronWrapper content={beauceron.description} />

@@ -645,7 +645,7 @@ function Page() {
                       onClick={() => setSelectedIds(new Set())}
                       className="py-1 hover:brightness-95 flex items-center w-fit rounded-[0.35rem] px-2 font-medium cursor-pointer border border-[rgba(0,_0,_0,_0.15)] bg-[#FDF9F6]"
                     >
-                      Stornieren
+                      Abbrechen
                     </button>
 
                     <button
