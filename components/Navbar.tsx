@@ -373,7 +373,7 @@ export function Navbar({ content }: Props) {
 
         <div
           ref={mobileMenuOverlayRef}
-          className={`fixed inset-0 bg-black/50 z-50 lg:hidden ${
+          className={`fixed h-screen bg-black/50 z-50 lg:hidden ${
             !isMobileMenuOpen ? "pointer-events-none opacity-0" : ""
           }`}
           onClick={closeMobileMenu}
